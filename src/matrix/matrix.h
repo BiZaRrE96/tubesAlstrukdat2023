@@ -3,7 +3,7 @@
 #ifndef MATRIX_H
 #define MATRIX_H
 
-#include "boolean.h"
+#include "../boolean/boolean.h"
 #include <stdio.h>
 
 /* Ukuran maksimum baris dan kolom */

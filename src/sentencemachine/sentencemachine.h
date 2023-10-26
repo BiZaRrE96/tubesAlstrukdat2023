@@ -35,4 +35,14 @@ void StartSentence() {
     }
 }
 
+void AdvSentence() {
+    // Membaca kalimat selanjutnya
+    IgnoreBlanks();
+    if (currentChar == ENTER) {
+        endSentence = true;
+    } else {
+        CopySentence();
+    }
+}
+
 #endif
