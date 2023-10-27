@@ -170,6 +170,7 @@ int main ()
                 continue;
             }
 
+            printf("idKicau = %d\n", idKicau);
             // Masukkan fungsi suka kicauan disini
             printf("Perintah Suka Kicauan\n"); // Nanti hapus aja
         } else
@@ -265,6 +266,8 @@ int main ()
                 errorCommand("Perintah SAMBUNG_UTAS tidak valid", "HAPUS_BALASAN <id_utas> <index>");
                 continue;
             }
+
+            printf("idUtas = %d, idx = %d\n", idUtas, index);
 
             // Masukkan fungsi hapus utas disini
             printf("Perintah Hapus Utas\n"); // Nanti hapus aja

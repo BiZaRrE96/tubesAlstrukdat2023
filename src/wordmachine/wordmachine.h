@@ -123,7 +123,7 @@ int wordToInt(Word w)
 */
 {
     int i, result = 0;
-    for (i = w.Length-1; i >= 0; i--)
+    for (i = 0; i < w.Length; i++)
     {
         if (w.TabWord[i] >= '0' && w.TabWord[i] <= '9')
             result = result * 10 + (w.TabWord[i] - '0');
