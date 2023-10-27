@@ -69,10 +69,10 @@ boolean readDataUsers(UserList *U, Word foldername, Friendship *F)
 
         ADVWORD(); currentWord.Length--;
         // printf("ElmtPrivacy: %s\n", currentWord.TabWord);
-        if (isWordStrEqual(currentWord, "Privat")) {
+        if (isWordStrEqual(currentWord, "Privat", 6)) {
             ElmtPrivacy(*U, i) = PRIVAT;
         } else
-        if (isWordStrEqual(currentWord, "Publik")) {
+        if (isWordStrEqual(currentWord, "Publik", 6)) {
             ElmtPrivacy(*U, i) = PUBLIC;
         } else {
             return false;

@@ -127,11 +127,23 @@ int strToInt(Word w)
     return result;
 }
 
+boolean isWordInt(Word w) {
+    for (int i = 0; i < w.Length; i++) {
+        if (w.TabWord[i] < '0' || w.TabWord[i] > '9') {
+            return false;
+        }
+    }
 
+    return true;
+}  
 
 // Fungsi apakah value dari TabWord adalah string s
-boolean isWordStrEqual(Word W, char s[]) 
+boolean isWordStrEqual(Word W, char s[], int len) 
 {
+    if (W.Length != len) {
+        return false;
+    }
+
     for (int i = 0; i < W.Length; i++) {
         if (W.TabWord[i] != s[i]) {
             return false;
@@ -218,21 +230,258 @@ void STARTCOMMAND() {
     }
 }
 
+// Bagian Cek perintah
+
 boolean isCommandExit() {
     // Command = "TUTUP_PROGRAM"
     char exitCommandStr[] = "TUTUP_PROGRAM";
 
-    if (currentWord.Length != 13) {
-        return false;
-    }
+    return isWordStrEqual(currentWord, exitCommandStr, 13);
+}
 
-    for (int i = 0; i < 13; i++) {
-        if (currentWord.TabWord[i] != exitCommandStr[i]) {
+boolean isCommandDaftar() {
+    char daftarCommandStr[] = "DAFTAR";
+
+    return isWordStrEqual(currentWord, daftarCommandStr, 6);
+}
+
+boolean isCommandMasuk() {
+    return isWordStrEqual(currentWord, "MASUK", 5);
+}
+
+boolean isCommandKeluar() {
+    return isWordStrEqual(currentWord, "KELUAR", 6);
+}
+
+boolean isCommandGantiProfil() {
+    return isWordStrEqual(currentWord, "GANTI_PROFIL", 12);
+}
+
+boolean isCommandLihatProfil() {
+    if (currentWord.Length < 12) {
+        return false;
+    } 
+
+    char lihatProfilCommandStr[] = "LIHAT_PROFIL";
+    for (int i = 0; i < 12; i++) {
+        if (currentWord.TabWord[i] != lihatProfilCommandStr[i]) {
             return false;
         }
     }
 
     return true;
+}
+
+boolean isCommandAturJenisAkun() {
+    return isWordStrEqual(currentWord, "ATUR_JENIS_AKUN", 15);
+}
+
+boolean isCommandUbahPotoProfil() {
+    return isWordStrEqual(currentWord, "UBAH_POTO_PROFIL", 16);
+}
+
+boolean isCommandDaftarTeman() {
+    return isWordStrEqual(currentWord, "DAFTAR_TEMAN", 12);
+}
+
+boolean isCommandHapusTeman() {
+    return isWordStrEqual(currentWord, "HAPUS_TEMAN", 11);
+}
+
+boolean isCommandTambahTeman() {
+    return isWordStrEqual(currentWord, "TAMBAH_TEMAN", 12);
+}
+
+boolean isCommandBatalTambahTeman() {
+    return isWordStrEqual(currentWord, "BATAL_TAMBAH_TEMAN", 18);
+}
+
+boolean isCommandDaftarPermintaanTeman() {
+    return isWordStrEqual(currentWord, "DAFTAR_PERMINTAAN_TEMAN", 23);
+}
+
+boolean isCommandSetujuiPertemanan() {
+    return isWordStrEqual(currentWord, "SETUJUI_PERTEMANAN", 18);
+}
+
+boolean isCommandKicau() {
+    return isWordStrEqual(currentWord, "KICAU", 5);
+}
+
+boolean isCommandHapusKicauan() {
+    return isWordStrEqual(currentWord, "HAPUS_KICAUAN", 13);
+}
+
+boolean isCommandSukaKicauan() {
+    if (currentWord.Length < 12) {
+        return false;
+    }
+
+    char sukaKicauanCommandStr[] = "SUKA_KICAUAN";
+    for (int i = 0; i < 12; i++) {
+        if (currentWord.TabWord[i] != sukaKicauanCommandStr[i]) {
+            return false;
+        }
+    }
+
+    return true;
+}
+
+boolean isCommandUbahKicauan() {
+    if (currentWord.Length < 12) {
+        return false;
+    }
+
+    char ubahKicauanCommandStr[] = "UBAH_KICAUAN";
+
+    for (int i = 0; i < 12; i++) {
+        if (currentWord.TabWord[i] != ubahKicauanCommandStr[i]) {
+            return false;
+        }
+    }
+
+    return true;
+}
+
+boolean isCommandBalas() {
+    if (currentWord.Length < 5) {
+        return false;
+    }
+
+    char balasCommandStr[] = "BALAS";
+
+    for (int i = 0; i < 5; i++) {
+        if (currentWord.TabWord[i] != balasCommandStr[i]) {
+            return false;
+        }
+    }
+
+    return true;
+}
+
+boolean isCommandBalasan() {
+    if (currentWord.Length < 7) {
+        return false;
+    }
+
+    char balasanCommandStr[] = "BALASAN";
+
+    for (int i = 0; i < 7; i++) {
+        if (currentWord.TabWord[i] != balasanCommandStr[i]) {
+            return false;
+        }
+    }
+
+    return true;
+
+} 
+
+boolean isCommandHapusBalasan() {
+    if (currentWord.Length < 13) {
+        return false;
+    }
+
+    char hapusBalasanCommandStr[] = "HAPUS_BALASAN";
+
+    for (int i = 0; i < 13; i++) {
+        if (currentWord.TabWord[i] != hapusBalasanCommandStr[i]) {
+            return false;
+        }
+    }
+
+    return true;
+}
+
+boolean isCommandBuatDraf() {
+    if (currentWord.Length < 9) {
+        return false;
+    }
+
+    char buatDrafCommandStr[] = "BUAT_DRAF";
+
+    for (int i = 0; i < 9; i++) {
+        if (currentWord.TabWord[i] != buatDrafCommandStr[i]) {
+            return false;
+        }
+    }
+
+    return true;
+}
+
+boolean isCommandLihatDraf() {
+    return isWordStrEqual(currentWord, "LIHAT_DRAF", 10);
+}
+
+boolean isCommandUtas() {
+    if (currentWord.Length < 4) {
+        return false;
+    }
+
+    char utasCommandStr[] = "UTAS";
+
+    for (int i = 0; i < 4; i++) {
+        if (currentWord.TabWord[i] != utasCommandStr[i]) {
+            return false;
+        }
+    }
+
+    return true;
+}
+
+boolean isCommandSambungUtas() {
+    if (currentWord.Length < 12) {
+        return false;
+    }
+
+    char sambungUtasCommandStr[] = "SAMBUNG_UTAS";
+
+    for (int i = 0; i < 12; i++) {
+        if (currentWord.TabWord[i] != sambungUtasCommandStr[i]) {
+            return false;
+        }
+    }
+
+    return true;
+}
+
+boolean isCommandHapusUtas() {
+    if (currentWord.Length < 10) {
+        return false;
+    }
+
+    char hapusUtasCommandStr[] = "HAPUS_UTAS";
+
+    for (int i = 0; i < 10; i++) {
+        if (currentWord.TabWord[i] != hapusUtasCommandStr[i]) {
+            return false;
+        }
+    }
+
+    return true;
+}
+
+boolean isCommandCetakUtas() {
+    if (currentWord.Length < 10) {
+        return false;
+    }
+
+    char cetakUtasCommandStr[] = "CETAK_UTAS";
+
+    for (int i = 0; i < 10; i++) {
+        if (currentWord.TabWord[i] != cetakUtasCommandStr[i]) {
+            return false;
+        }
+    }
+
+    return true;
+}
+
+boolean isCommandSimpan() {
+    return isWordStrEqual(currentWord, "SIMPAN", 6);
+}
+
+boolean isCommandMuat() {
+    return isWordStrEqual(currentWord, "MUAT", 4);
 }
 
 #endif
