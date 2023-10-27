@@ -9,7 +9,7 @@
 #define PUBLIC true
 
 typedef struct {
-    Sentence bio;
+    Word bio;
     Word phoneNumber;
     Word weton;         // Weton lahir (Pahing, Kliwon, Wage, Pon, dan Legi (case insensitive))
     Photo photo;

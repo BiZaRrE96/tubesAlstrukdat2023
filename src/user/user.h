@@ -10,8 +10,8 @@
 #define MAX_LENGTH_PASSWORD 20
 
 typedef struct {
-    Sentence username;
-    Sentence password;
+    Word username;
+    Word password;
     Profile profile;
 } User;
 

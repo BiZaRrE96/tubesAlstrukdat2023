@@ -11,20 +11,11 @@
 #include "../wordmachine/wordmachine.h"
 #define max_length 1000
 
-typedef struct
-{
-    char TabSentence[max_length];
-    int Length;
-} Sentence;
-
-static boolean endSentence;
-static Sentence currentSentence;
-
 void CopySentence() {
     // Akuisisi kalimat
-    currentSentence.Length = 0;
-    while ((currentChar != ENTER) && (currentSentence.Length < max_length) && (currentChar != MARK)) {
-        currentSentence.TabSentence[currentSentence.Length++] = currentChar;
+    currentWord.Length = 0;
+    while ((currentChar != ENTER) && (currentWord.Length < max_length) && (currentChar != MARK)) {
+        currentWord.TabWord[currentWord.Length++] = currentChar;
         ADV();
     }
 }
@@ -35,9 +26,9 @@ void StartSentence() {
     IgnoreBlanks();
 
     if (currentChar == ENTER) {
-        endSentence = true;
+        EndWord = true;
     } else {
-        endSentence = false;
+        EndWord = false;
         CopySentence();
     }
 }
@@ -46,7 +37,7 @@ void AdvSentence() {
     // Membaca kalimat selanjutnya
     IgnoreBlanks();
     if (currentChar == ENTER) {
-        endSentence = true;
+        EndWord = true;
     } else {
         CopySentence();
     }
@@ -56,10 +47,10 @@ Word SentenceToWord() {
     // Mengubah kalimat menjadi kata
     Word w;
     int i;
-    for (i = 0; i < currentSentence.Length; i++) {
-        w.TabWord[i] = currentSentence.TabSentence[i];
+    for (i = 0; i < currentWord.Length; i++) {
+        w.TabWord[i] = currentWord.TabWord[i];
     }
-    w.Length = currentSentence.Length;
+    w.Length = currentWord.Length;
     return w;
 }
 

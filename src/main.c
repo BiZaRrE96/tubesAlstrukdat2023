@@ -3,8 +3,11 @@
 #include "screen/screen.h"
 #include "user/user.h"
 #include "saveloadconfig/saveloadconfig.h"
+#include "commandmachine/commandmachine.h"
 
 #include<stdlib.h>
+
+#define ENDL printf("\n")
 
 // KAMUS GLOBAL
 UserList users;             // Daftar pengguna dalam bentuk listStatik of User (userlist.h)
@@ -44,8 +47,8 @@ void startApp()
     } else
     // Jika konfigurasi gagal dimuat, program akan meminta input folder konfigurasi kembali
     {
-        print_string_red("Konfigurasi gagal dimuat. ");
-        printf("Tekan apa saja untuk melanjuktan lalu ENTER.\n");
+        print_string_red("\nKonfigurasi gagal dimuat. ");
+        printf("Tekan apa saja untuk melanjutkan lalu ENTER.\n");
         STARTWORD();
         startApp();
     }
@@ -61,6 +64,17 @@ void inputCommand()
 {
     print_string_yellow(">> ");
     STARTCOMMAND();
+}
+
+
+void errorCommand(char message[], char usage[]) {
+    ENDL;
+    print_string_red(message); ENDL;
+    START_YELLOW;
+    printf("Usage: ");
+    STOP_COLOR;
+    printf("%s\n", usage);
+    ENDL;
 }
 
 int main ()
@@ -86,8 +100,16 @@ int main ()
         } else
 
         if (isCommandLihatProfil()) {
+            Word username;
+
+            if (!getNama(&username)) {
+                errorCommand("Tidak dapat memuat username", "LIHAT_PROFIL <nama>");
+                continue;
+            }
+            
             // Masukkan fungsi lihat profil disini
             printf("Perintah Lihat Profil\n");      // Nanti hapus aja
+            printf("Nama = %s\n", wordToStr(username));
         } else
 
         if (isCommandAturJenisAkun()) {
@@ -141,27 +163,60 @@ int main ()
         } else
 
         if (isCommandSukaKicauan()) {
+            int idKicau; 
+
+            if (!getParamInt(&idKicau)) {
+                errorCommand("Perintah SUKA_KICAUAN tidak valid", "SUKA_KICAUAN <id_kicau>");
+                continue;
+            }
+
             // Masukkan fungsi suka kicauan disini
             printf("Perintah Suka Kicauan\n"); // Nanti hapus aja
         } else
         if (isCommandUbahKicauan()) {
+            int idKicau;
+
+            if (!getParamInt(&idKicau)) {
+                errorCommand("Perintah UBAH_KICAUAN tidak valid", "UBAH_KICAUAN <id_kicau>");
+                continue;
+            }
+            
             // Masukkan fungsi ubah kicauan disini
             printf("Perintah Ubah Kicauan\n"); // Nanti hapus aja
         } else
 
         if (isCommandBalas()) {
+            int idKicau, idBalasan;
+
+            if (!getTwoParamInt(&idKicau, &idBalasan)) {
+                errorCommand("Perintah BALAS tidak valid", "BALAS <id_kicau> <id_balasan>");
+                continue;
+            }
+
             // Masukkan fungsi balas disini
             printf("Perintah Balas\n"); // Nanti hapus aja
         } else
 
         if (isCommandBalasan()) {
+            int idKicau;
+
+            if (!getParamInt(&idKicau)) {
+                errorCommand("Perintah BALASAN tidak valid", "BALASAN <id_kicau>");
+                continue;
+            }
+            
             // Masukkan fungsi balasan disini
             printf("Perintah Balasan\n"); // Nanti hapus aja
         } else
 
         if (isCommandHapusBalasan()) {
-            // Masukkan fungsi hapus balasan disini
-            printf("Perintah Hapus Balasan\n"); // Nanti hapus aja
+            int idKicau, idBalasan;
+
+            if (!getTwoParamInt(&idKicau, &idBalasan)) {
+                errorCommand("Perintah HAPUS_BALASAN tidak valid", "HAPUS_BALASAN <id_kicau> <id_balasan>");
+                continue;
+            }
+
         } else
 
         if (isCommandBuatDraf()) {
@@ -180,21 +235,49 @@ int main ()
         } else
 
         if (isCommandUtas()) {
+            int idKicau;
+
+            if (!getParamInt(&idKicau)) {
+                errorCommand("Perintah UTAS tidak valid", "UTAS <id_kicau>");
+                continue;
+            }
+
             // Masukkan fungsi utas disini
             printf("Perintah Utas\n"); // Nanti hapus aja
         } else
 
         if (isCommandSambungUtas()) {
+            int idUtas, index;
+
+            if (!getTwoParamInt(&idUtas, &index)) {
+                errorCommand("Perintah SAMBUNG_UTAS tidak valid", "HAPUS_BALASAN <id_utas> <index>");
+                continue;
+            }
+
             // Masukkan fungsi sambung utas disini
             printf("Perintah Sambung Utas\n"); // Nanti hapus aja
         } else
 
         if (isCommandHapusUtas()) {
+            int idUtas, index;
+
+            if (!getTwoParamInt(&idUtas, &index)) {
+                errorCommand("Perintah SAMBUNG_UTAS tidak valid", "HAPUS_BALASAN <id_utas> <index>");
+                continue;
+            }
+
             // Masukkan fungsi hapus utas disini
             printf("Perintah Hapus Utas\n"); // Nanti hapus aja
         } else
 
         if (isCommandCetakUtas()) {
+            int idUtas;
+
+            if (!getParamInt(&idUtas)) {
+                errorCommand("Perintah CETAK_UTAS tidak valid", "CETAK_UTAS <id_utas>");
+                continue;
+            }
+
             // Masukkan fungsi cetak utas disini
             printf("Perintah Cetak Utas\n"); // Nanti hapus aja
         } else

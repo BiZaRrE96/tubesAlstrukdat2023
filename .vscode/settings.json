@@ -2,6 +2,7 @@
     "C_Cpp.errorSquiggles": "enabled",
     "files.associations": {
         "profile.h": "c",
-        "boolean.h": "c"
+        "boolean.h": "c",
+        "wordmachine.h": "c"
     }
 }

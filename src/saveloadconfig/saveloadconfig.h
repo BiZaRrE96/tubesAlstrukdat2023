@@ -40,23 +40,23 @@ boolean readDataUsers(UserList *U, Word foldername, Friendship *F)
 
     STARTWORDFILE(wordToStr(directory));
     // printf("File ditemukan\n");
-    (*U).Neff = strToInt(currentWord);
+    (*U).Neff = wordToInt(currentWord);
 
     for (int i = 0; i < (*U).Neff; i++) {
         // Username
-        AdvSentence(); currentSentence.Length--;
-        // printf("ElmtUsername: %s\n", currentSentence.TabSentence);
-        ElmtUsername(*U, i) = currentSentence;
+        AdvSentence(); currentWord.Length--;
+        // printf("ElmtUsername: %s\n", currentWord.TabWord);
+        ElmtUsername(*U, i) = currentWord;
 
         // Password
-        AdvSentence(); currentSentence.Length--;
-        // printf("ElmtPassword: %s\n", currentSentence.TabSentence);
-        ElmtPassword(*U, i) = currentSentence;
+        AdvSentence(); currentWord.Length--;
+        // printf("ElmtPassword: %s\n", currentWord.TabWord);
+        ElmtPassword(*U, i) = currentWord;
 
         // Bio
-        AdvSentence(); currentSentence.Length--;
-        ElmtBio(*U, i) = currentSentence;
-        // printf("ElmtBio: %s\n", currentSentence.TabSentence);
+        AdvSentence(); currentWord.Length--;
+        ElmtBio(*U, i) = currentWord;
+        // printf("ElmtBio: %s\n", currentWord.TabWord);
 
         // Nomor Telepon
         ADVWORD(); currentWord.Length--;
