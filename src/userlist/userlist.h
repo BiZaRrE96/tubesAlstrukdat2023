@@ -20,5 +20,13 @@ typedef struct {
 #define ElmtPhoto(U, i) (U).TabUser[(i)].profile.photo
 #define ElmtPrivacy(U, i) (U).TabUser[(i)].profile.privacy
 
+void CreateUserList(UserList *U)
+/*
+    I.S. U sembarang
+    F.S. U terdefinisi dengan Neff(U) = 0
+*/
+{
+    Neff(*U) = 0;
+}
 
 #endif

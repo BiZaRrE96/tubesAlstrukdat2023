@@ -26,10 +26,6 @@ We only provide 8 colors. Feel free to modify/add colors if you want to.
 
 #define STOP_COLOR printf("%s", NORMAL)
 
-void print_red(char c);
-void print_green(char c);
-void print_blue(char c);
-
 void print_red(char c)
 {
     printf("%s%c", RED, c);

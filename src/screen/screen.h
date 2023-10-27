@@ -8,13 +8,16 @@
 
 void displaySplashScreen() {
     FILE *fptr;
-    fptr=fopen("../bin/burbir.txt", "r");
+    
+
+    fptr=fopen("bin/burbir.txt", "r");
     if (fptr == NULL)
     {
-        printf("Cannot open file \n");
+        system("pwd");
+        printf("Cannot open file (splash)\n");
         exit(0);
     }
-    char filename[100], c;
+    char c;
 
     // Membaca data dari file
     c = fgetc(fptr);

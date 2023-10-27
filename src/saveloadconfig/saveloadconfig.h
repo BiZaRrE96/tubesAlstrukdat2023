@@ -1,3 +1,5 @@
+/* ADT Save and load Config */
+
 #ifndef _SAVELOADCONFIG_H_
 #define _SAVELOADCONFIG_H_
 
@@ -6,11 +8,16 @@
 #include "../pcolor/pcolor.h"
 #include "../screen/screen.h"
 
-Word Direc(Word foldername, char filename[], int lenFilename) {
+Word Direc(Word foldername, char filename[], int lenFilename)
+/*
+    I.S. foldername dan filename terdefinisi
+    F.S. Mengembalikan foldername + filename
+*/
+{
     Word result = foldername;
     // printf("%s\n", foldername.TabWord);
 
-    result = insertStrToWord(result, "../config/", 10, 0);
+    result = insertStrToWord(result, "config/", 7, 0);
     result = insertStrToWord(result, "/", 1, result.Length);
     result = insertStrToWord(result, filename, lenFilename, result.Length);
 
@@ -24,8 +31,6 @@ boolean readDataUsers(UserList *U, Word foldername, Friendship *F)
 //      Kembalian merupakan pesan error (true atau false)
 {
     // Membuka file `"../config/" + filename + "pengguna.config"`
-    // printf("Folder = %s\n", foldername.TabWord);
-    // printf("Memulai membuka file %s {%d}\n", wordToStr(Direc(foldername, "pengguna.config", 15)), Direc(foldername, "pengguna.config", 15).Length);
     
     // Cek dahulu apakah foile ada   
     Word directory = Direc(foldername, "pengguna.config", 15); 
@@ -34,15 +39,11 @@ boolean readDataUsers(UserList *U, Word foldername, Friendship *F)
     }
 
     STARTWORDFILE(wordToStr(directory));
-    // printf("Membuka file");
-
-    if (pita == NULL) {
-        return false;
-    }
+    // printf("File ditemukan\n");
     (*U).Neff = strToInt(currentWord);
-    // printf("Banyak User: %d\n", (*U).Neff);
+
     for (int i = 0; i < (*U).Neff; i++) {
-        // Usernmae
+        // Username
         AdvSentence(); currentSentence.Length--;
         // printf("ElmtUsername: %s\n", currentSentence.TabSentence);
         ElmtUsername(*U, i) = currentSentence;
@@ -70,7 +71,7 @@ boolean readDataUsers(UserList *U, Word foldername, Friendship *F)
         ADVWORD(); currentWord.Length--;
         // printf("ElmtPrivacy: %s\n", currentWord.TabWord);
         if (isWordStrEqual(currentWord, "Privat", 6)) {
-            ElmtPrivacy(*U, i) = PRIVAT;
+            ElmtPrivacy(*U, i) = PRIVATE;
         } else
         if (isWordStrEqual(currentWord, "Publik", 6)) {
             ElmtPrivacy(*U, i) = PUBLIC;
@@ -78,7 +79,6 @@ boolean readDataUsers(UserList *U, Word foldername, Friendship *F)
             return false;
         }
 
-        // printf("Memuat gambar\n");
 
         // Gambar
         for (int j = 0; j < 5; j++) {
@@ -90,7 +90,6 @@ boolean readDataUsers(UserList *U, Word foldername, Friendship *F)
                 // printf("%c ", currentWord.TabWord[0]);
                 PhotoCharacter(ElmtPhoto(*U, i), j, k) = currentWord.TabWord[0];
             }
-            // printf("\n");
         }
 
         
@@ -107,6 +106,75 @@ boolean readDataUsers(UserList *U, Word foldername, Friendship *F)
     return true;
     // Permintaan Pertemanan
     // Cooming soon
+}
+
+void errorLog(int lenFoldername)
+/* Menampilkan pesan kesalahan */
+{
+    print_string_yellow("| ");
+    print_string_red("Terjadi Kesalahan");
+    
+    for (int i = 0; i < ((40-19-1) + lenFoldername); i++) {
+        printf(" ");
+    }
+
+    print_string_yellow("|\n");
+
+    START_YELLOW;
+    for (int i = 0; i < (40 + lenFoldername); i++) {
+        printf("-");
+    }
+    printf("\n");
+    STOP_COLOR;
+}
+
+boolean loadConfig(Word foldername, UserList *users, Friendship *friendship)
+/*
+    I.S. Sembarang
+    F.S. Konfigurasi pengguna, kicauan, balasan, dan draf berhasil dimuat
+*/
+{
+    START_YELLOW;
+    for (int i = 0; i < (40 + foldername.Length); i++) {
+        printf("-");
+    }
+
+    // Memuat pengguna.config
+    printf("\n| Memuat file `config/%s/pengguna.config |\n", wordToStr(foldername));
+    
+    if (!readDataUsers(users, foldername, friendship)) {
+        errorLog(foldername.Length);
+        return false;
+    }
+
+    // Memuat kicauan.config
+    printf("| Memuat file `config/%s/kicauan.config  |\n", wordToStr(foldername));
+    // if (!readDataTweet(users, foldername)) {
+    //     errorLog(foldername.Length);
+    //     return false;
+    // }
+
+    // Memuat balasan.config
+    printf("| Memuat file `config/%s/balasan.config  |\n", wordToStr(foldername));
+    // if (!readDataReply(users, foldername)) {
+    //     errorLog(foldername.Length);
+    //     return false;
+    // }
+
+    // Memuat draf.config
+    printf("| Memuat file `config/%s/draf.config     |\n", wordToStr(foldername));
+    // if (!readDataDraft(users, foldername)) {
+    //     errorLog(foldername.Length);
+    //     return false;
+    // }
+
+    for (int i = 0; i < (40 + foldername.Length); i++) {
+        printf("-");
+    }
+    printf("\n\n");
+
+    STOP_COLOR;
+    return true;
 }
 
 #endif

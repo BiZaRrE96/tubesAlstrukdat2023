@@ -1,4 +1,4 @@
-/* File: wordmachine.h */
+/* ADT Word Machine */
 /* Definisi Mesin Word: Model Akuisisi Versi I */
 
 #ifndef __WORDMACHINE_H__
@@ -22,6 +22,7 @@ typedef struct
 static boolean EndWord;
 static Word currentWord;
 
+/* ********* AKUISISI ********* */
 void IgnoreBlanks()
 {
     /* Mengabaikan satu atau beberapa BLANK
@@ -114,13 +115,16 @@ void ADVWORD()
     }
 }
 
+/* ********* KELOMPOK OPERASI WORD ********* */
 int strToInt(Word w)
+/*
+    I.S. w terdefinisi sebagai string angka
+    F.S. Mengembalikan nilai integer dari hasil konversi w
+*/
 {
-    // printf("Length: %d\n", w.Length);
     int i, result = 0;
     for (i = w.Length-1; i >= 0; i--)
     {
-        // printf("w.TabWord[%d]: %c\n", i, w.TabWord[i]);
         if (w.TabWord[i] >= '0' && w.TabWord[i] <= '9')
             result = result * 10 + (w.TabWord[i] - '0');
     }
@@ -128,6 +132,10 @@ int strToInt(Word w)
 }
 
 boolean isWordInt(Word w) {
+/*
+    I.S. w sembarang
+    F.S. Mengembalikan true jika w adalah string angka, false jika tidak
+*/
     for (int i = 0; i < w.Length; i++) {
         if (w.TabWord[i] < '0' || w.TabWord[i] > '9') {
             return false;
@@ -137,13 +145,18 @@ boolean isWordInt(Word w) {
     return true;
 }  
 
-// Fungsi apakah value dari TabWord adalah string s
 boolean isWordStrEqual(Word W, char s[], int len) 
+/*
+    I.S. W dan s terdefinisi
+    F.S. Mengembalikan true jika W.TabWord dan s sama, false jika tidak
+*/
 {
+    // Jika panjangnya berbeda, maka pasti tidak sama
     if (W.Length != len) {
         return false;
     }
 
+    // Cek satu per satu setiap karakter pada W.TabWord dan s
     for (int i = 0; i < W.Length; i++) {
         if (W.TabWord[i] != s[i]) {
             return false;
@@ -153,8 +166,12 @@ boolean isWordStrEqual(Word W, char s[], int len)
     return true;
 }
 
-// Membuat fungsi untuk mengkonvert word ke char[]
-char* wordToStr(Word W) {
+char* wordToStr(Word W)
+/*
+    I.S. W terdefinisi
+    F.S. Mengembalikan string yang berisi W.TabWord
+*/
+{
     char* result = (char*) malloc(W.Length * sizeof(char));
     for (int i = 0; i < W.Length; i++) {
         result[i] = W.TabWord[i];
@@ -163,7 +180,12 @@ char* wordToStr(Word W) {
     return result;
 }
 
-Word insertStrToWord(Word W, char str[], int lenStr, int idx) {
+Word insertStrToWord(Word W, char str[], int lenStr, int idx)
+/*
+    I.S. W dan str terdefinisi
+    F.S. Mengembalikan Word yang merupakan hasil penyisipan str pada W pada indeks idx
+*/
+{
     Word result;
     result.Length = W.Length + lenStr;
 
@@ -182,7 +204,12 @@ Word insertStrToWord(Word W, char str[], int lenStr, int idx) {
     return result;
 }
 
-Word mergeWord(Word wLeft, Word wRight) {
+Word mergeWord(Word wLeft, Word wRight)
+/*
+    I.S. wLeft dan wRight terdefinisi
+    F.S. Mengembalikan Word yang merupakan hasil penggabungan wLeft dan wRight
+*/
+{
     Word result;
     result.Length = wLeft.Length + wRight.Length;
 
@@ -197,7 +224,7 @@ Word mergeWord(Word wLeft, Word wRight) {
     return result;
 }
 
-// -------------------- COMMAND --------------------
+/* ********* AKUISISI COMMAND ********* */
 void CopyCommand() {
     /* Mengakuisisi kata, menyimpan dalam currentWord
        I.S. : currentChar adalah karakter pertama dari kata
@@ -230,8 +257,7 @@ void STARTCOMMAND() {
     }
 }
 
-// Bagian Cek perintah
-
+/* ********* KELOMPOK OPERASI COMMAND ********* */
 boolean isCommandExit() {
     // Command = "TUTUP_PROGRAM"
     char exitCommandStr[] = "TUTUP_PROGRAM";

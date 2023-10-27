@@ -6,43 +6,70 @@
 
 #include<stdlib.h>
 
-#define EXIT_PROGRAM printf("\nAnda telah keluar dari program BurBir.\nSampai jumpa di penjelajahan berikutnya.\n")
-
 // KAMUS GLOBAL
-UserList users;
-Friendship friendship;
+UserList users;             // Daftar pengguna dalam bentuk listStatik of User (userlist.h)
+Friendship friendship;      // Daftar pertemanan dalam bentuk adjacency matriks (friendship.h)
+User currentUser;           // User yang sedang login (user.h)
 
-void startApp(char alertMessage[], boolean alert) {
-    cls;
+boolean isLogin = false;    // Apakah program sedang dalam keadaan login
 
+// FUNGSI DAN PROSEDUR
+void startApp() 
+/*
+    I.S. Sembarang
+    F.S. Aplikasi BurBir dimulai
+*/
+{
+    cls;    // Membersihkan layar
     displaySplashScreen();
 
     printf("-----------------------------| Selamat datang di Burbir. |-----------------------------\n\n");
     printf("                     Aplikasi ini "); print_blue('M'); print_blue('I'); print_blue('R'); print_blue('I'); print_blue('P'); 
     printf(" banget loh sama Twitter!\n\n");
     printf("Silahkan masukan folder konfigurasi untuk dimuat: ");
-    START_YELLOW;
+
+    // Program akan meminta input folder konfigurasi dengan mesin kata
+    START_YELLOW;   // Membuat hasil output sebelum perintah `STOP_COLOR` menjadi kuning
     STARTWORD();
     STOP_COLOR;
 
-    printf("\nSedang memuat file (%s/pengguna.config)...\n", currentWord.TabWord);
+    printf("\n");
 
-    if (readDataUsers(&users, currentWord, &friendship)) {
-        printf("Konfigurasi berhasil dimuat! Selamat berkicau\n");
-    } else {
-        startApp("Konfigurasi gagal dimuat. Silahkan coba lagi.\n", true);
+    // Note : Untuk sementara loadConfig hanya akan memuat pengguna.config
+    if (loadConfig(currentWord, &users, &friendship))
+    // Jika konfigurasi berhasil dimuat, program akan berlanjut ke menu utama
+    {
+        print_string_green("Konfigurasi berhasil dimuat. ");
+        printf("Selamat berkicau\n\n");
+    } else
+    // Jika konfigurasi gagal dimuat, program akan meminta input folder konfigurasi kembali
+    {
+        print_string_red("Konfigurasi gagal dimuat. ");
+        printf("Tekan apa saja untuk melanjuktan lalu ENTER.\n");
+        STARTWORD();
+        startApp();
     }
     
 
 }
 
-void inputCommand() {
+void inputCommand()
+/*
+    I.S. Sembarang
+    F.S. Perintah yang dimasukkan oleh pengguna akan di proses
+*/
+{
     print_string_yellow(">> ");
     STARTCOMMAND();
 }
 
-int main () {
-    startApp("", false);
+int main ()
+/*
+    I.S. Sembarang
+    F.S. Aplikasi BurBir dimulai setelah memuat konfigurasi
+*/
+{
+    startApp();
 
 
     while (true) {
@@ -181,7 +208,6 @@ int main () {
         } else 
 
         if (isCommandExit()) {
-            printf("Exit\n");
             break;
         } else {
             printf("Perintah tidak dikenali.\n");
@@ -190,9 +216,7 @@ int main () {
         
         // EndWord = false;
     }
-    EXIT_PROGRAM;
 
-    
-    
+    printf("\nAnda telah keluar dari program BurBir.\nSampai jumpa di penjelajahan berikutnya.\n\n");
     return 0;
 }

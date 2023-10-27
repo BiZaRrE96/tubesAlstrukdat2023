@@ -1,3 +1,10 @@
+/* ADT Senctence */
+
+/*
+    Note :  Perbedaan Sentence (kalimat) dengan Word (kata) adalah
+            Sentence dapat memiliki spasi, sedangkan Word tidak.
+*/
+
 #ifndef __SENTENCEMACHINE_H__
 #define __SENTENCEMACHINE_H__
 
