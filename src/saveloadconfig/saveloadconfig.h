@@ -34,7 +34,7 @@ boolean readDataUsers(UserList *U, Word foldername, Friendship *F)
     }
 
     STARTWORDFILE(wordToStr(directory));
-    printf("Membuka file");
+    // printf("Membuka file");
 
     if (pita == NULL) {
         return false;

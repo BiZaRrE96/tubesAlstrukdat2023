@@ -32,7 +32,8 @@ void ADV()
     EOP = (currentChar == MARK);
     if (EOP)
     {
-            fclose(pita);
+        // printf("EOP\n");
+        fclose(pita);
     }
 }
 
@@ -45,7 +46,11 @@ void START()
                 Jika currentChar = MARK maka EOP akan menyala (true) */
 
     /* Algoritma */
+    
+
     pita = stdin;
+    // Cek apakah pita close
+    // printf("pita = stdin\n");
     ADV();
 }
 

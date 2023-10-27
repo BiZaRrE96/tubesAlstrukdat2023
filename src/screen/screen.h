@@ -20,7 +20,7 @@ void displaySplashScreen() {
     c = fgetc(fptr);
     while (c != EOF)
     {
-        printf ("%c", c);
+        print_green(c);
         c = fgetc(fptr);
     }
 

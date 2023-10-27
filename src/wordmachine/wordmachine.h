@@ -5,10 +5,12 @@
 #define __WORDMACHINE_H__
 
 #include "../CharMachine/charmachine.h"
+#include <stdlib.h>
 
 #define NMax 50
 #define BLANK ' '
 #define ENTER '\n'
+#define MARKCOMMAND ';'
 
 typedef struct
 {
@@ -60,6 +62,7 @@ void STARTWORD()
               currentChar karakter pertama sesudah karakter terakhir kata */
     START();
     IgnoreBlanks();
+    EndWord = false;
     if (currentChar == MARK)
     {
         EndWord = true;
@@ -79,6 +82,7 @@ void STARTWORDFILE(char filename[])
               currentChar karakter pertama sesudah karakter terakhir kata */
     STARTFILE(filename);
     IgnoreBlanks();
+    EndWord = false;
     if (currentChar == MARK)
     {
         EndWord = true;
@@ -179,6 +183,56 @@ Word mergeWord(Word wLeft, Word wRight) {
     }
 
     return result;
+}
+
+// -------------------- COMMAND --------------------
+void CopyCommand() {
+    /* Mengakuisisi kata, menyimpan dalam currentWord
+       I.S. : currentChar adalah karakter pertama dari kata
+       F.S. : currentWord berisi kata yang sudah diakuisisi;
+              currentChar = BLANK atau currentChar = MARK;
+              currentChar adalah karakter sesudah karakter terakhir yang diakuisisi.
+              Jika panjang kata melebihi CAPACITY, maka sisa kata terpotong */
+    currentWord.Length = 0;
+    while (currentChar != MARKCOMMAND)
+    {
+        if (currentWord.Length < NMax)
+        { // jika lebih akan terpotong
+            currentWord.TabWord[currentWord.Length++] = currentChar;
+            ADV();
+        }
+        else
+            break;
+    }
+}
+
+void STARTCOMMAND() {
+    START();
+    IgnoreBlanks();
+
+    if (currentChar == MARKCOMMAND) {
+        EndWord = true;
+    } else {
+        EndWord = false;
+        CopyCommand();
+    }
+}
+
+boolean isCommandExit() {
+    // Command = "TUTUP_PROGRAM"
+    char exitCommandStr[] = "TUTUP_PROGRAM";
+
+    if (currentWord.Length != 13) {
+        return false;
+    }
+
+    for (int i = 0; i < 13; i++) {
+        if (currentWord.TabWord[i] != exitCommandStr[i]) {
+            return false;
+        }
+    }
+
+    return true;
 }
 
 #endif

@@ -6,32 +6,57 @@
 
 #include<stdlib.h>
 
+#define EXIT_PROGRAM printf("\nAnda telah keluar dari program BurBir.\nSampai jumpa di penjelajahan berikutnya.\n")
+
 // KAMUS GLOBAL
 UserList users;
 Friendship friendship;
 
-void startApp() {
-    printf("\nSelamat datang di Burbir.\n\n");
-    printf("Aplikasi untuk studi kualitatif mengenai perilaku manusia dengan menggunakan metode (pengambilan data berupa) Focused Group Discussion kedua di zamannya.\n\n");
+void startApp(char alertMessage[], boolean alert) {
+    cls;
+
+    displaySplashScreen();
+
+    printf("-----------------------------| Selamat datang di Burbir. |-----------------------------\n\n");
+    printf("                     Aplikasi ini "); print_blue('M'); print_blue('I'); print_blue('R'); print_blue('I'); print_blue('P'); 
+    printf(" banget loh sama Twitter!\n\n");
     printf("Silahkan masukan folder konfigurasi untuk dimuat: ");
+    START_YELLOW;
     STARTWORD();
+    STOP_COLOR;
 
     printf("\nSedang memuat file (%s/pengguna.config)...\n", currentWord.TabWord);
 
     if (readDataUsers(&users, currentWord, &friendship)) {
-        printf("Konfigurasi berhasil dimuat.\n");
+        printf("Konfigurasi berhasil dimuat! Selamat berkicau\n");
     } else {
-        printf("Konfigurasi gagal dimuat.\n");
+        startApp("Konfigurasi gagal dimuat. Silahkan coba lagi.\n", true);
     }
     
 
 }
 
-int main () {
-    cls;
-    displaySplashScreen();
-    startApp();
+void inputCommand() {
+    print_string_yellow(">> ");
+    STARTCOMMAND();
+}
 
+int main () {
+    startApp("", false);
+
+
+    while (true) {
+        inputCommand();
+        printf("\nCurrentWord: %s\n", wordToStr(currentWord));
+        if (isCommandExit()) {
+            printf("Exit\n");
+            break;
+        }
+        // EndWord = false;
+    }
+    EXIT_PROGRAM;
+
+    
     
     return 0;
 }

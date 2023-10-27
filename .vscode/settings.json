@@ -1,6 +1,7 @@
 {
     "C_Cpp.errorSquiggles": "enabled",
     "files.associations": {
-        "profile.h": "c"
+        "profile.h": "c",
+        "boolean.h": "c"
     }
 }

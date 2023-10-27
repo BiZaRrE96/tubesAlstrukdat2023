@@ -45,4 +45,15 @@ void AdvSentence() {
     }
 }
 
+Word SentenceToWord() {
+    // Mengubah kalimat menjadi kata
+    Word w;
+    int i;
+    for (i = 0; i < currentSentence.Length; i++) {
+        w.TabWord[i] = currentSentence.TabSentence[i];
+    }
+    w.Length = currentSentence.Length;
+    return w;
+}
+
 #endif
