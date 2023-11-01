@@ -382,4 +382,30 @@ boolean getNama(Word *nama) {
     return true;
 }
 
+boolean compareWord(Word str1, Word str2)
+{
+   int idx;
+   int i;
+   if (str1.Length != str2.Length)
+   {
+      return false;
+   } else {
+      for (i = 0; i < str1.Length; i++)
+      {
+         if (str1.TabWord[i] != str2.TabWord[i])
+         {
+            return false;
+         }
+      }
+   }
+   return true;
+}
+
+void PrintWord(Word kata){
+   int i;
+   for (i=0;i<kata.Length;i++){
+      printf("%c", kata.TabWord[i]);
+   }
+}
+
 #endif
