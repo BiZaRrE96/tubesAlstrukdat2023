@@ -32,6 +32,6 @@ void ATUR_JENIS_AKUN(Profile *P);
 
 void UBAH_FOTO_PROFIL(Profile *P);
 
-void PRINT_PROFIL (Profile *P);
+void PRINT_PROFIL (Profile P, User user);
 
 #endif

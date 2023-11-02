@@ -1,10 +1,11 @@
 #include "profile.h"
+boolean LogIn = false; // Variabel Semesta
 
-void GantiProfile(Profile *P, User CurrentUser)
+void GANTI_PROFIL(Profile *P, User CurrentUser)
 {
-    if (!LogIn())
+    if (!LogIn)
     {
-        printf("Anda belum Login");
+        printf("Anda belum Login\n");
     }
 
     else
@@ -126,27 +127,30 @@ void LIHAT_PROFIL(Profile *P);
 
 void ATUR_JENIS_AKUN(Profile *P)
 {
-    if (!LogIn())
+    if (!LogIn)
     {
-        printf("Anda belum Login");
+        printf("Anda belum Login\n");
     }
 
     else
     {
         Word Yes = {"YA", 2};
         Word No = {"TIDAK", 5};
-        
+
         if (P->privacy == true)
         {
             printf("Saat ini, akun Anda adalah akun Publik. Ingin mengubah ke akun Privat? (YA/TIDAK) ");
             STARTCOMMAND();
-            printf("\n"); printf("\n");
-            if (compareWord(currentWord,Yes)){
+            printf("\n");
+            printf("\n");
+            if (compareWord(currentWord, Yes))
+            {
                 P->privacy = false;
                 printf("Akun anda sudah diubah menjadi akun Privat.\n");
                 printf("\n");
             }
-            else{
+            else
+            {
                 P->privacy = true;
                 printf("Pengubahan jenis akun dibatalkan\n");
                 printf("\n");
@@ -156,22 +160,47 @@ void ATUR_JENIS_AKUN(Profile *P)
         {
             printf("Saat ini, akun Anda adalah akun Privat. Ingin mengubah ke akun Publik? (YA/TIDAK)");
             STARTCOMMAND();
-            printf("\n"); printf("\n");
-            if (compareWord(currentWord,Yes)){
+            printf("\n");
+            printf("\n");
+            if (compareWord(currentWord, Yes))
+            {
                 P->privacy = true;
                 printf("Akun anda sudah diubah menjadi akun Publik.\n");
                 printf("\n");
             }
-            else{
+            else
+            {
                 P->privacy = false;
                 printf("Pengubahan jenis akun dibatalkan\n");
                 printf("\n");
             }
-
         }
     }
 }
 
-void UBAH_FOTO_PROFIL(Profile *P);
+void UBAH_FOTO_PROFIL(Profile *P)
+{
+    int i;
+    int j;
+}
 
-void PRINT_PROFIL (Profile *P);
+void PRINT_PROFIL(Profile P, User user)
+{
+    printf("| Nama: ");
+    printWord(user.username);
+    printf("\n");
+    printf("| Bio Akun: ");
+    printWord(P.bio);
+    printf("\n");
+    printf("| No HP: ");
+    printWord(P.phoneNumber);
+    printf("\n");
+    printf("| Weton: ");
+    printWord(P.weton);
+    printf("\n\n");
+    printf("Foto profil akun ");
+    printWord(user.username);
+    printf("\n");
+    PRINT_PHOTO(P);
+    printf("\n");
+}
