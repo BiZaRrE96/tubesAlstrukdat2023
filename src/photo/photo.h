@@ -2,6 +2,7 @@
 #define _PHOTO_H_
 
 #include "../wordmachine/wordmachine.h"
+#include "../pcolor/pcolor.h"
 
 #define MAX_PHOTO_SIZE 5
 
@@ -18,6 +19,4 @@ typedef struct {
 #define PhotoCharacter(photo, i, j) (photo).pixels[(i)][(j)].character
 
 // Tulis implementasi ADT Photo disini
-
-
 #endif
