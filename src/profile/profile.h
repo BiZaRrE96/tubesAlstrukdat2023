@@ -5,6 +5,7 @@
 #include "../boolean/boolean.h"
 #include "../photo/photo.h"
 #include "../user/user.h"
+#include "../userlist/userlist.h"
 
 #define PRIVATE false
 #define PUBLIC true

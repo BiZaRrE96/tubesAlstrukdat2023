@@ -5,6 +5,7 @@
 #include "../liststatik/liststatik.h"
 #include "../boolean/boolean.h"
 #include "../commandmachine/commandmachine.h"
+#include "../profile/profile.h"
 
 #define MAX_USERS 20
 

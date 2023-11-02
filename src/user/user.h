@@ -6,6 +6,7 @@
 #include "../boolean/boolean.h"
 #include "../profile/profile.h"
 #include "../userlist/userlist.h"
+#include "../commandmachine/commandmachine.h"
 
 #define MAX_LENGTH_USERNAME 20
 #define MAX_LENGTH_PASSWORD 20

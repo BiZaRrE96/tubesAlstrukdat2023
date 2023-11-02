@@ -7,13 +7,13 @@ void CreateListStatik(ListStatik *l)
 {
     /* I.S. l sembarang */
     /* F.S. Terbentuk List l kosong dengan kapasitas CAPACITY */
-    /* Proses: Inisialisasi semua elemen List l dengan MARK */
+    /* Proses: Inisialisasi semua elemen List l dengan TANDA */
     /*KAMUS LOKAL*/
     int i;
     /*ALGORITMA*/
     for (i = IDX_MIN; i < CAPACITY; i++)
     {
-        ELMT(*l, i) = MARK;
+        ELMT(*l, i) = TANDA;
     }
 }
 
@@ -27,7 +27,7 @@ int listLength(ListStatik l)
     int i = 0;
     /*ALGORITMA*/
 
-    while ((i < CAPACITY) && (ELMT(l, i) != MARK))
+    while ((i < CAPACITY) && (ELMT(l, i) != TANDA))
     {
         i++;
     }
@@ -342,7 +342,7 @@ void deleteFirst(ListStatik *l, ElType *val)
         {
             ELMT(*l, i) = ELMT(*l, i + 1);
         }
-        ELMT(*l, getLastIdx(*l)) = MARK;
+        ELMT(*l, getLastIdx(*l)) = TANDA;
     }
 }
 /* *** Menghapus elemen pada index tertentu *** */
@@ -365,7 +365,7 @@ void deleteAt(ListStatik *l, ElType *val, IdxType idx)
         {
             ELMT(*l, i) = ELMT(*l, i + 1);
         }
-        ELMT(*l, getLastIdx(*l)) = MARK;
+        ELMT(*l, getLastIdx(*l)) = TANDA;
     }
 }
 /* *** Menghapus elemen terakhir *** */
@@ -382,7 +382,7 @@ void deleteLast(ListStatik *l, ElType *val)
     {
         *val = ELMT(*l, getLastIdx(*l));
 
-        ELMT(*l, getLastIdx(*l)) = MARK;
+        ELMT(*l, getLastIdx(*l)) = TANDA;
     }
 }
 

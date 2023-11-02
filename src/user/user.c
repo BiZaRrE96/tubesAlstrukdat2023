@@ -35,7 +35,7 @@ void DAFTAR(User *user, UserList *userlist)
         if (index != IDX_UNDEF)
         {
             printf("Wah, sayang sekali nama tersebut telah diambil.\n");
-            DAFTAR(&user, &userlist);
+            DAFTAR(user, userlist);
         }
 
         else
@@ -61,7 +61,7 @@ void DAFTAR(User *user, UserList *userlist)
         }
         printf("\n");
         printf("Pengguna telah berhasil terdaftar. Masuk untuk menikmati fitur-fitur BurBir.\n");
-        insertLast(userlist, user);
+        insertLastUser(userlist, user);
     }
 
     else
@@ -73,10 +73,19 @@ void DAFTAR(User *user, UserList *userlist)
 
 void MASUK()
 {
-
 }
 
 void KELUAR()
 {
-
+    if (!LogIn)
+    {
+        printf("Anda belum login! Masuk terlebih dahulu untuk menikmati layanan BurBir.\n");
+        printf("\n");
+    }
+    else
+    {
+        LogIn = false;
+        printf("Anda berhasil logout. Sampai jumpa di pertemuan berikutnya!\n");
+        printf("\n");
+    }
 }
