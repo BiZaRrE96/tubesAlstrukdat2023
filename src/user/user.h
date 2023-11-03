@@ -34,9 +34,9 @@ typedef struct
 #define Photo(U) (U).photo
 #define Privacy(U) (U).privacy
 
-boolean LogIn = false; //Global Variabel
-User CURRENTUSER; //Global Variabel
-UserList USERLIST; //Global Variabel
+boolean isLogin = false; //Global Variabel yang di main 
+User currentUser; //Global Variabel yang di main
+UserList users ; //Global Variabel yang di main
 
 void DAFTAR();
 
@@ -44,16 +44,16 @@ void MASUK();
 
 void KELUAR();
 
-void GANTI_PROFIL(User *CurrentUser);
+void GANTI_PROFIL(User *currentUser);
 
-void LIHAT_PROFIL(User Currentuser);
+void LIHAT_PROFIL(User currentUser);
 
-void ATUR_JENIS_AKUN(User *Currentuser);
+void ATUR_JENIS_AKUN(User *currentUser);
 
-void UBAH_FOTO_PROFIL(User *Currentuser);
+void UBAH_FOTO_PROFIL(User *currentUser);
 
-void PRINT_PROFIL(User Currentuser);
+void PRINT_PROFIL(User currentUser);
 
-void PRINT_FOTO(User Currentuser);
+void PRINT_FOTO(User currentUser);
 
 #endif

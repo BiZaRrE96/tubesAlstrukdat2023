@@ -2,7 +2,7 @@
 
 void DAFTAR()
 {
-    if (!LogIn)
+    if (!isLogin)
     {
         boolean NameCheck = false;
         Word name;
@@ -24,7 +24,7 @@ void DAFTAR()
             }
         }
 
-        int index = indexOfUser(USERLIST, name);
+        int index = indexOfUser(users, name);
         Word pass;
         boolean PassCheck = false;
 
@@ -56,7 +56,7 @@ void DAFTAR()
         }
         User NewUser = {name, pass};
         printf("\nPengguna telah berhasil terdaftar. Masuk untuk menikmati fitur-fitur BurBir.\n");
-        insertLastUser(&USERLIST, NewUser);
+        insertLastUser(&users, NewUser);
     }
 
     else
@@ -67,18 +67,13 @@ void DAFTAR()
 
 void MASUK()
 {
-    if (LogIn)
-    {
-        printf("\nAnda sudah masuk, keluar terlebih dahulu untuk mendaftar\n");
-    }
-
-    else
+    if (!isLogin)
     {
         printf("\n\nMasukkan Nama:\n");
         STARTCOMMAND();
 
         Word nama = currentWord;
-        int IndexUser = indexOfUser(USERLIST, nama);
+        int IndexUser = indexOfUser(users, nama);
 
         if (IndexUser == IDX_UNDEF)
         {
@@ -87,7 +82,7 @@ void MASUK()
         }
         else
         {
-            User terdaftar = Pengguna(USERLIST, IndexUser);
+            User terdaftar = Pengguna(users, IndexUser);
             Word CorrectPass = terdaftar.password;
             boolean PassCheck = false;
 
@@ -110,27 +105,32 @@ void MASUK()
             printf("Anda telah berhasil masuk dengan nama pengguna ");
             PrintWord(terdaftar.username);
             printf(". Mari menjelajahi BurBir bersama Ande-Ande Lumut!");
-            CURRENTUSER = terdaftar;
+            currentUser = terdaftar;
         }
+    }
+
+    else
+    {
+        printf("\nAnda sudah masuk, keluar terlebih dahulu untuk mendaftar\n");
     }
 }
 
 void KELUAR()
 {
-    if (!LogIn)
+    if (!isLogin)
     {
         printf("\nAnda belum login! Masuk terlebih dahulu untuk menikmati layanan BurBir.\n");
     }
     else
     {
-        LogIn = false;
+        isLogin = false;
         printf("\nAnda berhasil logout. Sampai jumpa di pertemuan berikutnya!\n");
     }
 }
 
-void GANTI_PROFIL(User *CurrentUser)
+void GANTI_PROFIL(User *currentUser)
 {
-    if (!LogIn)
+    if (!isLogin)
     {
         printf("Anda belum Login\n");
     }
@@ -138,16 +138,16 @@ void GANTI_PROFIL(User *CurrentUser)
     else
     {
         printf("| Nama: ");
-        PrintWord(CurrentUser->username);
+        PrintWord(currentUser->username);
         printf('\n');
         printf("| Bio Akun: ");
-        PrintWord(CurrentUser->bio);
+        PrintWord(currentUser->bio);
         printf('\n');
         printf("| No HP: ");
-        PrintWord(CurrentUser->phoneNumber);
+        PrintWord(currentUser->phoneNumber);
         printf('\n');
         printf("| Weton: ");
-        PrintWord(CurrentUser->weton);
+        PrintWord(currentUser->weton);
         printf('\n');
 
         Word EmptyWord = {';', 1};
@@ -172,7 +172,7 @@ void GANTI_PROFIL(User *CurrentUser)
                 printf("\n");
             }
         }
-        CurrentUser->bio = bio;
+        currentUser->bio = bio;
 
         boolean PhoneCheck = false;
         while (PhoneCheck != true)
@@ -210,7 +210,7 @@ void GANTI_PROFIL(User *CurrentUser)
                 }
             }
         }
-        CurrentUser->phoneNumber = currentWord;
+        currentUser->phoneNumber = currentWord;
 
         boolean WetonCheck = false;
         Word ValidWeton[] = {{"Pahing", 6}, {"Kliwon", 6}, {"Wage", 4}, {"Pon", 3}, {"Legi", 4}};
@@ -244,15 +244,15 @@ void GANTI_PROFIL(User *CurrentUser)
             }
         }
 
-        CurrentUser->weton = currentWord;
+        currentUser->weton = currentWord;
         printf("Profil anda sudah berhasil diperbarui!\n");
         printf("\n");
     }
 }
 
-void LIHAT_PROFIL(User Currentuser)
+void LIHAT_PROFIL(User currentUser)
 {
-    if (!LogIn)
+    if (!isLogin)
     {
         printf("Anda belum login! Masuk terlebih dahulu untuk menikmati layanan BurBir.\n");
         printf("\n");
@@ -264,9 +264,9 @@ void LIHAT_PROFIL(User Currentuser)
     }
 }
 
-void ATUR_JENIS_AKUN(User *Currentuser)
+void ATUR_JENIS_AKUN(User *currentUser)
 {
-    if (!LogIn)
+    if (!isLogin)
     {
         printf("Anda belum Login\n");
     }
@@ -276,7 +276,7 @@ void ATUR_JENIS_AKUN(User *Currentuser)
         Word Yes = {"YA", 2};
         Word No = {"TIDAK", 5};
 
-        if (Currentuser->privacy == true)
+        if (currentUser->privacy == true)
         {
             printf("Saat ini, akun Anda adalah akun Publik. Ingin mengubah ke akun Privat? (YA/TIDAK) ");
             STARTCOMMAND();
@@ -284,13 +284,13 @@ void ATUR_JENIS_AKUN(User *Currentuser)
             printf("\n");
             if (compareWord(currentWord, Yes))
             {
-                Currentuser->privacy = false;
+                currentUser->privacy = false;
                 printf("Akun anda sudah diubah menjadi akun Privat.\n");
                 printf("\n");
             }
             else
             {
-                Currentuser->privacy = true;
+                currentUser->privacy = true;
                 printf("Pengubahan jenis akun dibatalkan\n");
                 printf("\n");
             }
@@ -303,13 +303,13 @@ void ATUR_JENIS_AKUN(User *Currentuser)
             printf("\n");
             if (compareWord(currentWord, Yes))
             {
-                Currentuser->privacy = true;
+                currentUser->privacy = true;
                 printf("Akun anda sudah diubah menjadi akun Publik.\n");
                 printf("\n");
             }
             else
             {
-                Currentuser->privacy = false;
+                currentUser->privacy = false;
                 printf("Pengubahan jenis akun dibatalkan\n");
                 printf("\n");
             }
@@ -317,34 +317,34 @@ void ATUR_JENIS_AKUN(User *Currentuser)
     }
 }
 
-void UBAH_FOTO_PROFIL(User *Currentuser)
+void UBAH_FOTO_PROFIL(User *currentUser)
 {
 }
 
-void PRINT_PROFIL(User Currentuser)
+void PRINT_PROFIL(User currentUser)
 {
     printf("| Nama: ");
-    printWord(Currentuser.username);
+    printWord(currentUser.username);
     printf("\n");
     printf("| Bio Akun: ");
-    printWord(Currentuser.bio);
+    printWord(currentUser.bio);
     printf("\n");
     printf("| No HP: ");
-    printWord(Currentuser.phoneNumber);
+    printWord(currentUser.phoneNumber);
     printf("\n");
     printf("| Weton: ");
-    printWord(Currentuser.weton);
+    printWord(currentUser.weton);
     printf("\n\n");
     printf("Foto profil akun ");
-    printWord(Currentuser.username);
+    printWord(currentUser.username);
     printf("\n");
-    PRINT_FOTO(Currentuser);
+    PRINT_FOTO(currentUser);
     printf("\n");
 }
 
-void PRINT_FOTO(User Currentuser)
+void PRINT_FOTO(User currentUser)
 {
-    Matrixchar M = Currentuser.photo;
+    Matrixchar M = currentUser.photo;
     for (int i = 0; i < M.rowEff; i++)
     {
         for (int j = 0; j < M.colEff; j += 2)
