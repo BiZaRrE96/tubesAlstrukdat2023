@@ -3,10 +3,14 @@
 #ifndef USER_H_
 #define USER_H_
 
-#include "../boolean/boolean.h"
-#include "../profile/profile.h"
-#include "../userlist/userlist.h"
 #include "../commandmachine/commandmachine.h"
+#include "../boolean/boolean.h"
+#include "../photo/photo.h"
+#include "../userlist/userlist.h"
+#include "../matrix/matrixchar.h"
+
+#define PRIVATE false
+#define PUBLIC true
 
 #define MAX_LENGTH_USERNAME 20
 #define MAX_LENGTH_PASSWORD 20
@@ -15,18 +19,41 @@ typedef struct
 {
     Word username;
     Word password;
-    Profile profile;
+    Word bio;
+    Word phoneNumber;
+    Word weton; // Weton lahir (Pahing, Kliwon, Wage, Pon, dan Legi (case insensitive))
+    Matrixchar photo;
+    boolean privacy; // false = privat, true = public;
 } User;
 
 #define Username(U) (U).username
 #define Password(U) (U).password
-#define Profile(U) (U).profile
+#define Bio(U) (U).bio
+#define PhoneNumber(U) (U).phoneNumber
+#define Weton(U) (U).weton
+#define Photo(U) (U).photo
+#define Privacy(U) (U).privacy
 
+boolean LogIn = false; //Global Variabel
+User CURRENTUSER; //Global Variabel
+UserList USERLIST; //Global Variabel
 
-void DAFTAR(User *user, UserList *userlist);
+void DAFTAR();
 
 void MASUK();
 
 void KELUAR();
+
+void GANTI_PROFIL(User *CurrentUser);
+
+void LIHAT_PROFIL(User Currentuser);
+
+void ATUR_JENIS_AKUN(User *Currentuser);
+
+void UBAH_FOTO_PROFIL(User *Currentuser);
+
+void PRINT_PROFIL(User Currentuser);
+
+void PRINT_FOTO(User Currentuser);
 
 #endif

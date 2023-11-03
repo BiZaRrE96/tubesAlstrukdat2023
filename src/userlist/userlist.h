@@ -3,9 +3,9 @@
 
 #include "../user/user.h"
 #include "../liststatik/liststatik.h"
+#include "../photo/photo.h"
 #include "../boolean/boolean.h"
 #include "../commandmachine/commandmachine.h"
-#include "../profile/profile.h"
 
 #define MAX_USERS 20
 
@@ -15,15 +15,15 @@ typedef struct
     int Neff;
 } UserList;
 
-#define User(U, i) (U).TabUser[(i)]
+#define Pengguna(U, i) (U).TabUser[(i)]
 #define Neff(U) (U).Neff
 #define ElmtUsername(U, i) (U).TabUser[(i)].username
 #define ElmtPassword(U, i) (U).TabUser[(i)].password
-#define ElmtBio(U, i) (U).TabUser[(i)].profile.bio
-#define ElmtPhoneNumber(U, i) (U).TabUser[(i)].profile.phoneNumber
-#define ElmtWeton(U, i) (U).TabUser[(i)].profile.weton
-#define ElmtPhoto(U, i) (U).TabUser[(i)].profile.photo
-#define ElmtPrivacy(U, i) (U).TabUser[(i)].profile.privacy
+#define ElmtBio(U, i) (U).TabUser[(i)].bio
+#define ElmtPhoneNumber(U, i) (U).TabUser[(i)].phoneNumber
+#define ElmtWeton(U, i) (U).TabUser[(i)].weton
+#define ElmtPhoto(U, i) (U).TabUser[(i)].photo
+#define ElmtPrivacy(U, i) (U).TabUser[(i)].privacy
 
 /* ********** KONSTRUKTOR ********** */
 /* Konstruktor : create List kosong  */

@@ -57,5 +57,5 @@ void insertLastUser(UserList *U, User user)
 /* F.S. user adalah elemen terakhir u yang baru */
 {
     Neff(*U)++;
-    User(*U, listLengthUserlist(*U)) = user;
+    Pengguna(*U, listLengthUserlist(*U)) = user;
 }
