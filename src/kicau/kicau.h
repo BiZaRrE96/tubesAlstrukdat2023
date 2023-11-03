@@ -3,12 +3,11 @@
 
 //ADT kicau(?)
 //MENGGUNAKAN : ADT LST DINAMIK
-#include <time.h>
-
 #include "../boolean/boolean.h"
 #include "../userlist/userlist.h"
 #include "../sentencemachine/sentencemachine.h"
 #include "../commandmachine/commandmachine.h"
+#include "../datetime/datetime.h"
 //#include "../time/time.h"
 
 //Suatu kicauan minimal terdiri dari 
@@ -28,7 +27,7 @@ typedef struct {
     Word Text;
     int Like;
     id Author;
-    struct tm Time;
+    DATETIME Time;
 
     //ini itungan nya node i guess? prep for balasan
     //KICAU *parent;
@@ -71,13 +70,6 @@ void shrinkList(KicauList *kl, int num);
 
 
 /* ****** TEMPORARY FUNCTIONS, SUBJECT TO CHANGE WITH UPDATES*/
-void setToCurrentTime(struct tm * t){
-    time_t currentTime;
-
-    time(&currentTime);
-    t = localtime(&currentTime);
-
-};
 
 static boolean AcanSeeB(id A, id B){
     //returns true if :
@@ -139,10 +131,13 @@ void printSpaces(int x){
 void printKicauXasA(KicauList KL, id x, id user){
     x--;
     if (AcanSeeB(user,GetAuthor(KL,x)) == true){
-        printf("|ID = %d\n",x+1);
-        printf("|%d PLACEHOLDER UNTIL USERSYS\n",GetAuthor(KL,x));
-        printf("|DATE\n");
-        printf("|%s\n",wordToStr(GetText(KL,x)));
+        printf("| ID = %d\n",x+1);
+        printf("| %d PLACEHOLDER UNTIL USERSYS\n",GetAuthor(KL,x));
+        printf("| ");
+        TulisDATETIME(GetTime(KL,x));
+        printf("\n");
+        printf("| %s\n",wordToStr(GetText(KL,x)));
+        printf("| Disukai: %d\n",GetLike(KL,x));
     }
     //printBalasan
 };
@@ -150,6 +145,7 @@ void printKicauXasA(KicauList KL, id x, id user){
 void viewRecentAsA(KicauList KL,id A){
     for (int i = Count(KL); i > 0; i--){
         printKicauXasA(KL, i, A);
+        printf("\n");
     }
 }
 
