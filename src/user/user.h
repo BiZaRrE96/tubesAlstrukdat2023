@@ -4,8 +4,11 @@
 #define USER_H_
 
 #include "../boolean/boolean.h"
-#include "../profile/profile.h"
-#include "../userlist/userlist.h"
+#include "../photo/photo.h"
+#include "../matrix/matrixchar.h"
+
+#define PRIVATE false
+#define PUBLIC true
 
 #define MAX_LENGTH_USERNAME 20
 #define MAX_LENGTH_PASSWORD 20
@@ -17,15 +20,12 @@ typedef struct
     Profile profile;
 } User;
 
+User currentUser;
+boolean isLogin = false;
+
 #define Username(U) (U).username
 #define Password(U) (U).password
 #define Profile(U) (U).profile
 
-
-void DAFTAR(User *user, UserList *userlist);
-
-void MASUK();
-
-void KELUAR();
 
 #endif

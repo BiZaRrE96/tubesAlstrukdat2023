@@ -2,15 +2,14 @@
 #define _USERLIST_H_
 
 #include "../user/user.h"
-#include "../liststatik/liststatik.h"
-#include "../boolean/boolean.h"
-#include "../commandmachine/commandmachine.h"
 
 #define MAX_USERS 20
+#define IDX_UNDEF -1
 
+typedef User Eltypeuser;
 typedef struct
 {
-    User TabUser[MAX_USERS];
+    Eltypeuser TabUser[MAX_USERS];
     int Neff;
 } UserList;
 
@@ -18,11 +17,13 @@ typedef struct
 #define Neff(U) (U).Neff
 #define ElmtUsername(U, i) (U).TabUser[(i)].username
 #define ElmtPassword(U, i) (U).TabUser[(i)].password
-#define ElmtBio(U, i) (U).TabUser[(i)].profile.bio
-#define ElmtPhoneNumber(U, i) (U).TabUser[(i)].profile.phoneNumber
-#define ElmtWeton(U, i) (U).TabUser[(i)].profile.weton
-#define ElmtPhoto(U, i) (U).TabUser[(i)].profile.photo
-#define ElmtPrivacy(U, i) (U).TabUser[(i)].profile.privacy
+#define ElmtBio(U, i) (U).TabUser[(i)].bio
+#define ElmtPhoneNumber(U, i) (U).TabUser[(i)].phoneNumber
+#define ElmtWeton(U, i) (U).TabUser[(i)].weton
+#define ElmtPhoto(U, i) (U).TabUser[(i)].photo
+#define ElmtPrivacy(U, i) (U).TabUser[(i)].privacy
+
+UserList users;          
 
 /* ********** KONSTRUKTOR ********** */
 /* Konstruktor : create List kosong  */
@@ -50,5 +51,11 @@ void insertLastUser(UserList *U, User user);
 /* Proses: Menambahkan val sebagai elemen terakhir List */
 /* I.S. List l boleh kosong, tetapi tidak penuh */
 /* F.S. val adalah elemen terakhir l yang baru */
+
+void DAFTAR();
+
+void MASUK();
+
+void KELUAR();
 
 #endif
