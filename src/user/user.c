@@ -335,7 +335,7 @@ void UBAH_FOTO_PROFIL(User *currentUser)
 
         START();
         IgnoreBlanks();
-        IgnoreEnters();
+        //IgnoreEnters();
         for (int i = 0; i < 5; i++)
         {
             for (int j = 0; j < 10; j += 2)
@@ -344,12 +344,12 @@ void UBAH_FOTO_PROFIL(User *currentUser)
                 ADV();
                 IgnoreBlanks();
             }
-            IgnoreEnters();
+            //IgnoreEnters();
         }
         currentUser->photo = M;
         printf("\n");
         printf("Foto profil anda sudah berhasil diganti!\n\n");
-        PrintFoto(currentUser);
+        PRINT_FOTO(*currentUser);
     }
 }
 
