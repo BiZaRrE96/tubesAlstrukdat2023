@@ -38,7 +38,7 @@ void DAFTAR()
         {
             while (!PassCheck)
             {
-                printf("\nMasukkan kata sandi:\n");
+                printf("\n\nMasukkan kata sandi:\n");
                 STARTCOMMAND();
 
                 if (currentWord.Length <= 20)
@@ -77,7 +77,7 @@ void MASUK()
 
         if (IndexUser == IDX_UNDEF)
         {
-            printf("Wah, nama yang Anda cari tidak ada. Masukkan nama lain!\n");
+            printf("Wah, nama yang Anda cari tidak ada. Masukkan nama lain!");
             MASUK();
         }
         else
@@ -88,7 +88,7 @@ void MASUK()
 
             while (!PassCheck)
             {
-                printf("\nMasukkan kata sandi:\n");
+                printf("\n\nMasukkan kata sandi:\n");
                 STARTCOMMAND();
 
                 Word Inputpass = currentWord;
@@ -139,16 +139,16 @@ void GANTI_PROFIL(User *currentUser)
     {
         printf("| Nama: ");
         PrintWord(currentUser->username);
-        printf('\n');
+        printf("\n");
         printf("| Bio Akun: ");
         PrintWord(currentUser->bio);
-        printf('\n');
+        printf("\n");
         printf("| No HP: ");
         PrintWord(currentUser->phoneNumber);
-        printf('\n');
+        printf("\n");
         printf("| Weton: ");
         PrintWord(currentUser->weton);
-        printf('\n');
+        printf("\n");
 
         Word EmptyWord = {';', 1};
         Word bio;
@@ -319,24 +319,56 @@ void ATUR_JENIS_AKUN(User *currentUser)
 
 void UBAH_FOTO_PROFIL(User *currentUser)
 {
+    if (!isLogin)
+    {
+        printf("Anda belum login! Masuk terlebih dahulu untuk menikmati layanan BurBir\n");
+    }
+
+    else
+    {
+        printf("\nFoto profil Anda saat ini adalah\n");
+        PRINT_FOTO(*currentUser);
+
+        printf("\n\nMasukkan foto profil yang baru\n");
+        Matrixchar M;
+        createMatrixchar(5, 10, &M);
+
+        START();
+        IgnoreBlanks();
+        IgnoreEnters();
+        for (int i = 0; i < 5; i++)
+        {
+            for (int j = 0; j < 10; j += 2)
+            {
+                MELMT(M, i, j) = currentChar;
+                ADV();
+                IgnoreBlanks();
+            }
+            IgnoreEnters();
+        }
+        currentUser->photo = M;
+        printf("\n");
+        printf("Foto profil anda sudah berhasil diganti!\n\n");
+        PrintFoto(currentUser);
+    }
 }
 
 void PRINT_PROFIL(User currentUser)
 {
     printf("| Nama: ");
-    printWord(currentUser.username);
+    PrintWord(currentUser.username);
     printf("\n");
     printf("| Bio Akun: ");
-    printWord(currentUser.bio);
+    PrintWord(currentUser.bio);
     printf("\n");
     printf("| No HP: ");
-    printWord(currentUser.phoneNumber);
+    PrintWord(currentUser.phoneNumber);
     printf("\n");
     printf("| Weton: ");
-    printWord(currentUser.weton);
+    PrintWord(currentUser.weton);
     printf("\n\n");
     printf("Foto profil akun ");
-    printWord(currentUser.username);
+    PrintWord(currentUser.username);
     printf("\n");
     PRINT_FOTO(currentUser);
     printf("\n");
@@ -345,9 +377,9 @@ void PRINT_PROFIL(User currentUser)
 void PRINT_FOTO(User currentUser)
 {
     Matrixchar M = currentUser.photo;
-    for (int i = 0; i < M.rowEff; i++)
+    for (int i = 0; i < 5; i++)
     {
-        for (int j = 0; j < M.colEff; j += 2)
+        for (int j = 0; j < 10; j += 2)
         {
             if (MELMT(M, i, j) == 'R')
             {

@@ -11,12 +11,12 @@
 #define COL_CAP 100
 
 typedef int IdxType; /* Index baris, kolom */
-typedef char ElType;
+typedef char MElType;
 typedef struct
 {
-   ElType mem[ROW_CAP][COL_CAP];
-   int rowEff; /* banyaknya/ukuran baris yg terdefinisi */
-   int colEff; /* banyaknya/ukuran kolom yg terdefinisi */
+    MElType mem[ROW_CAP][COL_CAP];
+    int rowEff; /* banyaknya/ukuran baris yg terdefinisi */
+    int colEff; /* banyaknya/ukuran kolom yg terdefinisi */
 } Matrixchar;
 /* rowEff >= 1 dan colEff >= 1 */
 /* Indeks matriks yang digunakan: [0..ROW_CAP-1][0..COL_CAP-1] */
@@ -47,7 +47,7 @@ void createMatrixchar(int nRows, int nCols, Matrixchar *m)
 }
 
 /* *** Selektor "Dunia Matrixchar" *** */
-boolean isMatrixcharIdxValid(int i, int j) 
+boolean isMatrixcharIdxValid(int i, int j)
 /* Mengirimkan true jika i, j adalah index yang valid untuk matriks apa pun */
 {
     return ((i >= 0 && i < ROW_CAP) && (j >= 0 && j < COL_CAP));
@@ -60,7 +60,8 @@ IdxType getLastIdxRow(Matrixchar m)
 }
 
 /* Mengirimkan Index baris terbesar m */
-IdxType getLastIdxCol(Matrixchar m) {
+IdxType getLastIdxCol(Matrixchar m)
+{
     return COL_EFF(m) - 1;
 }
 
@@ -70,7 +71,7 @@ boolean isIndexEff(Matrixchar m, IdxType i, IdxType j)
     return (i >= 0 && i <= getLastIdxRow(m) && j >= 0 && j <= getLastIdxCol(m));
 }
 
-ElType getMELMTDiagonal(Matrixchar m, IdxType i)
+MElType getMELMTDiagonal(Matrixchar m, IdxType i)
 /* Mengirimkan elemen m(i,i) */
 {
     return MELMT(m, i, i);
@@ -85,8 +86,7 @@ void copyMatrixchar(Matrixchar mIn, Matrixchar *mOut)
     for (IdxType i = 0; i < ROW_EFF(mIn); i++)
         for (IdxType j = 0; j < COL_EFF(mIn); j++)
             MELMT(*mOut, i, j) = MELMT(mIn, i, j);
-        
-    
+
     for (IdxType i = 0; i < ROW_EFF(mIn); i++)
         for (IdxType j = 0; j < COL_EFF(mIn); j++)
             MELMT(*mOut, i, j) = MELMT(mIn, i, j);
@@ -101,11 +101,11 @@ void readMatrixchar(Matrixchar *m, int nRow, int nCol)
 /* Contoh: Jika nRow = 3 dan nCol = 3, maka contoh cara membaca isi matriks :
 1 2 3
 4 5 6
-8 9 10 
+8 9 10
 */
 {
     createMatrixchar(nRow, nCol, m);
-    int i,j;
+    int i, j;
     for (i = 0; i < nRow; i++)
     {
         for (j = 0; j < nCol; j++)
@@ -117,7 +117,7 @@ void readMatrixchar(Matrixchar *m, int nRow, int nCol)
 
 void displayMatrixchar(Matrixchar m)
 /* I.S. m terdefinisi */
-/* F.S. Nilai m(i,j) ditulis ke layar per baris per kolom, masing-masing elemen per baris 
+/* F.S. Nilai m(i,j) ditulis ke layar per baris per kolom, masing-masing elemen per baris
    dipisahkan sebuah spasi. Baris terakhir tidak diakhiri dengan newline */
 /* Proses: Menulis nilai setiap elemen m ke layar dengan traversal per baris dan per kolom */
 /* Contoh: menulis matriks 3x3 (ingat di akhir tiap baris, tidak ada spasi)
@@ -126,9 +126,11 @@ void displayMatrixchar(Matrixchar m)
 8 9 10
 */
 {
-    for (IdxType i = 0; i < ROW_EFF(m); i++) {
-        for (IdxType j = 0; j < COL_EFF(m); j++) {
-            printf("%d", MELMT(m, i,j));
+    for (IdxType i = 0; i < ROW_EFF(m); i++)
+    {
+        for (IdxType j = 0; j < COL_EFF(m); j++)
+        {
+            printf("%d", MELMT(m, i, j));
             if (j < getLastIdxCol(m))
                 printf(" ");
         }
@@ -136,9 +138,8 @@ void displayMatrixchar(Matrixchar m)
     }
 }
 
-
 /* ********** KELOMPOK OPERASI ARITMATIKA TERHADAP TYPE ********** */
-Matrixchar addMatrixchar(Matrixchar m1, Matrixchar m2) 
+Matrixchar addMatrixchar(Matrixchar m1, Matrixchar m2)
 {
 
     for (IdxType i = 0; i < ROW_EFF(m1); i++)
@@ -153,7 +154,7 @@ Matrixchar addMatrixchar(Matrixchar m1, Matrixchar m2)
 
 /* Prekondisi : m1 berukuran sama dengan m2 */
 /* Mengirim hasil penjumlahan matriks: m1 + m2 */
-Matrixchar subtractMatrixchar(Matrixchar m1, Matrixchar m2) 
+Matrixchar subtractMatrixchar(Matrixchar m1, Matrixchar m2)
 /* Prekondisi : m1 berukuran sama dengan m2 */
 /* Mengirim hasil pengurangan matriks: salinan m1 – m2 */
 {
@@ -187,7 +188,7 @@ Matrixchar multiplyMatrixchar(Matrixchar m1, Matrixchar m2)
     return m3;
 }
 
-Matrixchar multiplyMatrixcharWithMod(Matrixchar m1,Matrixchar m2,int mod)
+Matrixchar multiplyMatrixcharWithMod(Matrixchar m1, Matrixchar m2, int mod)
 /* Prekondisi : Ukuran kolom efektif m1 = ukuran baris efektif m2 */
 /* Mengirim hasil perkalian matriks: salinan (m1 * m2)%mod, artinya setiap elemen Matrixchar hasil perkalian m1 * m2 dilakukan modulo terhadap mod */
 {
@@ -208,7 +209,7 @@ Matrixchar multiplyMatrixcharWithMod(Matrixchar m1,Matrixchar m2,int mod)
     return m3;
 }
 
-Matrixchar multiplyByConst(Matrixchar m, ElType x)
+Matrixchar multiplyByConst(Matrixchar m, MElType x)
 /* Mengirim hasil perkalian setiap elemen m dengan x */
 {
     for (IdxType i = 0; i < ROW_EFF(m); i++)
@@ -221,7 +222,7 @@ Matrixchar multiplyByConst(Matrixchar m, ElType x)
     return m;
 }
 
-void pMultiplyByConst(Matrixchar *m, ElType k)
+void pMultiplyByConst(Matrixchar *m, MElType k)
 /* I.S. m terdefinisi, k terdefinisi */
 /* F.S. Mengalikan setiap elemen m dengan k */
 {
@@ -242,10 +243,14 @@ boolean isMatrixcharSizeEqual(Matrixchar m1, Matrixchar m2)
 }
 
 /* ********** KELOMPOK OPERASI RELASIONAL TERHADAP Matrixchar ********** */
-boolean isMatrixcharEqual(Matrixchar m1, Matrixchar m2) {
-    if (isMatrixcharSizeEqual(m1, m2)) {
-        for (IdxType i = 0; i < ROW_EFF(m1); i++) {
-            for (IdxType j = 0; j < COL_EFF(m1); j++) {
+boolean isMatrixcharEqual(Matrixchar m1, Matrixchar m2)
+{
+    if (isMatrixcharSizeEqual(m1, m2))
+    {
+        for (IdxType i = 0; i < ROW_EFF(m1); i++)
+        {
+            for (IdxType j = 0; j < COL_EFF(m1); j++)
+            {
                 if (MELMT(m1, i, j) != MELMT(m2, i, j))
                     return false;
             }
@@ -279,12 +284,15 @@ boolean isSquare(Matrixchar m)
 }
 
 boolean isSymmetric(Matrixchar m)
-/* Mengirimkan true jika m adalah matriks simetri : isSquare(m) 
+/* Mengirimkan true jika m adalah matriks simetri : isSquare(m)
    dan untuk setiap elemen m, m(i,j)=m(j,i) */
 {
-    if (isSquare(m)) {
-        for (IdxType i = 0; i < ROW_EFF(m); i++) {
-            for (IdxType j = 0; j < COL_EFF(m); j++) {
+    if (isSquare(m))
+    {
+        for (IdxType i = 0; i < ROW_EFF(m); i++)
+        {
+            for (IdxType j = 0; j < COL_EFF(m); j++)
+            {
                 if (MELMT(m, i, j) != MELMT(m, j, i))
                     return false;
             }
@@ -295,16 +303,22 @@ boolean isSymmetric(Matrixchar m)
 }
 
 boolean isIdentity(Matrixchar m)
-/* Mengirimkan true jika m adalah matriks satuan: isSquare(m) dan 
+/* Mengirimkan true jika m adalah matriks satuan: isSquare(m) dan
    setiap elemen diagonal m bernilai 1 dan elemen yang bukan diagonal bernilai 0 */
 {
-    if (isSquare(m)) {
-        for (IdxType i = 0; i < ROW_EFF(m); i++) {
-            for (IdxType j = 0; j < COL_EFF(m); j++) {
-                if (i == j) {
+    if (isSquare(m))
+    {
+        for (IdxType i = 0; i < ROW_EFF(m); i++)
+        {
+            for (IdxType j = 0; j < COL_EFF(m); j++)
+            {
+                if (i == j)
+                {
                     if (MELMT(m, i, j) != 1)
                         return false;
-                } else {
+                }
+                else
+                {
                     if (MELMT(m, i, j) != 0)
                         return false;
                 }
@@ -316,17 +330,19 @@ boolean isIdentity(Matrixchar m)
 }
 
 boolean isSparse(Matrixchar m)
-/* Mengirimkan true jika m adalah matriks sparse: matriks “jarang” dengan definisi: 
+/* Mengirimkan true jika m adalah matriks sparse: matriks “jarang” dengan definisi:
    hanya maksimal 5% dari memori matriks yang efektif bukan bernilai 0 */
 {
     int count = 0;
-    for (IdxType i = 0; i < ROW_EFF(m); i++) {
-        for (IdxType j = 0; j < COL_EFF(m); j++) {
+    for (IdxType i = 0; i < ROW_EFF(m); i++)
+    {
+        for (IdxType j = 0; j < COL_EFF(m); j++)
+        {
             if (MELMT(m, i, j) != 0)
                 count++;
         }
     }
-    return (count <= 5/100 * countMELMT(m));
+    return (count <= 5 / 100 * countMELMT(m));
 }
 
 Matrixchar negation(Matrixchar m)
@@ -347,48 +363,56 @@ float determinant(Matrixchar m)
 /* Menghitung nilai determinan m */
 {
     if (!isSquare(m))
-      return 0;
+        return 0;
 
     int temp_row[11];
     IdxType idx;
     int det = 1;
     int co = 1;
 
-    for (IdxType i = 0; i < ROW_EFF(m); i++){
+    for (IdxType i = 0; i < ROW_EFF(m); i++)
+    {
         idx = i;
-        while (MELMT(m,idx,i) == 0 && idx < ROW_EFF(m)) idx++;
+        while (MELMT(m, idx, i) == 0 && idx < ROW_EFF(m))
+            idx++;
 
-        if (idx == ROW_EFF(m)) return 0;
+        if (idx == ROW_EFF(m))
+            return 0;
 
-        if (i != idx){
-            for (IdxType j = 0; j < ROW_EFF(m); j++) {
-                ElType temp = MELMT(m,i,j);
-                MELMT(m,i,j) = MELMT(m,idx,j);
-                MELMT(m,idx,j) = temp;
+        if (i != idx)
+        {
+            for (IdxType j = 0; j < ROW_EFF(m); j++)
+            {
+                MElType temp = MELMT(m, i, j);
+                MELMT(m, i, j) = MELMT(m, idx, j);
+                MELMT(m, idx, j) = temp;
             }
             det *= -1;
         }
 
-        for (IdxType j = 0; j < ROW_EFF(m); j++) {
-            temp_row[j] = MELMT(m,i,j);
+        for (IdxType j = 0; j < ROW_EFF(m); j++)
+        {
+            temp_row[j] = MELMT(m, i, j);
         }
 
-        for (IdxType j = i+1; j < ROW_EFF(m); j++) {
-            ElType temp1 = temp_row[i];
-            ElType temp2 = MELMT(m,j,i);
+        for (IdxType j = i + 1; j < ROW_EFF(m); j++)
+        {
+            MElType temp1 = temp_row[i];
+            MElType temp2 = MELMT(m, j, i);
 
-            for (IdxType k = 0; k < ROW_EFF(m); k++) {
-                MELMT(m,j,k) = ((temp1 * MELMT(m,j,k)) - (temp2 * temp_row[k]));
+            for (IdxType k = 0; k < ROW_EFF(m); k++)
+            {
+                MELMT(m, j, k) = ((temp1 * MELMT(m, j, k)) - (temp2 * temp_row[k]));
             }
 
             co *= temp1;
         }
     }
 
-    for (IdxType i=0; i < ROW_EFF(m); i++)
-        det *= MELMT(m,i,i);
-    
-    return det/co;
+    for (IdxType i = 0; i < ROW_EFF(m); i++)
+        det *= MELMT(m, i, i);
+
+    return det / co;
 }
 
 Matrixchar transpose(Matrixchar m)

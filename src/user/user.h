@@ -34,9 +34,9 @@ typedef struct
 #define Photo(U) (U).photo
 #define Privacy(U) (U).privacy
 
-boolean isLogin = false; //Global Variabel yang di main 
-User currentUser; //Global Variabel yang di main
-UserList users ; //Global Variabel yang di main
+boolean isLogin = false; // Global Variabel yang di main
+User currentUser;        // Global Variabel yang di main
+UserList users;          // Global Variabel yang di main
 
 void DAFTAR();
 
