@@ -54,21 +54,21 @@ boolean isMatrixcharIdxValid(int i, int j)
 }
 
 /* *** Selektor: Untuk sebuah matriks m yang terdefinisi: *** */
-IdxType getLastIdxRow(Matrixchar m)
+IdxType getLastIdxRowChar(Matrixchar m)
 {
     return ROW_EFF(m) - 1;
 }
 
 /* Mengirimkan Index baris terbesar m */
-IdxType getLastIdxCol(Matrixchar m)
+IdxType getLastIdxColChar(Matrixchar m)
 {
     return COL_EFF(m) - 1;
 }
 
 /* Mengirimkan Index kolom terbesar m */
-boolean isIndexEff(Matrixchar m, IdxType i, IdxType j)
+boolean isIndexEffChar(Matrixchar m, IdxType i, IdxType j)
 /* Mengirimkan true jika i, j adalah Index efektif bagi m */ {
-    return (i >= 0 && i <= getLastIdxRow(m) && j >= 0 && j <= getLastIdxCol(m));
+    return (i >= 0 && i <= getLastIdxRowChar(m) && j >= 0 && j <= getLastIdxColChar(m));
 }
 
 MElType getMELMTDiagonal(Matrixchar m, IdxType i)
@@ -131,7 +131,7 @@ void displayMatrixchar(Matrixchar m)
         for (IdxType j = 0; j < COL_EFF(m); j++)
         {
             printf("%d", MELMT(m, i, j));
-            if (j < getLastIdxCol(m))
+            if (j < getLastIdxColChar(m))
                 printf(" ");
         }
         printf("\n");
@@ -209,7 +209,7 @@ Matrixchar multiplyMatrixcharWithMod(Matrixchar m1, Matrixchar m2, int mod)
     return m3;
 }
 
-Matrixchar multiplyByConst(Matrixchar m, MElType x)
+Matrixchar multiplyByConstChar(Matrixchar m, MElType x)
 /* Mengirim hasil perkalian setiap elemen m dengan x */
 {
     for (IdxType i = 0; i < ROW_EFF(m); i++)
@@ -222,7 +222,7 @@ Matrixchar multiplyByConst(Matrixchar m, MElType x)
     return m;
 }
 
-void pMultiplyByConst(Matrixchar *m, MElType k)
+void pMultiplyByConstChar(Matrixchar *m, MElType k)
 /* I.S. m terdefinisi, k terdefinisi */
 /* F.S. Mengalikan setiap elemen m dengan k */
 {
@@ -262,8 +262,8 @@ boolean isMatrixcharEqual(Matrixchar m1, Matrixchar m2)
 
 /* Mengirimkan true jika m1 = m2, yaitu count(m1) = count(m2) dan */
 /* untuk setiap i,j yang merupakan Index baris dan kolom m1(i,j) = m2(i,j) */
-/* Juga merupakan strong eq karena getLastIdxCol(m1) = getLastIdxCol(m2) */
-boolean isMatrixcharNotEqual(Matrixchar m1, Matrixchar m2)
+/* Juga merupakan strong eq karena getLastIdxColChar(m1) = getLastIdxColChar(m2) */
+boolean isMatrixcharNotEqualChar(Matrixchar m1, Matrixchar m2)
 /* Mengirimkan true jika m1 tidak sama dengan m2 */
 {
     return !isMatrixcharEqual(m1, m2);
@@ -277,17 +277,17 @@ int countMELMT(Matrixchar m)
 }
 
 /* ********** KELOMPOK TEST TERHADAP Matrixchar ********** */
-boolean isSquare(Matrixchar m)
+boolean isSquareChar(Matrixchar m)
 /* Mengirimkan true jika m adalah matriks dg ukuran baris dan kolom sama */
 {
     return (ROW_EFF(m) == COL_EFF(m));
 }
 
-boolean isSymmetric(Matrixchar m)
+boolean isSymmetricChar(Matrixchar m)
 /* Mengirimkan true jika m adalah matriks simetri : isSquare(m)
    dan untuk setiap elemen m, m(i,j)=m(j,i) */
 {
-    if (isSquare(m))
+    if (isSquareChar(m))
     {
         for (IdxType i = 0; i < ROW_EFF(m); i++)
         {
@@ -302,11 +302,11 @@ boolean isSymmetric(Matrixchar m)
     return false;
 }
 
-boolean isIdentity(Matrixchar m)
+boolean isIdentityChar(Matrixchar m)
 /* Mengirimkan true jika m adalah matriks satuan: isSquare(m) dan
    setiap elemen diagonal m bernilai 1 dan elemen yang bukan diagonal bernilai 0 */
 {
-    if (isSquare(m))
+    if (isSquareChar(m))
     {
         for (IdxType i = 0; i < ROW_EFF(m); i++)
         {
@@ -329,7 +329,7 @@ boolean isIdentity(Matrixchar m)
     return false;
 }
 
-boolean isSparse(Matrixchar m)
+boolean isSparseChar(Matrixchar m)
 /* Mengirimkan true jika m adalah matriks sparse: matriks “jarang” dengan definisi:
    hanya maksimal 5% dari memori matriks yang efektif bukan bernilai 0 */
 {
@@ -348,21 +348,21 @@ boolean isSparse(Matrixchar m)
 Matrixchar negation(Matrixchar m)
 /* Menghasilkan salinan m dengan setiap elemen dinegasikan (dikalikan -1) */
 {
-    return multiplyByConst(m, -1);
+    return multiplyByConstChar(m, -1);
 }
 
-void pNegation(Matrixchar *m)
+void pNegationChar(Matrixchar *m)
 /* I.S. m terdefinisi */
 /* F.S. m di-invers, yaitu setiap elemennya dinegasikan (dikalikan -1) */
 {
-    pMultiplyByConst(m, -1);
+    pMultiplyByConstChar(m, -1);
 }
 
-float determinant(Matrixchar m)
+float determinantChar(Matrixchar m)
 /* Prekondisi: isSquare(m) */
 /* Menghitung nilai determinan m */
 {
-    if (!isSquare(m))
+    if (!isSquareChar(m))
         return 0;
 
     int temp_row[11];
@@ -415,9 +415,9 @@ float determinant(Matrixchar m)
     return det / co;
 }
 
-Matrixchar transpose(Matrixchar m)
+Matrixchar transposeChar(Matrixchar m)
 /* I.S. m terdefinisi dan IsSquare(m) */
-/* F.S. menghasilkan salinan transpose dari m, yaitu setiap elemen m(i,j) ditukar nilainya dengan elemen m(j,i) */
+/* F.S. menghasilkan salinan transposeChar dari m, yaitu setiap elemen m(i,j) ditukar nilainya dengan elemen m(j,i) */
 {
     Matrixchar m2;
     createMatrixchar(ROW_EFF(m), COL_EFF(m), &m2);
@@ -432,11 +432,11 @@ Matrixchar transpose(Matrixchar m)
     return m2;
 }
 
-void pTranspose(Matrixchar *m)
+void pTransposeChar(Matrixchar *m)
 /* I.S. m terdefinisi dan IsSquare(m) */
-/* F.S. m "di-transpose", yaitu setiap elemen m(i,j) ditukar nilainya dengan elemen m(j,i) */
+/* F.S. m "di-transposeChar", yaitu setiap elemen m(i,j) ditukar nilainya dengan elemen m(j,i) */
 {
-    *m = transpose(*m);
+    *m = transposeChar(*m);
 }
 
 #endif

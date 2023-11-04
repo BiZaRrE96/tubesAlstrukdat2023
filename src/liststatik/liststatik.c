@@ -111,7 +111,7 @@ void readList(ListStatik *l)
     /*KAMUS LOKAL*/
     int n, i;
     boolean valid = false;
-    ElType element;
+    LElType element;
     /*ALGORITMA*/
     while (valid != true)
     {
@@ -212,7 +212,7 @@ boolean isListEqual(ListStatik l1, ListStatik l2)
 
 /* ********** SEARCHING ********** */
 /* ***  Perhatian : List boleh kosong!! *** */
-int indexOf(ListStatik l, ElType val)
+int indexOf(ListStatik l, LElType val)
 {
     /* Search apakah ada elemen List l yang bernilai val */
     /* Jika ada, menghasilkan indeks i terkecil, dengan ELMT(l,i) = val */
@@ -245,13 +245,13 @@ int indexOf(ListStatik l, ElType val)
 }
 
 /* ********** NILAI EKSTREM ********** */
-void extremeValues(ListStatik l, ElType *max, ElType *min)
+void extremeValues(ListStatik l, LElType *max, LElType *min)
 {
     /* I.S. List l tidak kosong */
     /* F.S. Max berisi nilai terbesar dalam l;
             Min berisi nilai terkecil dalam l */
     /*KAMUS LOKAL*/
-    ElType maxval, minval;
+    LElType maxval, minval;
     int i;
     /*ALGORITMA*/
     maxval = ELMT(l, 0);
@@ -273,7 +273,7 @@ void extremeValues(ListStatik l, ElType *max, ElType *min)
 
 /* ********** MENAMBAH ELEMEN ********** */
 /* *** Menambahkan elemen terakhir *** */
-void insertFirst(ListStatik *l, ElType val)
+void insertFirst(ListStatik *l, LElType val)
 {
     /* Proses: Menambahkan val sebagai elemen pertama List */
     /* I.S. List l boleh kosong, tetapi tidak penuh */
@@ -291,7 +291,7 @@ void insertFirst(ListStatik *l, ElType val)
     }
 }
 /* *** Menambahkan elemen pada index tertentu *** */
-void insertAt(ListStatik *l, ElType val, IdxType idx)
+void insertAt(ListStatik *l, LElType val, IdxType idx)
 {
     /* Proses: Menambahkan val sebagai elemen pada index idx List */
     /* I.S. List l tidak kosong dan tidak penuh, idx merupakan index yang valid di l */
@@ -309,7 +309,7 @@ void insertAt(ListStatik *l, ElType val, IdxType idx)
     }
 }
 /* *** Menambahkan elemen terakhir *** */
-void insertLast(ListStatik *l, ElType val)
+void insertLast(ListStatik *l, LElType val)
 {
     /* Proses: Menambahkan val sebagai elemen terakhir List */
     /* I.S. List l boleh kosong, tetapi tidak penuh */
@@ -324,7 +324,7 @@ void insertLast(ListStatik *l, ElType val)
 
 /* ********** MENGHAPUS ELEMEN ********** */
 /* *** Menghapus elemen pertama *** */
-void deleteFirst(ListStatik *l, ElType *val)
+void deleteFirst(ListStatik *l, LElType *val)
 {
     /* Proses : Menghapus elemen pertama List */
     /* I.S. List tidak kosong */
@@ -346,7 +346,7 @@ void deleteFirst(ListStatik *l, ElType *val)
     }
 }
 /* *** Menghapus elemen pada index tertentu *** */
-void deleteAt(ListStatik *l, ElType *val, IdxType idx)
+void deleteAt(ListStatik *l, LElType *val, IdxType idx)
 {
     /* Proses : Menghapus elemen pada index idx List */
     /* I.S. List tidak kosong, idx adalah index yang valid di l */
@@ -369,7 +369,7 @@ void deleteAt(ListStatik *l, ElType *val, IdxType idx)
     }
 }
 /* *** Menghapus elemen terakhir *** */
-void deleteLast(ListStatik *l, ElType *val)
+void deleteLast(ListStatik *l, LElType *val)
 {
     /* Proses : Menghapus elemen terakhir List */
     /* I.S. List tidak kosong */
@@ -397,7 +397,7 @@ void sortList(ListStatik *l, boolean asc)
     /*Menggunakan Insertion Sort*/
     /*KAMUS LOKAL*/
     int i, j;
-    ElType temp;
+    LElType temp;
     IdxType idx;
     int len = listLength(*l);
     /*ALGORITMA*/

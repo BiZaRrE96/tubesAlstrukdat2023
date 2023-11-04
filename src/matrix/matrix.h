@@ -14,9 +14,9 @@ typedef int IdxType; /* Index baris, kolom */
 typedef int ElType;
 typedef struct
 {
-   ElType mem[ROW_CAP][COL_CAP];
-   int rowEff; /* banyaknya/ukuran baris yg terdefinisi */
-   int colEff; /* banyaknya/ukuran kolom yg terdefinisi */
+    ElType mem[ROW_CAP][COL_CAP];
+    int rowEff; /* banyaknya/ukuran baris yg terdefinisi */
+    int colEff; /* banyaknya/ukuran kolom yg terdefinisi */
 } Matrix;
 /* rowEff >= 1 dan colEff >= 1 */
 /* Indeks matriks yang digunakan: [0..ROW_CAP-1][0..COL_CAP-1] */
@@ -47,7 +47,7 @@ void createMatrix(int nRows, int nCols, Matrix *m)
 }
 
 /* *** Selektor "Dunia Matrix" *** */
-boolean isMatrixIdxValid(int i, int j) 
+boolean isMatrixIdxValid(int i, int j)
 /* Mengirimkan true jika i, j adalah index yang valid untuk matriks apa pun */
 {
     return ((i >= 0 && i < ROW_CAP) && (j >= 0 && j < COL_CAP));
@@ -60,7 +60,8 @@ IdxType getLastIdxRow(Matrix m)
 }
 
 /* Mengirimkan Index baris terbesar m */
-IdxType getLastIdxCol(Matrix m) {
+IdxType getLastIdxCol(Matrix m)
+{
     return COL_EFF(m) - 1;
 }
 
@@ -85,8 +86,7 @@ void copyMatrix(Matrix mIn, Matrix *mOut)
     for (IdxType i = 0; i < ROW_EFF(mIn); i++)
         for (IdxType j = 0; j < COL_EFF(mIn); j++)
             ELMT(*mOut, i, j) = ELMT(mIn, i, j);
-        
-    
+
     for (IdxType i = 0; i < ROW_EFF(mIn); i++)
         for (IdxType j = 0; j < COL_EFF(mIn); j++)
             ELMT(*mOut, i, j) = ELMT(mIn, i, j);
@@ -101,11 +101,11 @@ void readMatrix(Matrix *m, int nRow, int nCol)
 /* Contoh: Jika nRow = 3 dan nCol = 3, maka contoh cara membaca isi matriks :
 1 2 3
 4 5 6
-8 9 10 
+8 9 10
 */
 {
     createMatrix(nRow, nCol, m);
-    int i,j;
+    int i, j;
     for (i = 0; i < nRow; i++)
     {
         for (j = 0; j < nCol; j++)
@@ -117,7 +117,7 @@ void readMatrix(Matrix *m, int nRow, int nCol)
 
 void displayMatrix(Matrix m)
 /* I.S. m terdefinisi */
-/* F.S. Nilai m(i,j) ditulis ke layar per baris per kolom, masing-masing elemen per baris 
+/* F.S. Nilai m(i,j) ditulis ke layar per baris per kolom, masing-masing elemen per baris
    dipisahkan sebuah spasi. Baris terakhir tidak diakhiri dengan newline */
 /* Proses: Menulis nilai setiap elemen m ke layar dengan traversal per baris dan per kolom */
 /* Contoh: menulis matriks 3x3 (ingat di akhir tiap baris, tidak ada spasi)
@@ -126,9 +126,11 @@ void displayMatrix(Matrix m)
 8 9 10
 */
 {
-    for (IdxType i = 0; i < ROW_EFF(m); i++) {
-        for (IdxType j = 0; j < COL_EFF(m); j++) {
-            printf("%d", ELMT(m, i,j));
+    for (IdxType i = 0; i < ROW_EFF(m); i++)
+    {
+        for (IdxType j = 0; j < COL_EFF(m); j++)
+        {
+            printf("%d", ELMT(m, i, j));
             if (j < getLastIdxCol(m))
                 printf(" ");
         }
@@ -136,9 +138,8 @@ void displayMatrix(Matrix m)
     }
 }
 
-
 /* ********** KELOMPOK OPERASI ARITMATIKA TERHADAP TYPE ********** */
-Matrix addMatrix(Matrix m1, Matrix m2) 
+Matrix addMatrix(Matrix m1, Matrix m2)
 {
 
     for (IdxType i = 0; i < ROW_EFF(m1); i++)
@@ -153,7 +154,7 @@ Matrix addMatrix(Matrix m1, Matrix m2)
 
 /* Prekondisi : m1 berukuran sama dengan m2 */
 /* Mengirim hasil penjumlahan matriks: m1 + m2 */
-Matrix subtractMatrix(Matrix m1, Matrix m2) 
+Matrix subtractMatrix(Matrix m1, Matrix m2)
 /* Prekondisi : m1 berukuran sama dengan m2 */
 /* Mengirim hasil pengurangan matriks: salinan m1 – m2 */
 {
@@ -187,7 +188,7 @@ Matrix multiplyMatrix(Matrix m1, Matrix m2)
     return m3;
 }
 
-Matrix multiplyMatrixWithMod(Matrix m1,Matrix m2,int mod)
+Matrix multiplyMatrixWithMod(Matrix m1, Matrix m2, int mod)
 /* Prekondisi : Ukuran kolom efektif m1 = ukuran baris efektif m2 */
 /* Mengirim hasil perkalian matriks: salinan (m1 * m2)%mod, artinya setiap elemen matrix hasil perkalian m1 * m2 dilakukan modulo terhadap mod */
 {
@@ -242,10 +243,14 @@ boolean isMatrixSizeEqual(Matrix m1, Matrix m2)
 }
 
 /* ********** KELOMPOK OPERASI RELASIONAL TERHADAP Matrix ********** */
-boolean isMatrixEqual(Matrix m1, Matrix m2) {
-    if (isMatrixSizeEqual(m1, m2)) {
-        for (IdxType i = 0; i < ROW_EFF(m1); i++) {
-            for (IdxType j = 0; j < COL_EFF(m1); j++) {
+boolean isMatrixEqual(Matrix m1, Matrix m2)
+{
+    if (isMatrixSizeEqual(m1, m2))
+    {
+        for (IdxType i = 0; i < ROW_EFF(m1); i++)
+        {
+            for (IdxType j = 0; j < COL_EFF(m1); j++)
+            {
                 if (ELMT(m1, i, j) != ELMT(m2, i, j))
                     return false;
             }
@@ -279,12 +284,15 @@ boolean isSquare(Matrix m)
 }
 
 boolean isSymmetric(Matrix m)
-/* Mengirimkan true jika m adalah matriks simetri : isSquare(m) 
+/* Mengirimkan true jika m adalah matriks simetri : isSquare(m)
    dan untuk setiap elemen m, m(i,j)=m(j,i) */
 {
-    if (isSquare(m)) {
-        for (IdxType i = 0; i < ROW_EFF(m); i++) {
-            for (IdxType j = 0; j < COL_EFF(m); j++) {
+    if (isSquare(m))
+    {
+        for (IdxType i = 0; i < ROW_EFF(m); i++)
+        {
+            for (IdxType j = 0; j < COL_EFF(m); j++)
+            {
                 if (ELMT(m, i, j) != ELMT(m, j, i))
                     return false;
             }
@@ -295,16 +303,22 @@ boolean isSymmetric(Matrix m)
 }
 
 boolean isIdentity(Matrix m)
-/* Mengirimkan true jika m adalah matriks satuan: isSquare(m) dan 
+/* Mengirimkan true jika m adalah matriks satuan: isSquare(m) dan
    setiap elemen diagonal m bernilai 1 dan elemen yang bukan diagonal bernilai 0 */
 {
-    if (isSquare(m)) {
-        for (IdxType i = 0; i < ROW_EFF(m); i++) {
-            for (IdxType j = 0; j < COL_EFF(m); j++) {
-                if (i == j) {
+    if (isSquare(m))
+    {
+        for (IdxType i = 0; i < ROW_EFF(m); i++)
+        {
+            for (IdxType j = 0; j < COL_EFF(m); j++)
+            {
+                if (i == j)
+                {
                     if (ELMT(m, i, j) != 1)
                         return false;
-                } else {
+                }
+                else
+                {
                     if (ELMT(m, i, j) != 0)
                         return false;
                 }
@@ -316,17 +330,19 @@ boolean isIdentity(Matrix m)
 }
 
 boolean isSparse(Matrix m)
-/* Mengirimkan true jika m adalah matriks sparse: matriks “jarang” dengan definisi: 
+/* Mengirimkan true jika m adalah matriks sparse: matriks “jarang” dengan definisi:
    hanya maksimal 5% dari memori matriks yang efektif bukan bernilai 0 */
 {
     int count = 0;
-    for (IdxType i = 0; i < ROW_EFF(m); i++) {
-        for (IdxType j = 0; j < COL_EFF(m); j++) {
+    for (IdxType i = 0; i < ROW_EFF(m); i++)
+    {
+        for (IdxType j = 0; j < COL_EFF(m); j++)
+        {
             if (ELMT(m, i, j) != 0)
                 count++;
         }
     }
-    return (count <= 5/100 * countElmt(m));
+    return (count <= 5 / 100 * countElmt(m));
 }
 
 Matrix negation(Matrix m)
@@ -347,48 +363,56 @@ float determinant(Matrix m)
 /* Menghitung nilai determinan m */
 {
     if (!isSquare(m))
-      return 0;
+        return 0;
 
     int temp_row[11];
     IdxType idx;
     int det = 1;
     int co = 1;
 
-    for (IdxType i = 0; i < ROW_EFF(m); i++){
+    for (IdxType i = 0; i < ROW_EFF(m); i++)
+    {
         idx = i;
-        while (ELMT(m,idx,i) == 0 && idx < ROW_EFF(m)) idx++;
+        while (ELMT(m, idx, i) == 0 && idx < ROW_EFF(m))
+            idx++;
 
-        if (idx == ROW_EFF(m)) return 0;
+        if (idx == ROW_EFF(m))
+            return 0;
 
-        if (i != idx){
-            for (IdxType j = 0; j < ROW_EFF(m); j++) {
-                ElType temp = ELMT(m,i,j);
-                ELMT(m,i,j) = ELMT(m,idx,j);
-                ELMT(m,idx,j) = temp;
+        if (i != idx)
+        {
+            for (IdxType j = 0; j < ROW_EFF(m); j++)
+            {
+                ElType temp = ELMT(m, i, j);
+                ELMT(m, i, j) = ELMT(m, idx, j);
+                ELMT(m, idx, j) = temp;
             }
             det *= -1;
         }
 
-        for (IdxType j = 0; j < ROW_EFF(m); j++) {
-            temp_row[j] = ELMT(m,i,j);
+        for (IdxType j = 0; j < ROW_EFF(m); j++)
+        {
+            temp_row[j] = ELMT(m, i, j);
         }
 
-        for (IdxType j = i+1; j < ROW_EFF(m); j++) {
+        for (IdxType j = i + 1; j < ROW_EFF(m); j++)
+        {
             ElType temp1 = temp_row[i];
-            ElType temp2 = ELMT(m,j,i);
+            ElType temp2 = ELMT(m, j, i);
 
-            for (IdxType k = 0; k < ROW_EFF(m); k++) {
-                ELMT(m,j,k) = ((temp1 * ELMT(m,j,k)) - (temp2 * temp_row[k]));
+            for (IdxType k = 0; k < ROW_EFF(m); k++)
+            {
+                ELMT(m, j, k) = ((temp1 * ELMT(m, j, k)) - (temp2 * temp_row[k]));
             }
 
             co *= temp1;
         }
     }
 
-    for (IdxType i=0; i < ROW_EFF(m); i++)
-        det *= ELMT(m,i,i);
-    
-    return det/co;
+    for (IdxType i = 0; i < ROW_EFF(m); i++)
+        det *= ELMT(m, i, i);
+
+    return det / co;
 }
 
 Matrix transpose(Matrix m)
