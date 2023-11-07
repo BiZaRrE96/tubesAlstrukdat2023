@@ -37,9 +37,28 @@ int listLengthUserlist(UserList U);
 /* Mengirimkan banyaknya elemen efektif list */
 /* Mengirimkan nol jika list l kosong */
 
+/* ********** OUTPUT ********** */
+/* Hanya untuk keperluan debugging */
+void displayUserList(UserList U) {
+    for (int i = 0; i < U.Neff; i++) {
+        printf("| Password: %s\n", wordToStr(ElmtPassword(U, i)));
+        LIHAT_PROFIL(Pengguna(U, i));
+    }
+}
+
 /* ********** SEARCHING ********** */
 /* ***  Perhatian : List boleh kosong!! *** */
-int indexOfUser(UserList U, Word nama);
+int indexOfUser(UserList U, Word nama) {
+    int i = 0;
+    while (i < U.Neff && !isWordEqual(ElmtUsername(U, i), nama)) {
+        i++;
+    }
+    if (i == U.Neff) {
+        return -1;
+    } else {
+        return i;
+    }
+}
 /* Search apakah ada elemen List l yang bernilai val */
 /* Jika ada, menghasilkan indeks i terkecil, dengan ELMT(l,i) = val */
 /* Jika tidak ada atau jika l kosong, mengirimkan IDX_UNDEF */

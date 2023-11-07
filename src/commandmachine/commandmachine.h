@@ -447,14 +447,16 @@ boolean getTwoParamInt(int *param1, int *param2)
 
 boolean getNama(Word *nama)
 {
-    Word temp = getWordAfterSpace(1);
-
-    if (temp.Length == 0)
+    if (currentWord.Length < 13)
     {
         return false;
     }
 
-    *nama = temp;
+    int i = 13;
+    (*nama).Length = currentWord.Length - 13;
+    for (int i = 13; i < currentWord.Length; i++) {
+        (*nama).TabWord[i - 13] = currentWord.TabWord[i];
+    }
 
     return true;
 }

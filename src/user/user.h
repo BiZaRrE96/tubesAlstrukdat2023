@@ -6,7 +6,7 @@
 #include "../commandmachine/commandmachine.h"
 #include "../boolean/boolean.h"
 #include "../photo/photo.h"
-#include "../userlist/userlist.h"
+// #include "../userlist/userlist.h"
 #include "../matrix/matrixchar.h"
 
 #define PRIVATE false
@@ -22,7 +22,7 @@ typedef struct
     Word bio;
     Word phoneNumber;
     Word weton; // Weton lahir (Pahing, Kliwon, Wage, Pon, dan Legi (case insensitive))
-    Matrixchar photo;
+    Photo photo;
     boolean privacy; // false = privat, true = public;
 } User;
 
@@ -36,7 +36,7 @@ typedef struct
 
 boolean isLogin = false; // Global Variabel yang di main
 User currentUser;        // Global Variabel yang di main
-UserList users;          // Global Variabel yang di main
+// UserList users;          // Global Variabel yang di main
 
 void DAFTAR();
 
@@ -46,7 +46,15 @@ void KELUAR();
 
 void GANTI_PROFIL(User *currentUser);
 
-void LIHAT_PROFIL(User currentUser);
+void LIHAT_PROFIL(User user) {
+    printf("| Nama: %s\n", wordToStr(Username(user)));
+    printf("| Bio Akun: %s\n", wordToStr(Bio(user)));
+    printf("| No HP: %s\n", wordToStr(PhoneNumber(user)));
+    printf("| Weton: %s\n", wordToStr(Weton(user)));
+    printf("\nFoto profil akun %s\n", wordToStr(Username(user)));
+    displayPhoto(Photo(user));
+
+}
 
 void ATUR_JENIS_AKUN(User *currentUser);
 

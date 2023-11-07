@@ -345,7 +345,7 @@ boolean isSparseChar(Matrixchar m)
     return (count <= 5 / 100 * countMELMT(m));
 }
 
-Matrixchar negation(Matrixchar m)
+Matrixchar negationChar(Matrixchar m)
 /* Menghasilkan salinan m dengan setiap elemen dinegasikan (dikalikan -1) */
 {
     return multiplyByConstChar(m, -1);
