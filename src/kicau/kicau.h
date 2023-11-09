@@ -57,16 +57,6 @@ typedef struct {
 
 //#define GetParent(K) (K).parent
 
-/* ***** MENGUBAH UKURAN ARRAY ***** */
-void expandList(KicauList *kl, int num);
-/* Proses : Menambahkan capacity l sebanyak num */
-/* I.S. List sudah terdefinisi */
-/* F.S. Ukuran list bertambah sebanyak num */
-
-void shrinkList(KicauList *kl, int num);
-/* Proses : Mengurangi capacity sebanyak num */
-/* I.S. List sudah terdefinisi, ukuran capacity > num, dan nEff < capacity - num. */
-/* F.S. Ukuran list berkurang sebanyak num. */
 
 
 /* ****** TEMPORARY FUNCTIONS, SUBJECT TO CHANGE WITH UPDATES*/
@@ -79,12 +69,18 @@ static boolean AcanSeeB(id A, id B){
     return true;
 }
 
+//akan digunakan untuk nanti balasan
+void printSpaces(int x){
+    for (int i = 0; i < x; i++){
+        printf(" ");
+    }
+};
+
+
 /* ***** MAIN FUNCTIONS ***** */
 
 void createKicauList (KicauList* KL, int cap){
-    
     Buffer(*KL) = (KICAU*) malloc (cap * sizeof(KICAU));
-    
     if(Buffer(*KL) != NULL){
         CAPACITY(*KL) = cap;
         Count(*KL) = 0;
@@ -101,18 +97,90 @@ void createKicauList (KicauList* KL, int cap){
             atau gagal terdefinisi dengan cap  = 0
 */
 
+boolean isBlank(Word word){
+    int i = word.Length;
+    int j = 0;
+    boolean retval = true;
+    while(j < i && retval){
+        if(word.TabWord[j] != ' '){
+            retval = false;
+        }
+        j++;
+    }
+
+    return retval;
+
+};
+
+/* ***** MENGUBAH UKURAN ARRAY ***** */
+
+
+void copyList(KicauList host, KicauList *target){
+    //max
+    if (CAPACITY(*target) > Count(host)){ //if a can contain all kicau
+        Count(*target) = Count(host);
+    }
+    else{
+        Count(*target) = CAPACITY(*target);
+    }
+
+    for (int i = 0; i < Count(*target); i++){
+        target->Kicau[i].Author = host.Kicau[i].Author;
+        target->Kicau[i].Like = host.Kicau[i].Like;
+        target->Kicau[i].Text = host.Kicau[i].Text;
+        target->Kicau[i].Time = host.Kicau[i].Time;
+    }
+};
+/* Proses : Menyalin semua isi host ke target */
+/* I.S. List sudah terdefinisi */
+/* F.S. isi host tercopy ke target semua atau sampai penuh */
+
+void expandList(KicauList *kl, int num){
+    KicauList newKl;
+    int newcap = num + CAPACITY(*kl);
+    createKicauList(&newKl,CAPACITY(*kl));
+    copyList(*kl,&newKl);
+    free(kl->Kicau);
+    createKicauList(kl,newcap);
+    copyList(newKl,kl);
+};
+/* Proses : Menambahkan capacity l sebanyak num */
+/* I.S. List sudah terdefinisi */
+/* F.S. Ukuran list bertambah sebanyak num */
+
+void shrinkList(KicauList *kl, int num){
+    KicauList newKl;
+    int newcap = CAPACITY(*kl) - num;
+    createKicauList(&newKl,CAPACITY(*kl));
+    copyList(*kl,&newKl);
+    free(kl->Kicau);
+    createKicauList(kl,newcap);
+    copyList(newKl,kl);
+};
+/* Proses : Mengurangi capacity sebanyak num */
+/* I.S. List sudah terdefinisi, ukuran capacity > num, dan nEff < capacity - num. */
+/* F.S. Ukuran list berkurang sebanyak num. */
+
+//void compressList(KicauList *kl);
+
+/* ***** MAIN KICAU FUNCTIONS ***** */
 void Kicau(KicauList *KL, id author){
     printf("Masukkan kicauan: ");
-    int i = Count(*KL);
     STARTCOMMAND();
-    GetText(*KL,i) = currentWord;
-    GetLike(*KL,i) = 0;
-    GetAuthor(*KL,i) = author;
-    setToCurrentTime(&GetTime(*KL,i));
+    Word input = currentWord;
 
+    if (!isBlank(input)){
+        int i = Count(*KL);
+        GetText(*KL,i) = input;
+        GetLike(*KL,i) = 0;
+        GetAuthor(*KL,i) = author;
+        setToCurrentTime(&GetTime(*KL,i));
+        Count(*KL)++;
+    }
+    else{
+        printf("Kicauan tidak boleh hanya berisi spasi!\n");
+    }
 
-
-    Count(*KL)++;
 }
 
 void likeKicau(KicauList *KL,id postID, id author){
@@ -120,12 +188,6 @@ void likeKicau(KicauList *KL,id postID, id author){
     GetLike(*KL,postID)++;
 }
 
-//akan digunakan untuk nanti balasan
-void printSpaces(int x){
-    for (int i = 0; i < x; i++){
-        printf(" ");
-    }
-};
 
 //view kicauan with id X (real id from 1) as user with id user
 void printKicauXasA(KicauList KL, id x, id user){
