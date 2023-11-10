@@ -49,7 +49,7 @@ void displayFriendship(Friendship friendship, int count) {
 }
 
 void daftarTeman(boolean isLogin, User currentUser, UserList* users, Friendship friendship) {
-
+    
 }
 
 void hapusTeman(boolean isLogin, User currentUser, UserList* users, Friendship* friendship) {
