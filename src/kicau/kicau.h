@@ -8,6 +8,8 @@
 #include "../sentencemachine/sentencemachine.h"
 #include "../commandmachine/commandmachine.h"
 #include "../datetime/datetime.h"
+#include "kicau.h"
+#include "balas.h"
 //#include "../time/time.h"
 
 //Suatu kicauan minimal terdiri dari 
@@ -28,13 +30,11 @@ typedef struct {
     int Like;
     id Author;
     DATETIME Time;
-
-    //ini itungan nya node i guess? prep for balasan
-    //KICAU *parent;
-    //KICAU *children;
+    
+    
+    BalasanList BL;
 
     //membantu memberi spasi sebelum tulisan
-    //int indexLevel;
 } KICAU;
 
 typedef struct {
@@ -57,8 +57,6 @@ typedef struct {
 
 //#define GetParent(K) (K).parent
 
-
-
 /* ****** TEMPORARY FUNCTIONS, SUBJECT TO CHANGE WITH UPDATES*/
 
 static boolean AcanSeeB(id A, id B){
@@ -69,12 +67,14 @@ static boolean AcanSeeB(id A, id B){
     return true;
 }
 
+/* UNUSED< DEFINED IN BALAS
 //akan digunakan untuk nanti balasan
 void printSpaces(int x){
     for (int i = 0; i < x; i++){
         printf(" ");
     }
 };
+*/
 
 
 /* ***** MAIN FUNCTIONS ***** */
@@ -164,25 +164,6 @@ void shrinkList(KicauList *kl, int num){
 //void compressList(KicauList *kl);
 
 /* ***** MAIN KICAU FUNCTIONS ***** */
-void Kicau(KicauList *KL, id author){
-    printf("Masukkan kicauan: ");
-    STARTCOMMAND();
-    Word input = currentWord;
-
-    if (!isBlank(input)){
-        int i = Count(*KL);
-        GetText(*KL,i) = input;
-        GetLike(*KL,i) = 0;
-        GetAuthor(*KL,i) = author;
-        setToCurrentTime(&GetTime(*KL,i));
-        Count(*KL)++;
-    }
-    else{
-        printf("Kicauan tidak boleh hanya berisi spasi!\n");
-    }
-
-}
-
 void likeKicau(KicauList *KL,id postID, id author){
     
     GetLike(*KL,postID)++;
@@ -191,9 +172,8 @@ void likeKicau(KicauList *KL,id postID, id author){
 
 //view kicauan with id X (real id from 1) as user with id user
 void printKicauXasA(KicauList KL, id x, id user){
-    x--;
     if (AcanSeeB(user,GetAuthor(KL,x)) == true){
-        printf("| ID = %d\n",x+1);
+        printf("| ID = %d\n",x);
         printf("| %d PLACEHOLDER UNTIL USERSYS\n",GetAuthor(KL,x));
         printf("| ");
         TulisDATETIME(GetTime(KL,x));
@@ -204,6 +184,30 @@ void printKicauXasA(KicauList KL, id x, id user){
     //printBalasan
 };
 
+void Kicau(KicauList *KL, id author){
+    printf("Masukkan kicauan: ");
+    STARTCOMMAND();
+    Word input = currentWord;
+
+    if (!isBlank(input)){
+        Count(*KL)++;
+        int i = Count(*KL);
+        GetText(*KL,i) = input;
+        GetLike(*KL,i) = 0;
+        GetAuthor(*KL,i) = author;
+        setToCurrentTime(&GetTime(*KL,i));
+        
+
+        printf("Selamat! kicauan telah diterbitkan!\nDetil kicauan:\n");
+        printKicauXasA(*KL, (i), author);
+        printf("\n");
+    }
+    else{
+        printf("Kicauan tidak boleh hanya berisi spasi!\n");
+    }
+
+}
+
 void viewRecentAsA(KicauList KL,id A){
     for (int i = Count(KL); i > 0; i--){
         printKicauXasA(KL, i, A);
@@ -211,4 +215,10 @@ void viewRecentAsA(KicauList KL,id A){
     }
 }
 
+
+/*Balas utilities*//*
+void balasBasA(id user, KicauList KL, id IDKicauan, id IDBalas){
+    if (getBalasan());
+}
+*/
 #endif
