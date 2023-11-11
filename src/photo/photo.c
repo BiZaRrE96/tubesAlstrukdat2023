@@ -1,0 +1,3 @@
+#include "../photo/photo.h"
+
+
