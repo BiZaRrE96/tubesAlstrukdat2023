@@ -48,8 +48,34 @@ void displayFriendship(Friendship friendship, int count) {
     printf("\n");
 }
 
-void daftarTeman(boolean isLogin, User currentUser, UserList* users, Friendship friendship) {
-    
+void daftarTeman(boolean isLogin, User currentUser, UserList* userList, Friendship friendship) {
+    ListFriendship friendshipList;
+    createListFriendship(&friendshipList);
+    if (!isLogin) 
+    {
+        printf("Anda belum login !\n");
+        printf("Silahkan Login terlebih dahulu sebelum menggunakan fungsi ini.\n");
+    } else 
+    {
+        if (noFriendship(friendshipList))
+        {
+            printf("%s belum mempunyai teman\n", currentUser.username);
+        } else
+        {
+            printf("%s memiliki %d teman\n", currentUser.username, countFriendship(friendshipList));
+            printf("Daftar teman %s :\n",currentUser.username);
+            for (int i = 0; i < CAPACITY; i++)
+            {
+                int j = 1;
+                if (FriendshipELMT(friendshipList, i)) 
+                {
+                    // printf("%d. %s\n",j,);
+                    j++;
+                }
+            }
+            
+        }
+    }
 }
 
 void hapusTeman(boolean isLogin, User currentUser, UserList* users, Friendship* friendship) {
