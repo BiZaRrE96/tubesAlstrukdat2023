@@ -48,8 +48,9 @@ void displayFriendship(Friendship friendship, int count) {
     printf("\n");
 }
 
-void daftarTeman(boolean isLogin, User currentUser, UserList* userList, Friendship friendship) {
+void daftarTeman(boolean isLogin, User currentUser, UserList *userList, Friendship friendship) {
     ListFriendship friendshipList;
+    UserList users;
     createListFriendship(&friendshipList);
     if (!isLogin) 
     {
@@ -62,22 +63,55 @@ void daftarTeman(boolean isLogin, User currentUser, UserList* userList, Friendsh
             printf("%s belum mempunyai teman\n", currentUser.username);
         } else
         {
+            int UserId = indexOfUser(users, currentUser.username);
             printf("%s memiliki %d teman\n", currentUser.username, countFriendship(friendshipList));
             printf("Daftar teman %s :\n",currentUser.username);
-            for (int i = 0; i < CAPACITY; i++)
+            for (int i = 0; i < FRIENDSHIPCAPACITY; i++)
             {
                 int j = 1;
-                if (FriendshipELMT(friendshipList, i)) 
+                if (FriendshipStatus(friendship, UserId, i) == 1) 
                 {
-                    // printf("%d. %s\n",j,);
+                    printf("%d. %s\n",j, userList->TabUser[i].username);
                     j++;
                 }
             }
-            
         }
     }
 }
 
-void hapusTeman(boolean isLogin, User currentUser, UserList* users, Friendship* friendship) {
+void hapusTeman(boolean isLogin, User currentUser, UserList *usersList, Friendship *friendship) {
+    ListFriendship friendshipList;
+    Word currentWord;
+    UserList users;
+    createListFriendship(&friendshipList);
 
+    if (!isLogin) {
+        printf("Anda belum login!\n");
+        printf("Silahkan Login terlebih dahulu sebelum menggunakan fungsi ini.\n");
+    } else {
+        if (noFriendship(friendshipList)) {
+            printf("%s belum mempunyai teman\n", currentUser.username);
+        } else {
+            printf("Masukan nama teman yang ingin dihapus.");
+            STARTWORD();
+            for (int i = 0;i < FRIENDSHIPCAPACITY;i++) 
+            {
+                if (isWordEqual(currentWord,ElmtUsername(users,i)))  
+                {
+                    STARTWORD();
+                    int UserId = indexOfUser(users, currentUser.username);
+                    int TargetId = indexOfUser(users, currentWord);
+                    if (currentWord.TabWord[0] == 'Y') 
+                    {
+                        FriendshipStatus(*friendship, UserId, TargetId) = 0;
+                        FriendshipStatus(*friendship, TargetId, UserId) = 0;
+                    } else {
+                        printf("Teman batal dihapuskan.");
+                    }
+                } else {
+                    printf("Nama yang diinput tidak ada di daftar teman.");
+                }
+            }
+        }
+    }
 }
