@@ -98,6 +98,7 @@ void hapusTeman(boolean isLogin, User currentUser, UserList *usersList, Friendsh
             {
                 if (isWordEqual(currentWord,ElmtUsername(users,i)))  
                 {
+                    printf("Apakah anda ingin benar-benar menghapus pertemanan ? (Yes/No)");
                     STARTWORD();
                     int UserId = indexOfUser(users, currentUser.username);
                     int TargetId = indexOfUser(users, currentWord);
