@@ -116,3 +116,4 @@ void hapusTeman(boolean isLogin, User currentUser, UserList *usersList, Friendsh
         }
     }
 }
+
