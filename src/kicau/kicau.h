@@ -10,6 +10,8 @@
 #include "../datetime/datetime.h"
 #include "kicau.h"
 #include "balas.h"
+#include "../friendship/friendship.h"
+#include "../user/user.h"
 //#include "../time/time.h"
 
 //Suatu kicauan minimal terdiri dari 
@@ -57,14 +59,31 @@ typedef struct {
 
 //#define GetParent(K) (K).parent
 
+//extern variable diluar kicau yang konsisten
+extern Friendship activeFriendshipForKicauan;
+extern UserList activeUserListForKicauan;
+
 /* ****** TEMPORARY FUNCTIONS, SUBJECT TO CHANGE WITH UPDATES*/
 
 static boolean AcanSeeB(Word A, Word B){
-    //returns true if :
-    // B is a public account
-    // B is a private account and A is friends with B
-    //check here
-    return true;
+    int readerID = indexOfUser(activeUserListForKicauan,A);
+    int readeeID = indexOfUser(activeUserListForKicauan,B);
+    if(isWordEqual(A,B)){
+        printf("is self\n");
+        return true;
+    }
+    else if(ElmtPrivacy(activeUserListForKicauan,readeeID) == true){
+        printf("readee public\n");
+        return true;
+    }
+    
+    else if((FriendshipStatus(activeFriendshipForKicauan,readerID,readeeID)) == 1){
+        printf("is friends\n");
+        return true;
+    }
+    else{
+        return false;
+    }
 }
 
 /* UNUSED< DEFINED IN BALAS
@@ -174,12 +193,15 @@ void likeKicau(KicauList *KL,id postID, id author){
 void printKicauXasA(KicauList KL, id x, Word user){
     if (AcanSeeB(user,GetAuthor(KL,x)) == true){
         printf("| ID = %d\n",x);
-        printf("| %d PLACEHOLDER UNTIL USERSYS\n",GetAuthor(KL,x));
+        printf("| %s \n",wordToStr(GetAuthor(KL,x)));
         printf("| ");
         TulisDATETIME(GetTime(KL,x));
         printf("\n");
         printf("| %s\n",wordToStr(GetText(KL,x)));
         printf("| Disukai: %d\n",GetLike(KL,x));
+    }
+    else{
+        printf("OMMITED/PRIVATE\n");
     }
     //printBalasan
 };
