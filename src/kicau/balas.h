@@ -7,6 +7,7 @@
 #include "../commandmachine/commandmachine.h"
 #include "../datetime/datetime.h"
 
+
 //DATA TYPE USED : ADT Tree dengan struktur data berkait
 //Kenapa Tree? biar kalau delete cascading
 //Kenapa struktur data berkait? tidak perlu alokasi banyak2
@@ -18,7 +19,7 @@ typedef struct BALASAN* Address;
 
 typedef struct BALASAN{
     Word Text;
-    id Author;
+    Word Author;
     DATETIME Time;
     int indexLevel;
     id IdBalas;
@@ -34,20 +35,19 @@ typedef struct {
     int realCount;
 } BalasanList;
 
+#include "kicau.h"
+
 /* ***** SELEKTOR BALASAN ***** */
 #define BalasanText(b) (b).Text
 #define BalasanAuthor(b) (b).Author
 #define BalasanTime(b) (b).Time
-#define IDX_UNDEF -999
+//#define IDX_UNDEF -1
 // bruh moment
 
 /*TEMPORARY FUNCTION*/
-static boolean balasAcanSeeB(id A, id B){
-    //returns true if :
-    // B is a public account
-    // B is a private account and A is friends with B
-    //check here
-    return true;
+static boolean balasAcanSeeB(Word A, Word B){
+    //return true;
+    return AcanSeeB(A,B);
 }
 
 boolean isBalasanBlank(BalasanList BL){
@@ -91,7 +91,7 @@ void insertBalasan(BalasanList* BL, BALASAN* b){
 
 };
 
-void readBalasan(id author,id parent, BalasanList *BL){
+void readBalasan(Word author,id parent, BalasanList *BL){
     if(parent == -1 || getBalasan(*BL, parent) != NULL){
         BL->countEvo++;
         BL->realCount++;
@@ -122,7 +122,7 @@ void printSpaces(int x){
     }
 };
 
-void printBalasanXasA(BalasanList BL, id x, id user){
+void printBalasanXasA(BalasanList BL, id x, Word user){
     if (getBalasan(BL,x) == NULL){
         printf("Balasan tidak ada bro!\n");
     }
@@ -133,7 +133,7 @@ void printBalasanXasA(BalasanList BL, id x, id user){
             printSpaces(space);
             printf("| ID = %d\n",x);
             printSpaces(space);
-            printf("| %d PLACEHOLDER UNTIL USERSYS\n",b->Author);
+            printf("| %s\n",wordToStr(b->Author));
             printSpaces(space);
             printf("| ");
             TulisDATETIME(b->Time);
@@ -155,7 +155,7 @@ void printBalasanXasA(BalasanList BL, id x, id user){
     }
 }
 
-void printChildren(BalasanList BL, id x, id user){
+void printChildren(BalasanList BL, id x, Word user){
     BALASAN * p = getBalasan(BL,x);
     boolean stop = false;
     while (!stop){
