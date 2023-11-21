@@ -27,13 +27,17 @@ typedef struct
 
 /* ********** KONSTRUKTOR ********** */
 /* Konstruktor : create List kosong  */
-void CreateUserList(UserList *U);
+void CreateUserList(UserList *U){
+    Neff(*U) = 0;
+};
 /* I.S. U sembarang */
 /* F.S. U terdefinisi dengan Neff(U) = 0 */
 
 /* ********** SELEKTOR (TAMBAHAN) ********** */
 /* *** Banyaknya elemen *** */
-int listLengthUserlist(UserList U);
+int listLengthUserlist(UserList U){
+    return Neff(U);
+};
 /* Mengirimkan banyaknya elemen efektif list */
 /* Mengirimkan nol jika list l kosong */
 
@@ -66,7 +70,11 @@ int indexOfUser(UserList U, Word nama) {
 
 /* ********** MENAMBAH ELEMEN ********** */
 /* *** Menambahkan elemen terakhir *** */
-void insertLastUser(UserList *U, User user);
+void insertLastUser(UserList *U, User user){
+    Neff(*U)++;
+    Pengguna(*U, listLengthUserlist(*U)) = user;
+}
+;
 /* Proses: Menambahkan val sebagai elemen terakhir List */
 /* I.S. List l boleh kosong, tetapi tidak penuh */
 /* F.S. val adalah elemen terakhir l yang baru */
