@@ -28,7 +28,7 @@ typedef struct {
     //id KicauID; tidak perlu, cukup lihat index kicau list + 1
     Word Text;
     int Like;
-    id Author;
+    Word Author;
     DATETIME Time;
     
     
@@ -59,7 +59,7 @@ typedef struct {
 
 /* ****** TEMPORARY FUNCTIONS, SUBJECT TO CHANGE WITH UPDATES*/
 
-static boolean AcanSeeB(id A, id B){
+static boolean AcanSeeB(Word A, Word B){
     //returns true if :
     // B is a public account
     // B is a private account and A is friends with B
@@ -171,7 +171,7 @@ void likeKicau(KicauList *KL,id postID, id author){
 
 
 //view kicauan with id X (real id from 1) as user with id user
-void printKicauXasA(KicauList KL, id x, id user){
+void printKicauXasA(KicauList KL, id x, Word user){
     if (AcanSeeB(user,GetAuthor(KL,x)) == true){
         printf("| ID = %d\n",x);
         printf("| %d PLACEHOLDER UNTIL USERSYS\n",GetAuthor(KL,x));
@@ -184,7 +184,7 @@ void printKicauXasA(KicauList KL, id x, id user){
     //printBalasan
 };
 
-void Kicau(KicauList *KL, id author){
+void Kicau(KicauList *KL, Word author){
     printf("Masukkan kicauan: ");
     STARTCOMMAND();
     Word input = currentWord;
@@ -208,7 +208,7 @@ void Kicau(KicauList *KL, id author){
 
 }
 
-void viewRecentAsA(KicauList KL,id A){
+void viewRecentAsA(KicauList KL,Word A){
     for (int i = Count(KL); i > 0; i--){
         printKicauXasA(KL, i, A);
         printf("\n");
