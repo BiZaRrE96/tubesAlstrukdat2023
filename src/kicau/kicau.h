@@ -8,7 +8,6 @@
 #include "../sentencemachine/sentencemachine.h"
 #include "../commandmachine/commandmachine.h"
 #include "../datetime/datetime.h"
-#include "kicau.h"
 #include "balas.h"
 #include "../friendship/friendship.h"
 #include "../user/user.h"
@@ -32,8 +31,6 @@ typedef struct {
     int Like;
     Word Author;
     DATETIME Time;
-    
-    
     BalasanList BL;
 
     //membantu memberi spasi sebelum tulisan
@@ -65,9 +62,12 @@ extern UserList activeUserListForKicauan;
 
 /* ****** TEMPORARY FUNCTIONS, SUBJECT TO CHANGE WITH UPDATES*/
 
-static boolean AcanSeeB(Word A, Word B){
+boolean AcanSeeB(Word A, Word B){
     int readerID = indexOfUser(activeUserListForKicauan,A);
     int readeeID = indexOfUser(activeUserListForKicauan,B);
+    //Remove // to make verbose
+    //printf("A to B: %d\n",(FriendshipStatus(activeFriendshipForKicauan,readerID,readeeID)));
+    //printf("B to A: %d\n",(FriendshipStatus(activeFriendshipForKicauan,readeeID,readerID)));
     if(isWordEqual(A,B)){
         printf("is self\n");
         return true;
@@ -77,7 +77,7 @@ static boolean AcanSeeB(Word A, Word B){
         return true;
     }
     
-    else if((FriendshipStatus(activeFriendshipForKicauan,readerID,readeeID)) == 1){
+    else if((FriendshipStatus(activeFriendshipForKicauan,readerID,readeeID)) == 1 && (FriendshipStatus(activeFriendshipForKicauan,readeeID,readerID)) == 1){
         printf("is friends\n");
         return true;
     }
