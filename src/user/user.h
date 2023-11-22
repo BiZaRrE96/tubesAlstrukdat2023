@@ -36,6 +36,7 @@ typedef struct
 extern boolean isLogin = false;
 extern User currentUser;
 extern UserList users;
+extern Friendship friendship;
 
 void GANTI_PROFIL(User *currentUser)
 {
@@ -168,7 +169,9 @@ void LIHAT_PROFIL(User user)
     }
     else
     {
-        if (user.privacy == true || user.privacy == true && FriendshipStatus(currentUser, user) == 1)
+        int UserId = indexOfUser(users, currentUser.username);
+        int TargetId = indexOfUser(users, user.username);
+        if (user.privacy == true || user.privacy == false && FriendshipStatus(friendship, UserId, TargetId) == 1)
         {
             printf("| Nama: %s\n", wordToStr(Username(user)));
             printf("| Bio Akun: %s\n", wordToStr(Bio(user)));
