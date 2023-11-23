@@ -7,7 +7,6 @@
 #include "../commandmachine/commandmachine.h"
 #include "../datetime/datetime.h"
 
-
 //DATA TYPE USED : ADT Tree dengan struktur data berkait
 //Kenapa Tree? biar kalau delete cascading
 //Kenapa struktur data berkait? tidak perlu alokasi banyak2
@@ -15,7 +14,7 @@
 
 typedef int id;
 
-typedef struct BALASAN* Address;
+typedef struct BALASAN* AddressBalas;
 
 typedef struct BALASAN{
     Word Text;
@@ -23,8 +22,8 @@ typedef struct BALASAN{
     DATETIME Time;
     int indexLevel;
     id IdBalas;
-    Address Next;
-    Address Prev;
+    AddressBalas Next;
+    AddressBalas Prev;
     id parentID;
 } BALASAN;
 
@@ -35,7 +34,8 @@ typedef struct {
     int realCount;
 } BalasanList;
 
-#include "kicau.h"
+extern Friendship friendship;
+extern UserList users;
 
 /* ***** SELEKTOR BALASAN ***** */
 #define BalasanText(b) (b).Text
@@ -43,9 +43,33 @@ typedef struct {
 #define BalasanTime(b) (b).Time
 //#define IDX_UNDEF -1
 // bruh moment
+boolean AcanSeeB(Word A, Word B) {
+    int readerID = indexOfUser(users,A);
+    int readeeID = indexOfUser(users,B);
+    //Remove // to make verbose
+    //printf("A to B: %d\n",(FriendshipStatus(friendship,readerID,readeeID)));
+    //printf("B to A: %d\n",(FriendshipStatus(friendship,readeeID,readerID)));
+    if(isWordEqual(A,B)){
+        printf("is self\n");
+        return true;
+    }
+    else if(ElmtPrivacy(users,readeeID) == true){
+        printf("readee public\n");
+        return true;
+    }
+    
+    else if((FriendshipStatus(friendship,readerID,readeeID)) == 1 && (FriendshipStatus(friendship,readeeID,readerID)) == 1){
+        printf("is friends\n");
+        return true;
+    }
+    else{
+        return false;
+    }
+}
+
 
 /*TEMPORARY FUNCTION*/
-static boolean balasAcanSeeB(Word A, Word B){
+boolean balasAcanSeeB(Word A, Word B){
     //return true;
     return AcanSeeB(A,B);
 }

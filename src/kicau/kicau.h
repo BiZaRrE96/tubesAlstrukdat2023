@@ -49,7 +49,7 @@ typedef struct {
 #define GetTime(KL,i) (KL).Kicau[i].Time
 
 /* ***** SELEKTOR KicauList ***** */
-#define CAPACITY(KL) (KL).capacity
+#define CAPACITYKICAU(KL) (KL).capacity
 #define Count(KL) (KL).KicauCount
 #define GetKicauan(KL,i) (KL).Kicau[i]
 #define Buffer(KL) (KL).Kicau
@@ -57,34 +57,10 @@ typedef struct {
 //#define GetParent(K) (K).parent
 
 //extern variable diluar kicau yang konsisten
-extern Friendship activeFriendshipForKicauan;
-extern UserList activeUserListForKicauan;
+
 
 /* ****** TEMPORARY FUNCTIONS, SUBJECT TO CHANGE WITH UPDATES*/
 
-boolean AcanSeeB(Word A, Word B){
-    int readerID = indexOfUser(activeUserListForKicauan,A);
-    int readeeID = indexOfUser(activeUserListForKicauan,B);
-    //Remove // to make verbose
-    //printf("A to B: %d\n",(FriendshipStatus(activeFriendshipForKicauan,readerID,readeeID)));
-    //printf("B to A: %d\n",(FriendshipStatus(activeFriendshipForKicauan,readeeID,readerID)));
-    if(isWordEqual(A,B)){
-        printf("is self\n");
-        return true;
-    }
-    else if(ElmtPrivacy(activeUserListForKicauan,readeeID) == true){
-        printf("readee public\n");
-        return true;
-    }
-    
-    else if((FriendshipStatus(activeFriendshipForKicauan,readerID,readeeID)) == 1 && (FriendshipStatus(activeFriendshipForKicauan,readeeID,readerID)) == 1){
-        printf("is friends\n");
-        return true;
-    }
-    else{
-        return false;
-    }
-}
 
 /* UNUSED< DEFINED IN BALAS
 //akan digunakan untuk nanti balasan
@@ -98,14 +74,17 @@ void printSpaces(int x){
 
 /* ***** MAIN FUNCTIONS ***** */
 
+
+
+
 void createKicauList (KicauList* KL, int cap){
     Buffer(*KL) = (KICAU*) malloc (cap * sizeof(KICAU));
     if(Buffer(*KL) != NULL){
-        CAPACITY(*KL) = cap;
+        CAPACITYKICAU(*KL) = cap;
         Count(*KL) = 0;
     }
     else{
-        CAPACITY(*KL) = 0;
+        CAPACITYKICAU(*KL) = 0;
         printf("ALOKASI KICAULIST GAGAL!\n");
     }
 
@@ -136,11 +115,11 @@ boolean isBlank(Word word){
 
 void copyList(KicauList host, KicauList *target){
     //max
-    if (CAPACITY(*target) > Count(host)){ //if a can contain all kicau
+    if (CAPACITYKICAU(*target) > Count(host)){ //if a can contain all kicau
         Count(*target) = Count(host);
     }
     else{
-        Count(*target) = CAPACITY(*target);
+        Count(*target) = CAPACITYKICAU(*target);
     }
 
     for (int i = 0; i < Count(*target); i++){
@@ -156,8 +135,8 @@ void copyList(KicauList host, KicauList *target){
 
 void expandList(KicauList *kl, int num){
     KicauList newKl;
-    int newcap = num + CAPACITY(*kl);
-    createKicauList(&newKl,CAPACITY(*kl));
+    int newcap = num + CAPACITYKICAU(*kl);
+    createKicauList(&newKl,CAPACITYKICAU(*kl));
     copyList(*kl,&newKl);
     free(kl->Kicau);
     createKicauList(kl,newcap);
@@ -169,8 +148,8 @@ void expandList(KicauList *kl, int num){
 
 void shrinkList(KicauList *kl, int num){
     KicauList newKl;
-    int newcap = CAPACITY(*kl) - num;
-    createKicauList(&newKl,CAPACITY(*kl));
+    int newcap = CAPACITYKICAU(*kl) - num;
+    createKicauList(&newKl,CAPACITYKICAU(*kl));
     copyList(*kl,&newKl);
     free(kl->Kicau);
     createKicauList(kl,newcap);
@@ -184,8 +163,14 @@ void shrinkList(KicauList *kl, int num){
 
 /* ***** MAIN KICAU FUNCTIONS ***** */
 void likeKicau(KicauList *KL,id postID, id author){
-    
-    GetLike(*KL,postID)++;
+    // Cek dahulu apakah postID valid
+    if (postID > Count(*KL) || postID < 1){
+        printf("ID kicauan tidak valid!\n");
+        return;
+    }
+
+
+    // GetLike(*KL,postID)++;
 }
 
 
@@ -231,10 +216,12 @@ void Kicau(KicauList *KL, Word author){
 }
 
 void viewRecentAsA(KicauList KL,Word A){
+    printf("\n");
     for (int i = Count(KL); i > 0; i--){
         printKicauXasA(KL, i, A);
         printf("\n");
     }
+    printf("\n");
 }
 
 

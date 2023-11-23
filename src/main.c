@@ -5,6 +5,9 @@
 #include "saveloadconfig/saveloadconfig.h"
 #include "commandmachine/commandmachine.h"
 #include "prioqueuechar/prioqueuechar.h"
+// #include "kicau/kicau.h"
+#include "kicau/draf.h"
+#include "kicau/utas.h"
 
 #include<stdlib.h>
 
@@ -14,8 +17,7 @@
 UserList users;             // Daftar pengguna dalam bentuk listStatik of User (userlist.h)
 Friendship friendship;      // Daftar pertemanan dalam bentuk adjacency matriks (friendship.h)
 User currentUser;           // User yang sedang login (user.h)
-// prioqueue listRequest;      // Daftar permintaan pertemanan yang belum disetujui (prioqueuechar.h)
-
+KicauList kicauan;          // Daftar kicauan dalam bentuk listStatik of Kicau (kicau.h)
 
 boolean isLogin = false;    // Apakah program sedang dalam keadaan login
 
@@ -88,6 +90,7 @@ int main ()
     F.S. Aplikasi BurBir dimulai setelah memuat konfigurasi
 */
 {
+    createKicauList(&kicauan, 100);
     startApp();
 
     while (true) {
@@ -227,16 +230,23 @@ int main ()
                 continue;
             }
             // Masukkan fungsi kicau disini
-            printf("Perintah Kicau\n"); // Nanti hapus aja
+            Kicau(&kicauan, currentUser.username);
         } else
+        if (isCommandKicauan()) {
+            if (!isLogin) {
+                printf("Anda belum login! Masuk terlebih dahulu untuk menikmati layanan BurBir\n"); 
+                continue;
+            }
 
+            viewRecentAsA(kicauan, currentUser.username);
+        } else 
         if (isCommandHapusKicauan()) {
             if (!isLogin) {
                 printf("Anda belum login! Masuk terlebih dahulu untuk menikmati layanan BurBir\n");
                 continue;
             }
             // Masukkan fungsi hapus kicauan disini
-            printf("Perintah Hapus Kicauan\n"); // Nanti hapus aja
+            
         } else
 
         if (isCommandSukaKicauan()) {
@@ -251,9 +261,9 @@ int main ()
                 continue;
             }
 
-            printf("idKicau = %d\n", idKicau);
+            // printf("idKicau = %d\n", idKicau);
             // Masukkan fungsi suka kicauan disini
-            printf("Perintah Suka Kicauan\n"); // Nanti hapus aja
+            
         } else
         if (isCommandUbahKicauan()) {
             if (!isLogin) {

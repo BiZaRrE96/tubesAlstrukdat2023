@@ -145,6 +145,12 @@ boolean isCommandKicau()
     return isWordStrEqual(currentWord, "KICAU", 5);
 }
 
+boolean isCommandKicauan()
+{
+    return isWordStrEqual(currentWord, "KICAUAN", 7);
+
+}
+
 boolean isCommandHapusKicauan()
 {
     return isWordStrEqual(currentWord, "HAPUS_KICAUAN", 13);

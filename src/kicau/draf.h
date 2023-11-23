@@ -13,11 +13,11 @@
 #include "kicau.h"
 
 
-typedef int address;
+typedef int AddressDraf;
 
 typedef struct {
     KICAU Kicau[MaxEl]; // memori penyimpanan Draf
-    address TOP;
+    AddressDraf TOP;
     Word Author;
 } DrafStack;
 

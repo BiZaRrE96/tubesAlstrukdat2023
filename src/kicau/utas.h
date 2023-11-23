@@ -4,23 +4,22 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "../boolean/boolean.h"
-#include "../sentencemachine/sentencemachine.h"
 #include "../commandmachine/commandmachine.h"
 #include "../datetime/datetime.h"
 #include "kicau.h"
 // Utas dibuat dengan ADT LinkedList
 
-typedef struct node *Address;
+typedef struct node *AddressUtas;
 typedef struct node{
     KICAU info;
-    Address next;
+    AddressUtas next;
 } Node;
 
 #define INFO(p) (p)->info
 #define NEXT(p) (p)->next
 
 typedef struct{
-    Address p;
+    AddressUtas p;
     int IDUtas;
     int IDKicau;
 } Utas;
@@ -42,8 +41,8 @@ void opsi(){
     printf("\n");
     printf("Apakah Anda ingin melanjutkan Utas ini? (YA/TIDAK)");
 }
-Address newNode(KICAU val){
-    Address p = (Address) malloc(sizeof(Node));
+AddressUtas newNode(KICAU val){
+    AddressUtas p = (AddressUtas) malloc(sizeof(Node));
     if (p!=NULL) {
         INFO(p) = val;
         NEXT(p) = NULL;
@@ -65,7 +64,7 @@ void UTAS(int IDKicau, KicauList KL, User user, ListUtas LU){
         if (isWordEqual(Username(user),GetAuthor(KL,IDKicau))){
             Utas utas;
             createUtas(&LU, KL, &utas, IDKicau);
-            Address p = First(utas);
+            AddressUtas p = First(utas);
             opsi();
             STARTCOMMAND();
             Word input = currentWord;
@@ -77,7 +76,7 @@ void UTAS(int IDKicau, KicauList KL, User user, ListUtas LU){
                 input = currentWord;
                 kicau.Text = input;
                 setToCurrentTime(&kicau.Time);
-                Address Node = newNode(kicau);
+                AddressUtas Node = newNode(kicau);
                 NEXT(p)=Node;
                 p=NEXT(p);
                 opsi();
@@ -95,7 +94,7 @@ void UTAS(int IDKicau, KicauList KL, User user, ListUtas LU){
 
 void createUtas(ListUtas *LU, KicauList KL, Utas *U, int IDKicau){
     GetUtas(*LU,len(*LU)) =*U;
-    Address p = newNode(GetKicauan(KL,IDKicau));
+    AddressUtas p = newNode(GetKicauan(KL,IDKicau));
     First(*U) = p;
     IDUtas(*U) = len(*LU);
     IDKicau(*U) = IDKicau;
@@ -112,7 +111,7 @@ boolean UtasExist(int IDUtas, ListUtas LU){
 void cetakUtas(ListUtas LU,int IDUtas, User user){
     if (UtasExist(IDUtas, LU)){
         Utas utas=GetUtas(LU,IDUtas);
-        Address p = First(utas);
+        AddressUtas p = First(utas);
         int i = 1;
         if ((AcanSeeB(Username(user),Author(utas))) == true){
             KICAU kicau = INFO(p);
@@ -143,7 +142,7 @@ void cetakUtas(ListUtas LU,int IDUtas, User user){
 }
 
 void Delete(Utas utas, int index){
-    Address temp,p = First(utas);
+    AddressUtas temp,p = First(utas);
     while(p != NULL){
         temp = p;
         p = NEXT(p);
@@ -160,7 +159,7 @@ void HapusUtas(ListUtas LU, int IDUtas, int index,  User user){
         } else {
             Utas utas = GetUtas(LU, IDUtas);
             int i = index;
-            Address p = First(utas);
+            AddressUtas p = First(utas);
             if (isWordEqual(INFO(p).Author, Username(user))){
                 while(i != 0){
                     p=NEXT(p);
@@ -183,7 +182,7 @@ void sambungUtas(ListUtas LU,int IDUtas, int index, User user){
     if (UtasExist(IDUtas, LU)){
         Utas utas = GetUtas(LU, IDUtas);
             int i = index-1;
-            Address p = First(utas);
+            AddressUtas p = First(utas);
             if (isWordEqual(INFO(p).Author, Username(user))){
                 while(i != 0){
                     p=NEXT(p);

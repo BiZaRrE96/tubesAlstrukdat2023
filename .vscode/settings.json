@@ -4,6 +4,7 @@
         "profile.h": "c",
         "boolean.h": "c",
         "wordmachine.h": "c",
-        "commandmachine.h": "c"
+        "commandmachine.h": "c",
+        "datetime.h": "c"
     }
 }
