@@ -128,6 +128,9 @@ int wordToInt(Word w)
         if (w.TabWord[i] >= '0' && w.TabWord[i] <= '9')
             result = result * 10 + (w.TabWord[i] - '0');
     }
+
+    if (w.TabWord[0] == '-')
+        result *= -1;
     return result;
 }
 
@@ -156,6 +159,9 @@ boolean isWordInt(Word w) {
     F.S. Mengembalikan true jika w adalah string angka, false jika tidak
 */
     for (int i = 0; i < w.Length; i++) {
+        if (i == 0 && w.TabWord[i] == '-') {
+            continue;
+        }
         if (w.TabWord[i] < '0' || w.TabWord[i] > '9') {
             return false;
         }

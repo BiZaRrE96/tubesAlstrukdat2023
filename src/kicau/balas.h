@@ -49,22 +49,14 @@ boolean AcanSeeB(Word A, Word B) {
     //Remove // to make verbose
     //printf("A to B: %d\n",(FriendshipStatus(friendship,readerID,readeeID)));
     //printf("B to A: %d\n",(FriendshipStatus(friendship,readeeID,readerID)));
-    if(isWordEqual(A,B)){
-        printf("is self\n");
+    if((isWordEqual(A,B)) || (ElmtPrivacy(users,readeeID) == true)){
         return true;
     }
-    else if(ElmtPrivacy(users,readeeID) == true){
-        printf("readee public\n");
+    if ((FriendshipStatus(friendship,readerID,readeeID)) == 1 && (FriendshipStatus(friendship,readeeID,readerID)) == 1){
         return true;
     }
+    return false;
     
-    else if((FriendshipStatus(friendship,readerID,readeeID)) == 1 && (FriendshipStatus(friendship,readeeID,readerID)) == 1){
-        printf("is friends\n");
-        return true;
-    }
-    else{
-        return false;
-    }
 }
 
 
@@ -87,7 +79,11 @@ void createBalasanList(BalasanList* BL){
 
 BALASAN* getBalasan(BalasanList Bl, id ID){
     BALASAN* p = Bl.First;
+    // printf("ID = %d\n",ID);
 
+    if (p == NULL){
+        return NULL;
+    }
 
     while(p != Bl.Last && p->IdBalas != ID){
         p = p->Next;
@@ -113,30 +109,6 @@ void insertBalasan(BalasanList* BL, BALASAN* b){
         BL->Last = b;
     }
 
-};
-
-void readBalasan(Word author,id parent, BalasanList *BL){
-    if(parent == -1 || getBalasan(*BL, parent) != NULL){
-        BL->countEvo++;
-        BL->realCount++;
-        BALASAN *b = (BALASAN*) malloc (sizeof(BALASAN));
-        printf("Masukkan balasan: ");
-        STARTCOMMAND();
-        b->Text = currentWord;
-        b->Author = author;
-        setToCurrentTime(&(b->Time));
-        if (parent == -1){
-            b->indexLevel = 0;
-        }
-        else{
-            b->indexLevel = (getBalasan(*BL,parent)->indexLevel)+1;
-        }
-        b->IdBalas = BL->countEvo;
-        b->Prev = BL->Last;
-        b->Next = NULL;
-        b->parentID = parent;
-        insertBalasan(BL, b);   
-    }
 };
     
 
@@ -179,22 +151,107 @@ void printBalasanXasA(BalasanList BL, id x, Word user){
     }
 }
 
-void printChildren(BalasanList BL, id x, Word user){
-    BALASAN * p = getBalasan(BL,x);
-    boolean stop = false;
-    while (!stop){
-        if (p->parentID == x){
-            printBalasanXasA(BL,p->IdBalas,user);
-            printChildren(BL, p->IdBalas,user);
-        };
+void readBalasan(Word author,id parent, BalasanList *BL, Word kicauAuthor) {
+    printf("\n");
+    if (parent == -1 || getBalasan(*BL, parent) != NULL) {
+        // Cek apakah author tidak berteman dengan user dan privat
+        if (parent == -1) {
+            if (balasAcanSeeB(author,kicauAuthor) == false) {
+                printf("Wah, akun tersebut merupakan akun privat dan anda belum berteman akun tersebut!\n");
+                return;
+            }
+        }
+        else 
+        if (balasAcanSeeB(author,getBalasan(*BL,parent)->Author) == false) {
+            printf("Wah, akun tersebut merupakan akun privat dan anda belum berteman akun tersebut!\n");
+            return;
+        }
+        
 
-        if (p->Next == NULL){
-            stop = true;
+        BL->countEvo++;
+        BL->realCount++;
+        BALASAN *b = (BALASAN*) malloc (sizeof(BALASAN));
+        printf("\nMasukkan balasan: ");
+        STARTCOMMAND();
+        b->Text = currentWord;
+        b->Author = author;
+        setToCurrentTime(&(b->Time));
+        if (parent == -1){
+            b->indexLevel = 0;
         }
         else{
-            p = p->Next;
+            b->indexLevel = (getBalasan(*BL,parent)->indexLevel)+1;
         }
+        b->IdBalas = BL->countEvo;
+        b->Prev = BL->Last;
+        b->Next = NULL;
+        b->parentID = parent;
+        insertBalasan(BL, b);   
+
+        printf("\nSelamat!, balasan telah diterbitkan!\nDetil balasan:\n");
+        printBalasanXasA(*BL,b->IdBalas,author);
+        printf("\n");
+        return;
+    } 
+
+    printf("\nWah, kicau tidak ditemukan!\n");
+
+};
+
+
+void printBalasan(BalasanList BL, id x, Word user) {
+    if (getBalasan(BL,x) == NULL){
+        printf("\nBalasan tidak ada bro!\n\n");
+        return;
     }
+
+    BALASAN* b = getBalasan(BL,x);
+    int space = b->indexLevel;
+    while (b != NULL){
+        printf("\n");
+        printBalasanXasA(BL,b->IdBalas,user);  
+        printf("\n");
+        b = b->Next;
+    }
+}
+
+void deleteBalasanId(BalasanList* BL, id x, id idDelete, Word user) {
+    if (getBalasan(*BL,x) == NULL){
+        printf("Balasan tidak ditemukan!\n");
+        return;
+    }
+
+    BALASAN* b = getBalasan(*BL,x);
+    while (b != NULL){
+        if (b->IdBalas == idDelete) {
+            if (!isWordEqual(user, b->Author)) {
+                printf("Hei, ini balasan punya siapa? Jangan dihapus ya!\n");
+                return;
+            }
+
+            if (b->Prev == NULL) {
+                BL->First = b->Next;
+            }
+            else{
+                b->Prev->Next = b->Next;
+            }
+            if (b->Next == NULL){
+                BL->Last = b->Prev;
+            }
+            else{
+                b->Next->Prev = b->Prev;
+            }
+            free(b);
+
+            printf("Balasan berhasil dihapus!\n");          
+            
+
+            return;
+        }
+        b = b->Next;
+    }
+
+    printf("Balasan tidak ditemukan!\n");
 }
 
 #endif

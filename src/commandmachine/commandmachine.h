@@ -197,7 +197,7 @@ boolean isCommandUbahKicauan()
 
 boolean isCommandBalas()
 {
-    if (currentWord.Length < 5)
+    if (currentWord.Length < 6)
     {
         return false;
     }
@@ -210,6 +210,11 @@ boolean isCommandBalas()
         {
             return false;
         }
+    }
+
+    if (currentWord.TabWord[5] != ' ')
+    {
+        return false;
     }
 
     return true;

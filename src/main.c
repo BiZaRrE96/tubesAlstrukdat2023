@@ -258,19 +258,19 @@ int main ()
             
         } else
         if (isCommandUbahKicauan()) {
-        if (!isLogin) {
-            printf("Anda belum login! Masuk terlebih dahulu untuk menikmati layanan BurBir\n");
-            continue;
-        }
-        int idKicau;
+            if (!isLogin) {
+                printf("Anda belum login! Masuk terlebih dahulu untuk menikmati layanan BurBir\n");
+                continue;
+            }
+            int idKicau;
 
-        if (!getParamInt(&idKicau)) {
-            errorCommand("Perintah UBAH_KICAUAN tidak valid", "UBAH_KICAUAN <id_kicau>");
-            continue;
-        }
+            if (!getParamInt(&idKicau)) {
+                errorCommand("Perintah UBAH_KICAUAN tidak valid", "UBAH_KICAUAN <id_kicau>");
+                continue;
+            }
             
             // Masukkan fungsi ubah kicauan disini
-            printf("Perintah Ubah Kicauan\n"); // Nanti hapus aja
+            editKicau(&kicauan, idKicau, currentUser.username);
         } else
 
         if (isCommandBalas()) {
@@ -286,7 +286,8 @@ int main ()
             }
 
             // Masukkan fungsi balas disini
-            printf("Perintah Balas\n"); // Nanti hapus aja
+            // printf("idKicau = %d, idBalasan = %d\n", idKicau, idBalasan);
+            readBalasan(currentUser.username, idBalasan, &GetBalasan(kicauan, idKicau), GetAuthor(kicauan, idKicau));
         } else
 
         if (isCommandBalasan()) {
@@ -301,8 +302,7 @@ int main ()
                 continue;
             }
             
-            // Masukkan fungsi balasan disini
-            printf("Perintah Balasan\n"); // Nanti hapus aja
+            printBalasan(GetBalasan(kicauan, idKicau), idKicau, currentUser.username);
         } else
 
         if (isCommandHapusBalasan()) {
@@ -316,7 +316,7 @@ int main ()
                 errorCommand("Perintah HAPUS_BALASAN tidak valid", "HAPUS_BALASAN <id_kicau> <id_balasan>");
                 continue;
             }
-
+            deleteBalasanId(&GetBalasan(kicauan, idKicau), idBalasan, idBalasan, currentUser.username);
         } else
 
         if (isCommandBuatDraf()) {

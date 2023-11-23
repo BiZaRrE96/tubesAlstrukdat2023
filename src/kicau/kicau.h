@@ -41,7 +41,7 @@ typedef struct {
 #define GetLike(KL,i) (KL).Kicau[i].Like
 #define GetAuthor(KL,i) (KL).Kicau[i].Author
 #define GetTime(KL,i) (KL).Kicau[i].Time
-
+#define GetBalasan(KL,i) (KL).Kicau[i].BL
 /* ***** SELEKTOR KicauList ***** */
 #define CAPACITYKICAU(KL) (KL).capacity
 #define Count(KL) (KL).KicauCount
@@ -64,6 +64,8 @@ void printSpaces(int x){
     }
 };
 */
+
+
 
 /* ***** MAIN FUNCTIONS ***** */
 boolean isIdxKicauValid(KicauList KL, id i){
@@ -169,9 +171,6 @@ void printKicauXasA(KicauList KL, id x, Word user){
         printf("| %s\n",wordToStr(GetText(KL,x)));
         printf("| Disukai: %d\n",GetLike(KL,x));
     }
-    else{
-        printf("OMMITED/PRIVATE\n");
-    }
     //printBalasan
 };
 
@@ -191,6 +190,7 @@ void Kicau(KicauList *KL, Word author){
 
         printf("Selamat! kicauan telah diterbitkan!\nDetil kicauan:\n");
         printKicauXasA(*KL, (i), author);
+        createBalasanList(&GetBalasan(*KL, i));
         printf("\n");
     }
     else{
@@ -229,8 +229,39 @@ void likeKicau(KicauList *KL,id postID, Word user){
     printf("Selamat! kicauan telah disukai!\nDetil kicauan:\n");
     printKicauXasA(*KL, postID, user);
     printf("\n");
-    
-    
+}
+
+void editKicau(KicauList *KL, id postID, Word user){
+    // Cek dahulu apakah postID valid
+    id userId = indexOfUser(users, user);
+
+    printf("\n");
+    if (!isIdxKicauValid(*KL,postID)){
+        printf("Tidak dapat ditemukan dengan ID = %d\n\n",postID);
+        return;
+    }
+
+    id author = indexOfUser(users, GetAuthor(*KL,postID));
+    // Cek dahulu apakah author dari kicau adalah user
+    if (author != userId) {
+        printf("Kicauan dengan ID = %d bukan milikmu!\n\n", postID);
+        return;
+    }
+
+    printf("Masukkan kicauan baru: ");
+    STARTCOMMAND();
+    Word input = currentWord;
+
+    if (!isBlank(input)){
+        GetText(*KL,postID) = input;
+        setToCurrentTime(&GetTime(*KL,postID));
+        printf("Selamat! kicauan baru telah diterbitkan!\nDetil kicauan:\n");
+        printKicauXasA(*KL, postID, user);
+        printf("\n");
+    }
+    else{
+        printf("Kicauan tidak boleh hanya berisi spasi!\n");
+    }
 }
 
 
