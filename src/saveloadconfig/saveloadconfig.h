@@ -41,6 +41,7 @@ boolean readDataUsers(UserList *U, Word foldername, Friendship *F)
     STARTWORDFILE(wordToStr(directory));
     // printf("File ditemukan\n");
     (*U).Neff = wordToInt(currentWord);
+    // setSizeFriendship(F, wordToInt(currentWord));
 
     for (int i = 0; i < (*U).Neff; i++) {
         // Username
@@ -99,7 +100,7 @@ boolean readDataUsers(UserList *U, Word foldername, Friendship *F)
     for (int j = 0; j < (*U).Neff; j++) {
         for (int k = 0; k < (*U).Neff; k++) {
             ADVWORD();
-            FriendshipStatus(*F, j, k) = currentWord.TabWord[0];
+            FriendshipStatus(*F, j, k) = currentWord.TabWord[0] - '0';
         }
     }
 

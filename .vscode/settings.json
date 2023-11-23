@@ -3,6 +3,7 @@
     "files.associations": {
         "profile.h": "c",
         "boolean.h": "c",
-        "wordmachine.h": "c"
+        "wordmachine.h": "c",
+        "commandmachine.h": "c"
     }
 }

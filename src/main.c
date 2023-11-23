@@ -14,6 +14,9 @@ UserList users;             // Daftar pengguna dalam bentuk listStatik of User (
 Friendship friendship;      // Daftar pertemanan dalam bentuk adjacency matriks (friendship.h)
 User currentUser;           // User yang sedang login (user.h)
 
+
+boolean isLogin = false;    // Apakah program sedang dalam keadaan login
+
 // boolean isLogin = false;    // Apakah program sedang dalam keadaan login
 
 // FUNGSI DAN PROSEDUR
@@ -85,21 +88,48 @@ int main ()
 {
     startApp();
 
-
     while (true) {
         inputCommand();
 
+        if (isCommandMasuk()) {
+            if (isLogin) {
+                printf("Anda sudah login! Keluar terlebih dahulu untuk mengganti akun\n");
+                continue;
+            }
+            
+            MASUK(users, &currentUser, &isLogin);
+        } else
+        if (isCommandKeluar()) {
+            if (!isLogin) {
+                printf("Anda belum login! Masuk terlebih dahulu untuk menikmati layanan BurBir\n");
+            } else {
+                KELUAR(&isLogin);
+            }
+        } else
+
         if (isCommandDaftar()) {
+            if (isLogin) {
+                printf("Anda sudah login! Keluar terlebih dahulu untuk mendaftar akun baru\n");
+                continue;
+            }
             // Masukkan fungsi daftar disini
-            printf("Perintah Daftar\n");            // Nanti hapus aja
+            DAFTAR(&users, &friendship);            // Nanti hapus aja
         } else
 
         if (isCommandGantiProfil()) {
+            if (!isLogin) {
+                printf("Anda belum login! Masuk terlebih dahulu untuk menikmati layanan BurBir\n");
+                continue;
+            }
             // Masukkan fungsi ganti profil disini
             printf("Perintah Ganti Profil\n");      // Nanti hapus aja
         } else
 
         if (isCommandLihatProfil()) {
+            if (!isLogin) {
+                printf("Anda belum login! Masuk terlebih dahulu untuk menikmati layanan BurBir\n");
+                continue;
+            }
             Word username;
 
             if (!getNama(&username)) {
@@ -108,72 +138,108 @@ int main ()
             }
             
             // Masukkan fungsi lihat profil disini
-            int idxUser = indexOfUser(users, username);
-            if (idxUser == -1) {
-                printf("\nTidak dapat menemukan pengguna bernama %s.\n", wordToStr(username));
-            } else {
-                User temp_user = Pengguna(users, idxUser);
-                printf("\n");
-                if (Privacy(temp_user)) {
-                    LIHAT_PROFIL(temp_user);
-                } else {
-                    printf("Profil pengguna %s adalah privat.\n", wordToStr(Username(temp_user)));
-                }
-                printf("\n");
-            }
+            LIHAT_PROFIL(users, username, currentUser, friendship); 
+            
         } else
 
         if (isCommandAturJenisAkun()) {
+            if (!isLogin) {
+                printf("Anda belum login! Masuk terlebih dahulu untuk menikmati layanan BurBir\n");
+                continue;
+            }
             // Masukkan fungsi atur profil disini
-            printf("Perintah Atur Profil\n");       // Nanti hapus aja
+            ATUR_JENIS_AKUN(&currentUser);
+            ElmtPrivacy(users, indexOfUser(users, currentUser.username)) = currentUser.privacy;
+            
         } else
 
         if (isCommandUbahPotoProfil()) {
+            if (!isLogin) {
+                printf("Anda belum login! Masuk terlebih dahulu untuk menikmati layanan BurBir\n");
+                continue;
+            }
             // Masukkan fungsi ubah poto profil disini
-            printf("Perintah Ubah Poto Profil\n");  // Nanti hapus aja
+            UBAH_FOTO_PROFIL(&currentUser);
+            ElmtPhoto(users, indexOfUser(users, currentUser.username)) = currentUser.photo;
         } else
 
         if (isCommandDaftarTeman()) {
+            if (!isLogin) {
+                printf("Anda belum login! Masuk terlebih dahulu untuk menikmati layanan BurBir\n");
+                continue;
+            }
             // Masukkan fungsi daftar teman disini
-            printf("Perintah Daftar Teman\n");      // Nanti hapus aja
+            daftarTeman(currentUser, users, friendship);
         } else
 
         if (isCommandHapusTeman()) {
+            if (!isLogin) {
+                printf("Anda belum login! Masuk terlebih dahulu untuk menikmati layanan BurBir\n");
+                continue;
+            }
             // Masukkan fungsi hapus teman disini
-            printf("Perintah Hapus Teman\n");       // Nanti hapus aja
+            hapusTeman(currentUser, &users, &friendship);
         } else
 
         if (isCommandTambahTeman()) {
+            if (!isLogin) {
+                printf("Anda belum login! Masuk terlebih dahulu untuk menikmati layanan BurBir\n");
+                continue;
+            }
             // Masukkan fungsi tambah teman disini
             printf("Perintah Tambah Teman\n");      // Nanti hapus aja
         } else
 
         if (isCommandBatalTambahTeman()) {
+            if (!isLogin) {
+                printf("Anda belum login! Masuk terlebih dahulu untuk menikmati layanan BurBir\n");
+                continue;
+            }
             // Masukkan fungsi batal tambah teman disini
             printf("Perintah Batal Tambah Teman\n"); // Nanti hapus aja
         } else
 
         if(isCommandDaftarPermintaanTeman()) {
+            if (!isLogin) {
+                printf("Anda belum login! Masuk terlebih dahulu untuk menikmati layanan BurBir\n");
+                continue;
+            }
             // Masukkan fungsi daftar permintaan teman disini
             printf("Perintah Daftar Permintaan Teman\n"); // Nanti hapus aja
         } else
         
         if (isCommandSetujuiPertemanan()) {
+            if (!isLogin) {
+                printf("Anda belum login! Masuk terlebih dahulu untuk menikmati layanan BurBir\n");
+                continue;
+            }
             // Masukkan fungsi setujui pertemanan disini
             printf("Perintah Setujui Pertemanan\n"); // Nanti hapus aja
         } else
 
         if (isCommandKicau()) {
+            if (!isLogin) {
+                printf("Anda belum login! Masuk terlebih dahulu untuk menikmati layanan BurBir\n");
+                continue;
+            }
             // Masukkan fungsi kicau disini
             printf("Perintah Kicau\n"); // Nanti hapus aja
         } else
 
         if (isCommandHapusKicauan()) {
+            if (!isLogin) {
+                printf("Anda belum login! Masuk terlebih dahulu untuk menikmati layanan BurBir\n");
+                continue;
+            }
             // Masukkan fungsi hapus kicauan disini
             printf("Perintah Hapus Kicauan\n"); // Nanti hapus aja
         } else
 
         if (isCommandSukaKicauan()) {
+            if (!isLogin) {
+                printf("Anda belum login! Masuk terlebih dahulu untuk menikmati layanan BurBir\n");
+                continue;
+            }
             int idKicau; 
 
             if (!getParamInt(&idKicau)) {
@@ -186,6 +252,10 @@ int main ()
             printf("Perintah Suka Kicauan\n"); // Nanti hapus aja
         } else
         if (isCommandUbahKicauan()) {
+            if (!isLogin) {
+                printf("Anda belum login! Masuk terlebih dahulu untuk menikmati layanan BurBir\n");
+                continue;
+            }
             int idKicau;
 
             if (!getParamInt(&idKicau)) {
@@ -198,6 +268,10 @@ int main ()
         } else
 
         if (isCommandBalas()) {
+            if (!isLogin) {
+                printf("Anda belum login! Masuk terlebih dahulu untuk menikmati layanan BurBir\n");
+                continue;
+            }
             int idKicau, idBalasan;
 
             if (!getTwoParamInt(&idKicau, &idBalasan)) {
@@ -210,6 +284,10 @@ int main ()
         } else
 
         if (isCommandBalasan()) {
+            if (!isLogin) {
+                printf("Anda belum login! Masuk terlebih dahulu untuk menikmati layanan BurBir\n");
+                continue;
+            }
             int idKicau;
 
             if (!getParamInt(&idKicau)) {
@@ -222,6 +300,10 @@ int main ()
         } else
 
         if (isCommandHapusBalasan()) {
+            if (!isLogin) {
+                printf("Anda belum login! Masuk terlebih dahulu untuk menikmati layanan BurBir\n");
+                continue;
+            }
             int idKicau, idBalasan;
 
             if (!getTwoParamInt(&idKicau, &idBalasan)) {
@@ -232,21 +314,37 @@ int main ()
         } else
 
         if (isCommandBuatDraf()) {
+            if (!isLogin) {
+                printf("Anda belum login! Masuk terlebih dahulu untuk menikmati layanan BurBir\n");
+                continue;
+            }
             // Masukkan fungsi buat draf disini
             printf("Perintah Buat Draf\n"); // Nanti hapus aja
         } else
 
         if (isCommandBuatDraf()) {
+            if (!isLogin) {
+                printf("Anda belum login! Masuk terlebih dahulu untuk menikmati layanan BurBir\n");
+                continue;
+            }
             // Masukkan fungsi buat draf disini
             printf("Perintah Buat Draf\n"); // Nanti hapus aja
         } else
 
         if (isCommandLihatDraf()) {
+            if (!isLogin) {
+                printf("Anda belum login! Masuk terlebih dahulu untuk menikmati layanan BurBir\n");
+                continue;
+            }
             // Masukkan fungsi lihat draf disini
             printf("Perintah Lihat Draf\n"); // Nanti hapus aja
         } else
 
         if (isCommandUtas()) {
+            if (!isLogin) {
+                printf("Anda belum login! Masuk terlebih dahulu untuk menikmati layanan BurBir\n");
+                continue;
+            }
             int idKicau;
 
             if (!getParamInt(&idKicau)) {
@@ -259,6 +357,10 @@ int main ()
         } else
 
         if (isCommandSambungUtas()) {
+            if (!isLogin) {
+                printf("Anda belum login! Masuk terlebih dahulu untuk menikmati layanan BurBir\n");
+                continue;
+            }
             int idUtas, index;
 
             if (!getTwoParamInt(&idUtas, &index)) {
@@ -271,6 +373,10 @@ int main ()
         } else
 
         if (isCommandHapusUtas()) {
+            if (!isLogin) {
+                printf("Anda belum login! Masuk terlebih dahulu untuk menikmati layanan BurBir\n");
+                continue;
+            }
             int idUtas, index;
 
             if (!getTwoParamInt(&idUtas, &index)) {
@@ -285,6 +391,11 @@ int main ()
         } else
 
         if (isCommandCetakUtas()) {
+            if (!isLogin) {
+                printf("Anda belum login! Masuk terlebih dahulu untuk menikmati layanan BurBir\n");
+                continue;
+            }
+
             int idUtas;
 
             if (!getParamInt(&idUtas)) {
@@ -303,18 +414,13 @@ int main ()
         if (isCommandMuat()) {
 
         } else 
-
-        if (isWordStrEqual(currentWord, "DISPLAY_USERS", 13)) {
-            displayUserList(users);
-        } else
+        
 
         if (isCommandExit()) {
             break;
         } else {
             printf("Perintah tidak dikenali.\n");
         }
-
-        
         // EndWord = false;
     }
 
