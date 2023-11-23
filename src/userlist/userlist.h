@@ -6,6 +6,7 @@
 #include "../photo/photo.h"
 #include "../boolean/boolean.h"
 #include "../commandmachine/commandmachine.h"
+#include "../friendship/friendship.h"
 
 #define MAX_USERS 20
 
@@ -42,14 +43,108 @@ int listLengthUserlist(UserList U){
 /* Mengirimkan nol jika list l kosong */
 
 
-/* ********** OUTPUT ********** */
-/* Hanya untuk keperluan debugging */
-void displayUserList(UserList U) {
-    for (int i = 0; i < U.Neff; i++) {
-        printf("| Password: %s\n", wordToStr(ElmtPassword(U, i)));
-        LIHAT_PROFIL(Pengguna(U, i));
+void displayFriendship(Friendship friendship, int count) {
+    int i, j;
+    for (i = 0; i < count; i++) {
+        for (j = 0; j < count; j++) {
+            printf("%d", FriendshipStatus(friendship, i, j));
+            if (j != count - 1) {
+                printf(" ");
+            }
+        }
+        if (i != count - 1) {
+            printf("\n");
+        }
     }
+    printf("\n");
 }
+
+
+void daftarTeman(User currentUser, UserList *userList, Friendship friendship) {
+    ListFriendship friendshipList;
+    UserList users;
+    createListFriendship(&friendshipList);
+
+    if (noFriendship(friendshipList))
+    {
+        printf("%s belum mempunyai teman\n", currentUser.username);
+    } else
+    {
+        int UserId = indexOfUser(users, currentUser.username);
+        printf("%s memiliki %d teman\n", currentUser.username, countFriendship(friendshipList));
+        printf("Daftar teman %s :\n",currentUser.username);
+        for (int i = 0; i < FRIENDSHIPCAPACITY; i++)
+        {
+            int j = 1;
+            if (FriendshipStatus(friendship, UserId, i) == 1) 
+            {
+                printf("%d. %s\n",j, userList->TabUser[i].username);
+                j++;
+            }
+        }
+    }
+    
+}
+
+void hapusTeman(User currentUser, UserList *usersList, Friendship *friendship) {
+    ListFriendship friendshipList;
+    Word currentWord;
+    UserList users;
+    createListFriendship(&friendshipList);
+    
+
+    if (noFriendship(friendshipList)) {
+        printf("%s belum mempunyai teman\n", currentUser.username);
+    } else {
+        printf("Masukan nama teman yang ingin dihapus.");
+        STARTWORD();
+        for (int i = 0;i < FRIENDSHIPCAPACITY;i++) 
+        {
+            if (isWordEqual(currentWord,ElmtUsername(users,i)))  
+            {
+                printf("Apakah anda ingin benar-benar menghapus pertemanan ? (Yes/No)");
+                STARTWORD();
+                int UserId = indexOfUser(users, currentUser.username);
+                int TargetId = indexOfUser(users, currentWord);
+                if (currentWord.TabWord[0] == 'Y') 
+                {
+                    FriendshipStatus(*friendship, UserId, TargetId) = 0;
+                    FriendshipStatus(*friendship, TargetId, UserId) = 0;
+                } else {
+                    printf("Teman batal dihapuskan.");
+                }
+            } else {
+                printf("Nama yang diinput tidak ada di daftar teman.");
+            }
+        }
+    }
+    
+}
+
+void LIHAT_PROFIL(User user)
+{
+    // if (!isLogin)
+    // {
+    //     printf("Anda belum login! Masuk terlebih dahulu untuk menikmati layanan BurBir.\n");
+    //     printf("\n");
+    // }
+    // else
+    // {
+    //     int UserId = indexOfUser(users, currentUser.username);
+    //     int TargetId = indexOfUser(users, user.username);
+    //     if (user.privacy == true || user.privacy == false && FriendshipStatus(friendship, UserId, TargetId) == 1)
+    //     {
+    //         printf("| Nama: %s\n", wordToStr(Username(user)));
+    //         printf("| Bio Akun: %s\n", wordToStr(Bio(user)));
+    //         printf("| No HP: %s\n", wordToStr(PhoneNumber(user)));
+    //         printf("| Weton: %s\n", wordToStr(Weton(user)));
+    //         printf("\nFoto profil akun %s\n", wordToStr(Username(user)));
+    //         displayPhoto(Photo(user));
+    //     }
+    // }
+    
+}
+
 
 /* ********** SEARCHING ********** */
 /* ***  Perhatian : List boleh kosong!! *** */
@@ -84,8 +179,6 @@ void insertLastUser(UserList *U, User user){
 /* ********** ADT USERLIST ********** */
 void DAFTAR(UserList *users)
 {
-    if (!isLogin)
-    {
         boolean NameCheck = false;
         Word name;
 
@@ -139,75 +232,59 @@ void DAFTAR(UserList *users)
         User NewUser = {name, pass};
         printf("\nPengguna telah berhasil terdaftar. Masuk untuk menikmati fitur-fitur BurBir.\n");
         insertLastUser(users, NewUser);
-    }
+    
 
-    else
-    {
-        printf("\nAnda sudah masuk, keluar terlebih dahulu untuk mendaftar\n");
-    }
 }
 
-void MASUK(UserList *users)
+void MASUK(UserList users, User *currentUser, boolean *isLogin)
 {
-    if (!isLogin)
-    {
         printf("\n\nMasukkan Nama:\n");
         STARTCOMMAND();
 
         Word nama = currentWord;
-        int IndexUser = indexOfUser(*users, nama);
+        int IndexUser = indexOfUser(users, nama);
 
         if (IndexUser == -1)
         {
             printf("Wah, nama yang Anda cari tidak ada. Masukkan nama lain!");
-            MASUK(users);
+            MASUK(users, currentUser, isLogin);
+            return;
         }
-        else
+
+        User terdaftar = Pengguna(users, IndexUser);
+        Word CorrectPass = terdaftar.password;
+        boolean PassCheck = false;
+
+        while (!PassCheck)
         {
-            User terdaftar = Pengguna(*users, IndexUser);
-            Word CorrectPass = terdaftar.password;
-            boolean PassCheck = false;
+            printf("\n\nMasukkan kata sandi:\n");
+            STARTCOMMAND();
 
-            while (!PassCheck)
+            Word Inputpass = currentWord;
+            if (compareWord(CorrectPass, Inputpass))
             {
-                printf("\n\nMasukkan kata sandi:\n");
-                STARTCOMMAND();
-
-                Word Inputpass = currentWord;
-                if (compareWord(CorrectPass, Inputpass))
-                {
-                    PassCheck = true;
-                }
-                else
-                {
-                    PassCheck = false;
-                    printf("Wah, kata sandi yang Anda masukkan belum tepat. Periksa kembali kata sandi Anda!");
-                }
+                PassCheck = true;
             }
-            printf("Anda telah berhasil masuk dengan nama pengguna ");
-            PrintWord(terdaftar.username);
-            printf(". Mari menjelajahi BurBir bersama Ande-Ande Lumut!");
-            currentUser = terdaftar;
+            else
+            {
+                PassCheck = false;
+                printf("Wah, kata sandi yang Anda masukkan belum tepat. Periksa kembali kata sandi Anda!");
+            }
         }
-    }
+        printf("Anda telah berhasil masuk dengan nama pengguna ");
+        PrintWord(terdaftar.username);
+        printf(". Mari menjelajahi BurBir bersama Ande-Ande Lumut!");
+        *currentUser = terdaftar;
+        *isLogin = true;
+        
 
-    else
-    {
-        printf("\nAnda sudah masuk, keluar terlebih dahulu untuk mendaftar\n");
-    }
 }
 
-void KELUAR()
+void KELUAR(boolean *isLogin)
 {
-    if (!isLogin)
-    {
-        printf("\nAnda belum login! Masuk terlebih dahulu untuk menikmati layanan BurBir.\n");
-    }
-    else
-    {
-        isLogin = false;
-        printf("\nAnda berhasil logout. Sampai jumpa di pertemuan berikutnya!\n");
-    }
+    *isLogin = false;
+    
+    printf("\nAnda berhasil logout. Sampai jumpa di pertemuan berikutnya!\n");
 }
 
 
