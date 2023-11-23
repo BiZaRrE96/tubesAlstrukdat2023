@@ -46,7 +46,7 @@ void startApp()
     printf("\n");
 
     // Note : Untuk sementara loadConfig hanya akan memuat pengguna.config
-    if (loadConfig(currentWord, &users, &friendship))
+    if (loadConfig(currentWord))
     // Jika konfigurasi berhasil dimuat, program akan berlanjut ke menu utama
     {
         print_string_green("Konfigurasi berhasil dimuat. ");
@@ -239,16 +239,7 @@ int main ()
             }
 
             viewRecentAsA(kicauan, currentUser.username);
-        } else 
-        if (isCommandHapusKicauan()) {
-            if (!isLogin) {
-                printf("Anda belum login! Masuk terlebih dahulu untuk menikmati layanan BurBir\n");
-                continue;
-            }
-            // Masukkan fungsi hapus kicauan disini
-            
         } else
-
         if (isCommandSukaKicauan()) {
             if (!isLogin) {
                 printf("Anda belum login! Masuk terlebih dahulu untuk menikmati layanan BurBir\n");
@@ -263,19 +254,20 @@ int main ()
 
             // printf("idKicau = %d\n", idKicau);
             // Masukkan fungsi suka kicauan disini
+            likeKicau(&kicauan, idKicau, currentUser.username);
             
         } else
         if (isCommandUbahKicauan()) {
-            if (!isLogin) {
-                printf("Anda belum login! Masuk terlebih dahulu untuk menikmati layanan BurBir\n");
-                continue;
-            }
-            int idKicau;
+        if (!isLogin) {
+            printf("Anda belum login! Masuk terlebih dahulu untuk menikmati layanan BurBir\n");
+            continue;
+        }
+        int idKicau;
 
-            if (!getParamInt(&idKicau)) {
-                errorCommand("Perintah UBAH_KICAUAN tidak valid", "UBAH_KICAUAN <id_kicau>");
-                continue;
-            }
+        if (!getParamInt(&idKicau)) {
+            errorCommand("Perintah UBAH_KICAUAN tidak valid", "UBAH_KICAUAN <id_kicau>");
+            continue;
+        }
             
             // Masukkan fungsi ubah kicauan disini
             printf("Perintah Ubah Kicauan\n"); // Nanti hapus aja
@@ -426,7 +418,12 @@ int main ()
         } else
 
         if (isCommandMuat()) {
+            if (isLogin) {
+                printf("\nAnda harus keluar terlebih dahulu untuk melakukan pemuatan.\n\n");   
+                continue;
+            }
 
+            Muat();
         } else 
         
 

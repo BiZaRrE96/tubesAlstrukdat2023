@@ -5,6 +5,8 @@
         "boolean.h": "c",
         "wordmachine.h": "c",
         "commandmachine.h": "c",
-        "datetime.h": "c"
+        "datetime.h": "c",
+        "time.h": "c",
+        "userlist.h": "c"
     }
 }

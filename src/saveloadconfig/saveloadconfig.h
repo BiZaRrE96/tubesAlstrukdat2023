@@ -7,6 +7,11 @@
 #include "../friendship/friendship.h"
 // #include "../pcolor/pcolor.h"
 #include "../screen/screen.h"
+#include "../kicau/kicau.h"
+
+extern UserList users;
+extern Friendship friendship;
+extern KicauList kicauan;
 
 Word Direc(Word foldername, char filename[], int lenFilename)
 /*
@@ -25,7 +30,7 @@ Word Direc(Word foldername, char filename[], int lenFilename)
 }
 
 // Proses Mengambil Konfigurasi Pengguna
-boolean readDataUsers(UserList *U, Word foldername, Friendship *F)
+boolean readDataUsers(Word foldername)
 // I.S. U sembarang
 // F.S. U terisi data pengguna dari file
 //      Kembalian merupakan pesan error (true atau false)
@@ -40,42 +45,42 @@ boolean readDataUsers(UserList *U, Word foldername, Friendship *F)
 
     STARTWORDFILE(wordToStr(directory));
     // printf("File ditemukan\n");
-    (*U).Neff = wordToInt(currentWord);
+    (users).Neff = wordToInt(currentWord);
     // setSizeFriendship(F, wordToInt(currentWord));
 
-    for (int i = 0; i < (*U).Neff; i++) {
+    for (int i = 0; i < (users).Neff; i++) {
         // Username
         AdvSentence(); currentWord.Length--;
         // printf("ElmtUsername: %s\n", currentWord.TabWord);
-        ElmtUsername(*U, i) = currentWord;
+        ElmtUsername(users, i) = currentWord;
 
         // Password
         AdvSentence(); currentWord.Length--;
         // printf("ElmtPassword: %s\n", currentWord.TabWord);
-        ElmtPassword(*U, i) = currentWord;
+        ElmtPassword(users, i) = currentWord;
 
         // Bio
         AdvSentence(); currentWord.Length--;
-        ElmtBio(*U, i) = currentWord;
+        ElmtBio(users, i) = currentWord;
         // printf("ElmtBio: %s\n", currentWord.TabWord);
 
         // Nomor Telepon
         ADVWORD(); currentWord.Length--;
-        ElmtPhoneNumber(*U, i) = currentWord;
+        ElmtPhoneNumber(users, i) = currentWord;
         // printf("Phone Number: %s\n", currentWord.TabWord);
 
         // Weton
         ADVWORD(); currentWord.Length--;
-        ElmtWeton(*U, i) = currentWord;
+        ElmtWeton(users, i) = currentWord;
         // printf("ElmtWeton: %s\n", currentWord.TabWord);
 
         ADVWORD(); currentWord.Length--;
         // printf("ElmtPrivacy: %s\n", currentWord.TabWord);
         if (isWordStrEqual(currentWord, "Privat", 6)) {
-            ElmtPrivacy(*U, i) = PRIVATE;
+            ElmtPrivacy(users, i) = PRIVATE;
         } else
         if (isWordStrEqual(currentWord, "Publik", 6)) {
-            ElmtPrivacy(*U, i) = PUBLIC;
+            ElmtPrivacy(users, i) = PUBLIC;
         } else {
             return false;
         }
@@ -86,22 +91,22 @@ boolean readDataUsers(UserList *U, Word foldername, Friendship *F)
             for (int k = 0; k < 5; k++) {
                 ADVWORD(); currentWord.Length--;
                 // printf("%c ", currentWord.TabWord[0]);
-                PhotoColor(ElmtPhoto(*U, i), j, k) = currentWord.TabWord[0];
+                PhotoColor(ElmtPhoto(users, i), j, k) = currentWord.TabWord[0];
                 ADVWORD();
                 // printf("%c ", currentWord.TabWord[0]);
-                PhotoCharacter(ElmtPhoto(*U, i), j, k) = currentWord.TabWord[0];
+                PhotoCharacter(ElmtPhoto(users, i), j, k) = currentWord.TabWord[0];
             }
         }
 
 
-        MakeEmptyPrioQueue(&ElmtFriendRequest(*U, i), 20);
+        MakeEmptyPrioQueue(&ElmtFriendRequest(users, i), 20);
     }
   
     // Friendship Matrix
-    for (int j = 0; j < (*U).Neff; j++) {
-        for (int k = 0; k < (*U).Neff; k++) {
+    for (int j = 0; j < (users).Neff; j++) {
+        for (int k = 0; k < (users).Neff; k++) {
             ADVWORD();
-            FriendshipStatus(*F, j, k) = currentWord.TabWord[0] - '0';
+            FriendshipStatus(friendship, j, k) = currentWord.TabWord[0] - '0';
         }
     }
 
@@ -120,13 +125,45 @@ boolean readDataUsers(UserList *U, Word foldername, Friendship *F)
         ADVWORD(); numFriend = wordToInt(currentWord);
 
         friend request = {idSender, numFriend};  
-        EnqueuePrioQueue(&ElmtFriendRequest(*U, idReceiver), request);
+        EnqueuePrioQueue(&ElmtFriendRequest(users, idReceiver), request);
     }
 
 
     return true;
     // Permintaan Pertemanan
     // Cooming soon
+}
+
+boolean readDataKicauan(Word foldername) {
+    Word directory = Direc(foldername, "kicauan.config", 15); 
+    if (fopen(wordToStr(directory), "r") == NULL) {
+        return false;
+    }
+
+    STARTWORDFILE(wordToStr(directory));
+
+    createKicauList(&kicauan, 100);
+    Count(kicauan) = wordToInt(currentWord);
+
+    for (int i = Count(kicauan); i > 0; i--) {
+        ADVWORD(); currentWord.Length--;
+        int idKicau = wordToInt(currentWord);
+
+        AdvSentence(); currentWord.Length--;
+        GetText(kicauan, idKicau) = currentWord;
+
+        ADVWORD(); currentWord.Length--;
+        GetLike(kicauan, idKicau) = wordToInt(currentWord);
+
+        AdvSentence(); currentWord.Length--;
+        GetAuthor(kicauan, idKicau) = currentWord;
+
+        AdvSentence(); currentWord.Length--;
+        if (!parseWordToDatetime(currentWord, &GetTime(kicauan, idKicau))) {
+            return false;
+        }
+    }
+
 }
 
 void errorLog(int lenFoldername)
@@ -149,7 +186,7 @@ void errorLog(int lenFoldername)
     STOP_COLOR;
 }
 
-boolean loadConfig(Word foldername, UserList *users, Friendship *friendship)
+boolean loadConfig(Word foldername)
 /*
     I.S. Sembarang
     F.S. Konfigurasi pengguna, kicauan, balasan, dan draf berhasil dimuat
@@ -163,17 +200,17 @@ boolean loadConfig(Word foldername, UserList *users, Friendship *friendship)
     // Memuat pengguna.config
     printf("\n| Memuat file `config/%s/pengguna.config |\n", wordToStr(foldername));
     
-    if (!readDataUsers(users, foldername, friendship)) {
+    if (!readDataUsers(foldername)) {
         errorLog(foldername.Length);
         return false;
     }
 
     // Memuat kicauan.config
     printf("| Memuat file `config/%s/kicauan.config  |\n", wordToStr(foldername));
-    // if (!readDataTweet(users, foldername)) {
-    //     errorLog(foldername.Length);
-    //     return false;
-    // }
+    if (!readDataKicauan(foldername)) {
+        errorLog(foldername.Length);
+        return false;
+    }
 
     // Memuat balasan.config
     printf("| Memuat file `config/%s/balasan.config  |\n", wordToStr(foldername));
@@ -196,6 +233,22 @@ boolean loadConfig(Word foldername, UserList *users, Friendship *friendship)
 
     STOP_COLOR;
     return true;
+}
+
+
+void Muat() {
+    Word foldername;
+    printf("Masukkan nama folder yang hendak dimuat: ");
+    STARTCOMMAND();
+    foldername = currentWord;
+    printf("\n");
+    if (!loadConfig(foldername)) {
+        printf("Tidak ada folder yang dimaksud!\n");
+    } else {
+        printf("Pemuatan selesai!\n");
+    }
+    printf("\n\n");
+    // loadConfig(foldername, users, friendship, kicauan);
 }
 
 #endif

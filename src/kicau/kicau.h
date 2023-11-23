@@ -13,13 +13,7 @@
 #include "../user/user.h"
 //#include "../time/time.h"
 
-//Suatu kicauan minimal terdiri dari 
-/*id
-text (isi kicauan)
-like (jumlah like)
-author (pembuat kicauan)
-datetime (waktu kicauan).
-*/
+extern UserList users;
 
 typedef int id;
 
@@ -71,10 +65,10 @@ void printSpaces(int x){
 };
 */
 
-
 /* ***** MAIN FUNCTIONS ***** */
-
-
+boolean isIdxKicauValid(KicauList KL, id i){
+    return ((i > 0) && (i <= Count(KL)));
+};
 
 
 void createKicauList (KicauList* KL, int cap){
@@ -87,7 +81,6 @@ void createKicauList (KicauList* KL, int cap){
         CAPACITYKICAU(*KL) = 0;
         printf("ALOKASI KICAULIST GAGAL!\n");
     }
-
 }
 /*
     I.S. : Sembarang
@@ -154,7 +147,7 @@ void shrinkList(KicauList *kl, int num){
     free(kl->Kicau);
     createKicauList(kl,newcap);
     copyList(newKl,kl);
-};
+}
 /* Proses : Mengurangi capacity sebanyak num */
 /* I.S. List sudah terdefinisi, ukuran capacity > num, dan nEff < capacity - num. */
 /* F.S. Ukuran list berkurang sebanyak num. */
@@ -162,16 +155,7 @@ void shrinkList(KicauList *kl, int num){
 //void compressList(KicauList *kl);
 
 /* ***** MAIN KICAU FUNCTIONS ***** */
-void likeKicau(KicauList *KL,id postID, id author){
-    // Cek dahulu apakah postID valid
-    if (postID > Count(*KL) || postID < 1){
-        printf("ID kicauan tidak valid!\n");
-        return;
-    }
 
-
-    // GetLike(*KL,postID)++;
-}
 
 
 //view kicauan with id X (real id from 1) as user with id user
@@ -222,6 +206,31 @@ void viewRecentAsA(KicauList KL,Word A){
         printf("\n");
     }
     printf("\n");
+}
+
+void likeKicau(KicauList *KL,id postID, Word user){
+    // Cek dahulu apakah postID valid
+    id userId = indexOfUser(users, user);
+
+    printf("\n");
+    if (!isIdxKicauValid(*KL,postID)){
+        printf("Tidak dapat ditemukan dengan ID = %d\n\n",postID);
+        return;
+    }
+
+    id author = indexOfUser(users, GetAuthor(*KL,postID));
+    // Cek dahulu apakah author dari kicau privat dan tidak berteman
+    if (ElmtPrivacy(users, author) == PRIVATE && !FriendshipStatus(friendship, author, userId)) {
+        printf("Wah, kicauan tersebut dibuat oleh akun privat! Ikuti akun itu dulu ya\n\n");
+    }
+
+    GetLike(*KL,postID)++;
+
+    printf("Selamat! kicauan telah disukai!\nDetil kicauan:\n");
+    printKicauXasA(*KL, postID, user);
+    printf("\n");
+    
+    
 }
 
 

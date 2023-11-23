@@ -2,7 +2,8 @@
 #define DATETIME_H
 
 #include "../Boolean/boolean.h"
-#include "../Time/time.h"
+#include "../time/time.h"
+#include "../wordmachine/wordmachine.h"
 #include <time.h>
 // #include <stdio.h>
 
@@ -230,5 +231,28 @@ void setToCurrentTime(DATETIME* D){
     struct tm *waktu = localtime(&rawtime);
     CreateDATETIME(D,waktu->tm_mday,waktu->tm_mon,(waktu->tm_year + 1900),waktu->tm_hour,waktu->tm_min,waktu->tm_sec);
 }
+
+boolean parseWordToDatetime(Word W, DATETIME* D) {
+    // Format: DD/MM/YYYY HH:MM:SS
+    if (W.TabWord[2] != '/' || W.TabWord[5] != '/' || W.TabWord[10] != ' ' || W.TabWord[13] != ':' || W.TabWord[16] != ':' || W.Length != 19) {
+        return false;
+    }
+
+    int DD, MM, YYYY, hh, mm, ss;
+    DD = (W.TabWord[0] - '0') * 10 + (W.TabWord[1] - '0');
+    MM = (W.TabWord[3] - '0') * 10 + (W.TabWord[4] - '0');
+    YYYY = (W.TabWord[6] - '0') * 1000 + (W.TabWord[7] - '0') * 100 + (W.TabWord[8] - '0') * 10 + (W.TabWord[9] - '0');
+    hh = (W.TabWord[11] - '0') * 10 + (W.TabWord[12] - '0');
+    mm = (W.TabWord[14] - '0') * 10 + (W.TabWord[15] - '0');
+    ss = (W.TabWord[17] - '0') * 10 + (W.TabWord[18] - '0');
+
+    if (!IsDATETIMEValid(DD, MM, YYYY, hh, mm, ss)) {
+        return false;
+    }
+
+    CreateDATETIME(D, DD, MM, YYYY, hh, mm, ss);
+    return true;
+}
+
 
 #endif
