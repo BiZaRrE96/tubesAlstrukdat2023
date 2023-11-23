@@ -21,7 +21,7 @@ typedef struct {
    int content[FRIENDSHIPCAPACITY];
 } ListFriendship;
 
-#define FriendshipStatus(friendship, i, j) ELMT((friendship).friends, (i), (j))
+#define FriendshipStatus(friendship, i, j) ELMT_MATRIX((friendship).friends, (i), (j))
 #define FriendshipELMT(l, i) (l).content[(i)]
 #define FreindshipNeff(friendship) (friendship).friends.rowEff
 
