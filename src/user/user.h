@@ -6,7 +6,7 @@
 #include "../commandmachine/commandmachine.h"
 #include "../boolean/boolean.h"
 #include "../photo/photo.h"
-
+#include "../prioqueuechar/prioqueuechar.h"
 
 #define PRIVATE false
 #define PUBLIC true
@@ -23,6 +23,7 @@ typedef struct
     Word weton; // Weton lahir (Pahing, Kliwon, Wage, Pon, dan Legi (case insensitive))
     Photo photo;
     boolean privacy; // false = privat, true = public;
+    prioqueue friendRequest;
 } User;
 
 #define Username(U) (U).username
@@ -32,6 +33,7 @@ typedef struct
 #define Weton(U) (U).weton
 #define Photo(U) (U).photo
 #define Privacy(U) (U).privacy
+#define FriendRequest(U) (U).friendRequest
 
 // extern boolean isLogin;
 // extern User currentUser;

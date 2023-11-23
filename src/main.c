@@ -4,6 +4,7 @@
 #include "user/user.h"
 #include "saveloadconfig/saveloadconfig.h"
 #include "commandmachine/commandmachine.h"
+#include "prioqueuechar/prioqueuechar.h"
 
 #include<stdlib.h>
 
@@ -13,6 +14,7 @@
 UserList users;             // Daftar pengguna dalam bentuk listStatik of User (userlist.h)
 Friendship friendship;      // Daftar pertemanan dalam bentuk adjacency matriks (friendship.h)
 User currentUser;           // User yang sedang login (user.h)
+// prioqueue listRequest;      // Daftar permintaan pertemanan yang belum disetujui (prioqueuechar.h)
 
 
 boolean isLogin = false;    // Apakah program sedang dalam keadaan login
@@ -147,6 +149,7 @@ int main ()
                 printf("Anda belum login! Masuk terlebih dahulu untuk menikmati layanan BurBir\n");
                 continue;
             }
+            
             // Masukkan fungsi atur profil disini
             ATUR_JENIS_AKUN(&currentUser);
             ElmtPrivacy(users, indexOfUser(users, currentUser.username)) = currentUser.privacy;
@@ -187,7 +190,8 @@ int main ()
                 continue;
             }
             // Masukkan fungsi tambah teman disini
-            printf("Perintah Tambah Teman\n");      // Nanti hapus aja
+
+            tambahteman(currentUser, &users, friendship);
         } else
 
         if (isCommandBatalTambahTeman()) {

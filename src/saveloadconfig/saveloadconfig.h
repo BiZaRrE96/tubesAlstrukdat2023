@@ -93,7 +93,8 @@ boolean readDataUsers(UserList *U, Word foldername, Friendship *F)
             }
         }
 
-        
+
+        MakeEmptyPrioQueue(&ElmtFriendRequest(*U, i), 20);
     }
   
     // Friendship Matrix
@@ -103,6 +104,25 @@ boolean readDataUsers(UserList *U, Word foldername, Friendship *F)
             FriendshipStatus(*F, j, k) = currentWord.TabWord[0] - '0';
         }
     }
+
+    // Untuk tiap permintaan pertemanan, disimpan ID permintaan pertemanan, 
+    // dengan secara beturut-turut dari kiri adalah ID pengguna yang 
+    // meminta pertemanan, ID pengguna yang diminta pertemanan, 
+    // dan jumlah teman saat ID pengguna meminta pertemanan.
+    
+
+    ADVWORD();
+    int Q = wordToInt(currentWord);
+    while (Q--) {
+        int idSender, idReceiver, numFriend;
+        ADVWORD(); idSender = wordToInt(currentWord);
+        ADVWORD(); idReceiver = wordToInt(currentWord);
+        ADVWORD(); numFriend = wordToInt(currentWord);
+
+        friend request = {idSender, numFriend};  
+        EnqueuePrioQueue(&ElmtFriendRequest(*U, idReceiver), request);
+    }
+
 
     return true;
     // Permintaan Pertemanan

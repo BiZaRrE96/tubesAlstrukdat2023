@@ -62,22 +62,15 @@ void createListFriendship(ListFriendship *l) {
 }
 
 
-boolean noFriendship(ListFriendship l) {
-    return (countFriendship(l) == 0); 
-}
-
-
-int countFriendship(ListFriendship l) {
-    int countFriend = 0;
-    for (int i = 0; i <= FRIENDSHIPCAPACITY-1; i++) {
-        if(FriendshipELMT(l, i) != MARKLISTFRIENDSHIP)
-        {
-            countFriend++;
+int countFriend(Friendship friendship, int i) {
+    int count = 0;
+    for (int j = 0; j < FRIENDSHIPCAPACITY; j++) {
+        if (FriendshipStatus(friendship, i, j) == 1) {
+            count++;
         }
     }
-    return countFriend;
+    return count;
 }
-
 
 
 #endif
