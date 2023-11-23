@@ -7,6 +7,12 @@
 #include "../commandmachine/commandmachine.h"
 #include "../datetime/datetime.h"
 
+//Notes untuk merger balasan:
+// jalankan createBalasanList
+// untuk print semua balasan printBalasanComplete(BL, -1, user)
+// printBalasanComplete(BL, id, user) akan mengeprint balasan id ID dan semua child nya
+// readBalasan untuk membuat balasan dan memasukkan ke BL
+
 //DATA TYPE USED : ADT Tree dengan struktur data berkait
 //Kenapa Tree? biar kalau delete cascading
 //Kenapa struktur data berkait? tidak perlu alokasi banyak2
@@ -146,13 +152,26 @@ void printSpaces(int x){
     }
 };
 
-void printBalasanXasA(BalasanList BL, id x, Word user){
+//debug helper
+void printBalasan(BALASAN*B){
+    printf("| ID = %d\n",B->IdBalas);
+    printf("| %s\n",wordToStr(B->Author));
+    printf("| ");
+    TulisDATETIME(B->Time);
+    printf("\n");
+    printf("| %s\n",wordToStr(B->Text));   
+}
+//Print singular balasan
+void printBalasanXasA(BalasanList BL, id x, Word user, int indexLevel){
     if (getBalasan(BL,x) == NULL){
         printf("Balasan tidak ada bro!\n");
     }
     else{
         BALASAN* b = getBalasan(BL,x);
-        int space = b->indexLevel;
+        int space = b->indexLevel - indexLevel;
+        if (space < 0){
+            space = 0;
+        }
         if (balasAcanSeeB(user,b->Author) == true){
             printSpaces(space);
             printf("| ID = %d\n",x);
@@ -179,13 +198,15 @@ void printBalasanXasA(BalasanList BL, id x, Word user){
     }
 }
 
-void printChildren(BalasanList BL, id x, Word user){
+//Print balasan dalam BalasanList berID x, dan semua children nya
+//Tidak mengeprint host balasan
+void printChildren(BalasanList BL, id x, Word user, int indexLevel){
     BALASAN * p = getBalasan(BL,x);
     boolean stop = false;
     while (!stop){
         if (p->parentID == x){
-            printBalasanXasA(BL,p->IdBalas,user);
-            printChildren(BL, p->IdBalas,user);
+            printBalasanXasA(BL,p->IdBalas,user,indexLevel);
+            printChildren(BL, p->IdBalas,user,p->indexLevel);
         };
 
         if (p->Next == NULL){
@@ -195,6 +216,87 @@ void printChildren(BalasanList BL, id x, Word user){
             p = p->Next;
         }
     }
+}
+
+//Delete suatu balasan dan semua childrennya (cascading)
+//id -1 akan memprint semua balasan
+void printBalasanComplete(BalasanList BL, id x, Word user){
+    if (x == -1){
+        BALASAN * p = BL.First;
+        boolean stop = false;
+        while (!stop){
+            if (p->parentID == -1){
+                printBalasanXasA(BL, p->IdBalas,user,0);
+                printChildren(BL, p->IdBalas,user,0);
+            };
+
+            if (p->Next == NULL){
+                stop = true;
+            }
+            else{
+                p = p->Next;
+            }
+        }
+    }
+    else{
+        int indexLevel = getBalasan(BL,x)->indexLevel;
+        printBalasanXasA(BL,x,user,indexLevel);
+        printChildren(BL,x,user,indexLevel);
+    }
+};
+
+void deleteSingularBalasan(BalasanList *BL,id ID){
+    BALASAN* B = getBalasan(*BL,ID);
+    if (B->Prev != NULL){
+        (B->Prev)->Next = B->Next;
+    }
+    else{//artinya ini pertama harusnya
+        //printf("Moved head of BL\n");
+        BL->First = B->Next;
+    }
+    if (B->Next != NULL){
+        (B->Next)->Prev = B->Prev;
+    }
+    else{//artinya ini last
+        //printf("Moved tail of BL\n");
+        BL->Last = B->Prev;
+    }
+    free(B);
+}
+
+void deleteBalasan(BalasanList*BL, id x, Word user){
+    BALASAN* B = (getBalasan(*BL,x));
+    if (B == NULL){
+        printf("Balasan tidak ada!");
+    }
+    else if (!isWordEqual(B->Author,user)){
+        printf("Balasan bukan milik anda!");
+    }
+    else{
+        deleteChildren(BL,x);
+    }   
+}
+//fungsi pembantu
+void deleteChildren(BalasanList* BL,id ID){
+    BALASAN* P = getBalasan(*BL,ID);
+    boolean done = false; 
+    while(!done){
+        if(P->Next == NULL){
+            done = true;
+        }
+        else{
+            P = P->Next;
+        }
+        if(P->parentID == ID){
+            if (P->Next == NULL){
+                deleteSingularBalasan(BL,P);
+            }
+            else{
+                deleteChildren(BL,P->IdBalas);
+            }
+        }
+    }
+    deleteSingularBalasan(BL,ID);
 }
 
 #endif
