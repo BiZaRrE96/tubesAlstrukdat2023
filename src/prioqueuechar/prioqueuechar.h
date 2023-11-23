@@ -2,8 +2,9 @@
 #define prioqueue_H
 
 #include "../boolean/boolean.h"
+#include <stdlib.h>
 
-#define Nil -1
+#define Nil_Prio_Queue -1
 
 typedef struct
 {
@@ -30,14 +31,9 @@ typedef struct
 
 boolean IsEmptyPrioQueue (prioqueue Q)
 {
-    return (HeadQ(Q) == Nil && TailQ(Q) == Nil);
+    return (HeadQ(Q) == Nil_Prio_Queue && TailQ(Q) == Nil_Prio_Queue);
 }
 
-boolean IsFullPrioQueue (prioqueue Q)
-{
-    return (PrioQueueLength(Q) == MaxElQ(Q));
-
-}
 int PrioQueueLength (prioqueue Q)
 {
     if (IsEmptyPrioQueue(Q))
@@ -55,6 +51,14 @@ int PrioQueueLength (prioqueue Q)
     }
 }
 
+
+boolean IsFullPrioQueue (prioqueue Q)
+{
+    return (PrioQueueLength(Q) == MaxElQ(Q));
+
+}
+
+
 void MakeEmptyPrioQueue (prioqueue* Q, int Max)
 {
     (*Q).T = (friend *) malloc((Max) * sizeof(friend));
@@ -63,16 +67,16 @@ void MakeEmptyPrioQueue (prioqueue* Q, int Max)
         MaxElQ(*Q) = 0;
     } else 
     {
-        HeadQ(*Q) = Nil;
-        TailQ(*Q) = Nil;
+        HeadQ(*Q) = Nil_Prio_Queue;
+        TailQ(*Q) = Nil_Prio_Queue;
         MaxElQ(*Q) = Max;
     }
 }
 
 void DeAlokasiPrioQueue (prioqueue* Q)
 {
-    HeadQ(*Q) = Nil;
-    TailQ(*Q) = Nil;
+    HeadQ(*Q) = Nil_Prio_Queue;
+    TailQ(*Q) = Nil_Prio_Queue;
     MaxElQ(*Q) = 0;
     free((*Q).T);
 }
@@ -114,8 +118,8 @@ void DequeuePrioQueue (prioqueue* Q, friend* t)
     if (PrioQueueLength(*Q) == 1) 
     {
         *t = InfoHeadQ(*Q);
-        HeadQ(*Q) = Nil;
-        TailQ(*Q) = Nil;
+        HeadQ(*Q) = Nil_Prio_Queue;
+        TailQ(*Q) = Nil_Prio_Queue;
     } else 
     {
         *t = InfoHeadQ(*Q);

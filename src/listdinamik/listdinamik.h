@@ -1,3 +1,7 @@
+// NAMA PEMBUAT : Christian Justin Hendrawan
+// NIM : 13522135
+// TOPIK : ADT LIST DINAMIK
+
 /* MODUL INTEGER DYNAMIC LIST */
 /* Berisi definisi dan semua primitif pemrosesan list integer */
 /* Penempatan elemen selalu rapat kiri */
