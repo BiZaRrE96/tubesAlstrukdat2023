@@ -57,8 +57,8 @@ void createPhoto(Photo *p)
     {
         for (int j = 0; j < MAX_PHOTO_SIZE; j++)
         {
-            PhotoColor(*p, i, j) = ' ';
-            PhotoCharacter(*p, i, j) = ' ';
+            PhotoColor(*p, i, j) = 'R';
+            PhotoCharacter(*p, i, j) = '*';
         }
     }
 }

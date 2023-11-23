@@ -23,8 +23,18 @@ typedef struct {
 
 #define FriendshipStatus(friendship, i, j) ELMT((friendship).friends, (i), (j))
 #define FriendshipELMT(l, i) (l).content[(i)]
+#define FreindshipNeff(friendship) (friendship).friends.rowEff
 
 //boolean isEmpty(ListFriendship l);
+boolean isEmptyFriend(Friendship friendship, int i) {
+    for (int j = 0; j < FRIENDSHIPCAPACITY; j++) {
+        if ((FriendshipStatus(friendship, i, j) == 1) && i != j) {
+            return false;
+        }
+    }
+    return true;
+
+}
 
 void createEmptyFriendship(Friendship *friendship) {
     int i, j;
@@ -35,8 +45,18 @@ void createEmptyFriendship(Friendship *friendship) {
     }
 }
 
+void displayFriendship(Friendship friendship) {
+    int i, j;
+    for (i = 0; i < ROW_FRIENDSHIP; i++){
+        for (j = 0; j < COLUMN_FRIENDSHIP; j++){
+            printf("%d ", FriendshipStatus(friendship, i, j));
+        }
+        printf("\n");
+    }
+}
+
 void createListFriendship(ListFriendship *l) {
-    for (int i = 0; i <= CAPACITY-1; i++) {
+    for (int i = 0; i <= 20; i++) {
             FriendshipELMT(*l, i) = MARKLISTFRIENDSHIP;
         }
 }

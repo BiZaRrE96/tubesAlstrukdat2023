@@ -14,6 +14,7 @@ UserList users;             // Daftar pengguna dalam bentuk listStatik of User (
 Friendship friendship;      // Daftar pertemanan dalam bentuk adjacency matriks (friendship.h)
 User currentUser;           // User yang sedang login (user.h)
 
+
 boolean isLogin = false;    // Apakah program sedang dalam keadaan login
 
 // boolean isLogin = false;    // Apakah program sedang dalam keadaan login
@@ -87,7 +88,6 @@ int main ()
 {
     startApp();
 
-
     while (true) {
         inputCommand();
 
@@ -108,12 +108,12 @@ int main ()
         } else
 
         if (isCommandDaftar()) {
-            if (!isLogin) {
-                printf("Anda belum login! Masuk terlebih dahulu untuk menikmati layanan BurBir\n");
+            if (isLogin) {
+                printf("Anda sudah login! Keluar terlebih dahulu untuk mendaftar akun baru\n");
                 continue;
             }
             // Masukkan fungsi daftar disini
-            printf("Perintah Daftar\n");            // Nanti hapus aja
+            DAFTAR(&users, &friendship);            // Nanti hapus aja
         } else
 
         if (isCommandGantiProfil()) {
@@ -138,19 +138,8 @@ int main ()
             }
             
             // Masukkan fungsi lihat profil disini
-            int idxUser = indexOfUser(users, username);
-            if (idxUser == -1) {
-                printf("\nTidak dapat menemukan pengguna bernama %s.\n", wordToStr(username));
-            } else {
-                User temp_user = Pengguna(users, idxUser);
-                printf("\n");
-                if (Privacy(temp_user)) {
-                    LIHAT_PROFIL(temp_user);
-                } else {
-                    printf("Profil pengguna %s adalah privat.\n", wordToStr(Username(temp_user)));
-                }
-                printf("\n");
-            }
+            LIHAT_PROFIL(users, username, currentUser, friendship); 
+            
         } else
 
         if (isCommandAturJenisAkun()) {
@@ -159,7 +148,9 @@ int main ()
                 continue;
             }
             // Masukkan fungsi atur profil disini
-            printf("Perintah Atur Profil\n");       // Nanti hapus aja
+            ATUR_JENIS_AKUN(&currentUser);
+            ElmtPrivacy(users, indexOfUser(users, currentUser.username)) = currentUser.privacy;
+            
         } else
 
         if (isCommandUbahPotoProfil()) {
@@ -168,7 +159,8 @@ int main ()
                 continue;
             }
             // Masukkan fungsi ubah poto profil disini
-            printf("Perintah Ubah Poto Profil\n");  // Nanti hapus aja
+            UBAH_FOTO_PROFIL(&currentUser);
+            ElmtPhoto(users, indexOfUser(users, currentUser.username)) = currentUser.photo;
         } else
 
         if (isCommandDaftarTeman()) {
@@ -177,7 +169,7 @@ int main ()
                 continue;
             }
             // Masukkan fungsi daftar teman disini
-            printf("Perintah Daftar Teman\n");      // Nanti hapus aja
+            daftarTeman(currentUser, users, friendship);
         } else
 
         if (isCommandHapusTeman()) {
@@ -186,7 +178,7 @@ int main ()
                 continue;
             }
             // Masukkan fungsi hapus teman disini
-            printf("Perintah Hapus Teman\n");       // Nanti hapus aja
+            hapusTeman(currentUser, &users, &friendship);
         } else
 
         if (isCommandTambahTeman()) {
@@ -422,14 +414,13 @@ int main ()
         if (isCommandMuat()) {
 
         } else 
+        
 
         if (isCommandExit()) {
             break;
         } else {
             printf("Perintah tidak dikenali.\n");
         }
-
-        
         // EndWord = false;
     }
 
