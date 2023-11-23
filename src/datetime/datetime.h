@@ -3,6 +3,7 @@
 
 #include "../Boolean/boolean.h"
 #include "../Time/time.h"
+#include <time.h>
 // #include <stdio.h>
 
 /* *** Definisi TYPE DATETIME <DD/MM/YY HH:MM:SS> *** */
@@ -221,6 +222,13 @@ long int DATETIMEDurasi(DATETIME DAw, DATETIME DAkh)
     }
     durasi += TIMEToDetik(Time(DAkh)) - TIMEToDetik(Time(DAw));
     return durasi;
+}
+
+void setToCurrentTime(DATETIME* D){
+    time_t rawtime;
+    time(&rawtime);
+    struct tm *waktu = localtime(&rawtime);
+    CreateDATETIME(D,waktu->tm_mday,waktu->tm_mon,(waktu->tm_year + 1900),waktu->tm_hour,waktu->tm_min,waktu->tm_sec);
 }
 
 #endif

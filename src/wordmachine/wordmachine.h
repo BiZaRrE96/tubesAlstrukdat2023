@@ -7,7 +7,7 @@
 #include "../CharMachine/charmachine.h"
 #include <stdlib.h>
 
-#define NMax 50
+#define NMax 280
 #define BLANK ' '
 #define ENTER '\n'
 
@@ -131,6 +131,25 @@ int wordToInt(Word w)
     return result;
 }
 
+boolean isWordEqual(Word w1, Word w2) {
+/*
+    I.S. w1 dan w2 terdefinisi
+    F.S. Mengembalikan true jika w1 dan w2 sama, false jika tidak
+*/
+    if (w1.Length != w2.Length) {
+        return false;
+    }
+
+    for (int i = 0; i < w1.Length; i++) {
+        if (w1.TabWord[i] != w2.TabWord[i]) {
+            return false;
+        }
+    }
+
+    return true;
+
+}
+
 boolean isWordInt(Word w) {
 /*
     I.S. w sembarang
@@ -172,10 +191,11 @@ char* wordToStr(Word W)
     F.S. Mengembalikan string yang berisi W.TabWord
 */
 {
-    char* result = (char*) malloc(W.Length * sizeof(char));
+    char* result = (char*) malloc((W.Length+1) * sizeof(char));
     for (int i = 0; i < W.Length; i++) {
         result[i] = W.TabWord[i];
     }
+    result[W.Length] = '\0';
 
     return result;
 }

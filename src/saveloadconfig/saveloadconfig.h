@@ -5,7 +5,7 @@
 
 #include "../userlist/userlist.h"
 #include "../friendship/friendship.h"
-#include "../pcolor/pcolor.h"
+// #include "../pcolor/pcolor.h"
 #include "../screen/screen.h"
 
 Word Direc(Word foldername, char filename[], int lenFilename)

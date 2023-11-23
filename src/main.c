@@ -14,7 +14,7 @@ UserList users;             // Daftar pengguna dalam bentuk listStatik of User (
 Friendship friendship;      // Daftar pertemanan dalam bentuk adjacency matriks (friendship.h)
 User currentUser;           // User yang sedang login (user.h)
 
-boolean isLogin = false;    // Apakah program sedang dalam keadaan login
+// boolean isLogin = false;    // Apakah program sedang dalam keadaan login
 
 // FUNGSI DAN PROSEDUR
 void startApp() 
@@ -108,8 +108,19 @@ int main ()
             }
             
             // Masukkan fungsi lihat profil disini
-            printf("Perintah Lihat Profil\n");      // Nanti hapus aja
-            printf("Nama = %s\n", wordToStr(username));
+            int idxUser = indexOfUser(users, username);
+            if (idxUser == -1) {
+                printf("\nTidak dapat menemukan pengguna bernama %s.\n", wordToStr(username));
+            } else {
+                User temp_user = Pengguna(users, idxUser);
+                printf("\n");
+                if (Privacy(temp_user)) {
+                    LIHAT_PROFIL(temp_user);
+                } else {
+                    printf("Profil pengguna %s adalah privat.\n", wordToStr(Username(temp_user)));
+                }
+                printf("\n");
+            }
         } else
 
         if (isCommandAturJenisAkun()) {
@@ -279,7 +290,7 @@ int main ()
             if (!getParamInt(&idUtas)) {
                 errorCommand("Perintah CETAK_UTAS tidak valid", "CETAK_UTAS <id_utas>");
                 continue;
-            }
+            } else
 
             // Masukkan fungsi cetak utas disini
             printf("Perintah Cetak Utas\n"); // Nanti hapus aja
@@ -292,6 +303,10 @@ int main ()
         if (isCommandMuat()) {
 
         } else 
+
+        if (isWordStrEqual(currentWord, "DISPLAY_USERS", 13)) {
+            displayUserList(users);
+        } else
 
         if (isCommandExit()) {
             break;
