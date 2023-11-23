@@ -181,7 +181,7 @@ int main ()
                 continue;
             }
             // Masukkan fungsi hapus teman disini
-            hapusTeman(currentUser, &users, &friendship);
+            hapusTeman(currentUser, users, &friendship);
         } else
 
         if (isCommandTambahTeman()) {
@@ -209,7 +209,7 @@ int main ()
                 continue;
             }
             // Masukkan fungsi daftar permintaan teman disini
-            printf("Perintah Daftar Permintaan Teman\n"); // Nanti hapus aja
+            daftarpermintaanteman(currentUser, users);
         } else
         
         if (isCommandSetujuiPertemanan()) {
@@ -218,7 +218,7 @@ int main ()
                 continue;
             }
             // Masukkan fungsi setujui pertemanan disini
-            printf("Perintah Setujui Pertemanan\n"); // Nanti hapus aja
+            setujuipermintaanteman(&currentUser, &users, &friendship);
         } else
 
         if (isCommandKicau()) {

@@ -85,35 +85,43 @@ void daftarTeman(User currentUser, UserList userList, Friendship friendship) {
     printf("\n\n");
 }
 
-void hapusTeman(User currentUser, UserList *usersList, Friendship *friendship) {
-    // int idxUser = indexOfUser(*usersList, currentUser.username);
-    // if (isEmptyFriend(*friendship, idxUser)) {
-    //     printf("%s belum mempunyai teman\n", currentUser.username);
-    //     return;
-    // }
+void hapusTeman(User currentUser, UserList usersList, Friendship *friendship) {
+    int currentUserIdx = indexOfUser(usersList, currentUser.username);
+    if (isEmptyFriend(*friendship, currentUserIdx)) {
+        printf("\n\nAnda belum mempunyai teman\n\n");
+        return;
+    }
 
-    // printf("\nMasukan nama teman yang ingin dihapus.\n");
-    // STARTCOMMAND();
-    // int idxFriend = indexOfUser(*usersList, currentWord);
-
-    // if ((FriendshipStatus(*friendship, idxUser, idxFriend) == 1) && (idxFriend != idxUser)) 
-    // {
-    //     printf("Apakah anda ingin benar-benar menghapus pertemanan ? (YA/TIDAK)\n");
-    //     STARTCOMMAND();
-    //     if (isWordStrEqual(currentWord.TabWord, "YA", 2)) 
-    //     {
-    //         FriendshipStatus(*friendship, idxUser, idxFriend) = 0;
-    //         FriendshipStatus(*friendship, idxFriend, idxUser) = 0;
-    //         printf("Teman berhasil dihapuskan.\n\n");
-    //     } else {
-    //         printf("Teman batal dihapuskan.\n\n");
-    //     }
-    //     return;
-    // }
-
-    // printf("Teman tidak ditemukan.\n\n");
-
+    printf("\n\n");
+    printf("Masukkan nama pengguna: \n");
+    STARTCOMMAND();
     
+    // Cek apakah ada user dengan nama tersebut
+    int idxUser = indexOfUser(usersList, currentWord);
+    if (idxUser == -1) {
+        printf("\nTidak dapat menemukan pengguna bernama %s.\n", wordToStr(currentWord));
+        return;
+    }
+
+    // Cek apakah user tersebut berteman dengan currentUser
+    if (FriendshipStatus(*friendship, currentUserIdx, idxUser) == 0) {
+        printf("\nAnda tidak berteman dengan %s.\n", wordToStr(currentWord));
+        return;
+    }
+    
+    printf("\nApakah Anda yakin ingin menghapus %s dari daftar teman Anda? (YA/TIDAK) ", wordToStr(currentWord));
+    Word userDelete = currentWord;
+    STARTCOMMAND();
+    if (!isWordStrEqual(currentWord, "YA", 2)) {
+        printf("\n\nPenghapusan teman dibatalkan.\n\n");
+        return;
+    }
+
+    // Hapus teman
+    FriendshipStatus(*friendship, currentUserIdx, idxUser) = 0;
+    FriendshipStatus(*friendship, idxUser, currentUserIdx) = 0;
+    printf("%s berhasil dihapus dari daftar teman Anda.\n\n", wordToStr(userDelete));
+
 }
 
 void LIHAT_PROFIL(UserList users, Word username, User currentUser, Friendship friendship)
@@ -347,83 +355,68 @@ void tambahteman (User akunlogin, UserList* listakun, Friendship friendship) {
     // Kirim permintaan pertemanan
     friend sender = {idxUser, countFriend(friendship, idxUser)};
     EnqueuePrioQueue(&listakun->TabUser[idxReceived].friendRequest, sender);
-    printf("Permintaan pertemanan kepada %s telah dikirim. Tunggu beberapa saat hingga permintaan Anda disetujui.\n\n\n", wordToStr(ElmtUsername(*listakun, idxReceived)));
+    printf("Permintaan pertemanan kepada %s telah dikirim. Tunggu beberapa saat hingga permintaan Anda disetujui.\n\n\n", wordToStr(ElmtUsername(*listakun, idxReceived)));    
+}
 
+void daftarpermintaanteman (User akunlogin, UserList listakun) {
+    prioqueue Q = akunlogin.friendRequest;
+    if (IsEmptyPrioQueue(Q))
+    {
+        printf("\n\nTidak ada permintaan pertemanan yang belum Anda setujui.\n\n");
+        return;
+    }
+
+    printf("Terdapat %d permintaan pertemanan untuk Anda.\n\n", PrioQueueLength(Q));
+
+    while (!IsEmptyPrioQueue(Q))
+    {
+        friend sender;
+        DequeuePrioQueue(&Q, &sender);
+        printf("| %s\n", wordToStr(ElmtUsername(listakun, sender.IDrecieve)));
+        printf("| Jumlah teman: %d\n\n", sender.Friendcount);
+    }
     
-    // if (isWordEqual(namaTeman, akunlogin.username)) {
-    //     printf("Anda tidak bisa berteman dengan diri anda sendiri.\n");
-    // } else 
-    // if (FriendshipStatus(friendship, i, k) == 1) 
-    // {
-    //     printf("Kalian sudah berteman.");
-    // } else 
-    // if (isHaveSentRequest(FriendRequest(Pengguna(list)) , i)) 
-    // {
-    //     printf("Permintaan pertemanan sudah pernah dilakukan, tunggu hingga permintaan Anda disetujui.\n");
-    // } else 
-    // {
-    //     boolean found = false;
-    //     for (int j = 0;j < FRIENDSHIPCAPACITY;j++) {
-    //         if (isWordEqual(namaTeman,ElmtUsername(listpengguna,j))) {
-    //             printf("Permintaan pertemanan kepada");
-    //             printf("%s ", namaTeman);
-    //             printf("telah dikirim. Tunggu beberapa saat hingga permintaan Anda disetujui.\n");
-    //             EnqueuePrioQueue(&Q, Teman);
-    //             found = true;
-    //         } else
-    //         {
-    //             found = false;
-    //         }
-    //     }
-    //     if (!found) {
-    //         printf("Pengguna bernama ");
-    //         printf("%s ", namaTeman);
-    //         printf("tidak ditemukan.\n");
-    //     }
-    // }
     
 }
 
-void daftarpermintaanteman (User akunlogin, UserList* listakun) {
-    // UserList listpengguna;
-    // prioqueue qteman, qpending;
+void setujuipermintaanteman (User *akunlogin, UserList *listakun, Friendship *friendship) {
+    prioqueue Q = FriendRequest(*akunlogin);
+    if (IsEmptyPrioQueue(Q))
+    {
+        printf("\n\nTidak ada permintaan pertemanan yang belum Anda setujui.\n\n");
+        return;
+    }
 
-    // int userID = indexOfUser(listpengguna, akunlogin.username);
+    friend sender;
+    DequeuePrioQueue(&Q, &sender);
+    printf("\n\nPermintaan pertemanan teratas dari %s\n", wordToStr(ElmtUsername(*listakun, sender.IDrecieve)));
 
-    // Enqueueuserprio(*Q, userID, &qteman, &qpending);
-    // PrintPrioQueue(qteman, listakun);
-    // concatenationprio(qteman, qpending, Q);
-}
+    printf("| %s\n", wordToStr(ElmtUsername(*listakun, sender.IDrecieve)));
+    printf("| Jumlah teman: %d\n\n", sender.Friendcount);
 
-void setujuipermintaanteman (User akunlogin, UserList* listakun, friend* Teman, prioqueue* Q) {
-    // prioqueue qteman, qpending;
-    // UserList listpengguna;
-    // Friendship friendship;
-    
-    //     int userID = indexOfUser(listpengguna, akunlogin.username);
-    //     int friendID;
-    //     Word namaTeman;
-    //     EnqueueUserPrioQueue(*Q, userID, &qteman, &qpending);
-    //     printf("%s\n", namaTeman);
-    //     printf("Apakah anda ingin menyetujui permintaan pertemanan ini ? (ya/tidak)\n");
-    //     STARTWORD();
-    //     if (IsWordEqual(currentWord, 'tidak')) 
-    //     {
-    //         DequeuePrioQueue(&qpending, &Teman);
-    //         printf("Berhasil menolak permintaan pertemanan dari ");
-    //         printf("%s.\n", namaTeman);
-    //     } else if (IsWordEqual(currentWord, 'ya')) 
-    //     {
-    //         DequeuePrioQueue(&qpending, &Teman);
-    //         FriendshipStatus(friendship, userID, friendID) = 1;
-    //         FriendshipStatus(friendship, friendID, userID) = 1;
-    //         printf("%s ", namaTeman);
-    //         printf("telah menjadi temanmu.\n");
-    //     } else
-    //     {
-    //         printf("Command tidak sesuai.\n");
-    //     }
-    
+    printf("Apakah Anda ingin menyetujui permintaan pertemanan ini? (YA/TIDAK)\n");
+
+    STARTCOMMAND();
+    if (isWordStrEqual(currentWord, "YA", 2))
+    {
+        FriendshipStatus(*friendship, sender.IDrecieve, indexOfUser(*listakun, akunlogin->username)) = 1;
+        FriendshipStatus(*friendship, indexOfUser(*listakun, akunlogin->username), sender.IDrecieve) = 1;
+        printf("Permintaan pertemanan dari %s telah disetujui.\n\n", wordToStr(ElmtUsername(*listakun, sender.IDrecieve)));
+        FriendRequest(*akunlogin) = Q;
+        Pengguna(*listakun, indexOfUser(*listakun, Username(*akunlogin))).friendRequest = Q;
+    }
+
+    else if (isWordStrEqual(currentWord, "TIDAK", 5))
+    {
+        printf("Permintaan pertemanan dari %s telah ditolak.\n\n", wordToStr(ElmtUsername(*listakun, sender.IDrecieve)));
+        FriendRequest(*akunlogin) = Q;
+        Pengguna(*listakun, indexOfUser(*listakun, Username(*akunlogin))).friendRequest = Q;
+    }
+
+    else
+    {
+        printf("Perintah tidak sesuai.\n\n");
+    }
 } 
 
 #endif
