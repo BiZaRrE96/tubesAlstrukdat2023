@@ -71,13 +71,15 @@ void UTAS(int IDKicau, KicauList KL, User user, ListUtas LU){
             Word input = currentWord;
             printf("\n");
             while (isWordStrEqual(input,"YA",2)){
-                p= NEXT(p);
-                KICAU kicau = INFO(p);
+                KICAU kicau;
                 printf("Masukkan Kicauan:\n");
                 STARTCOMMAND();
                 input = currentWord;
                 kicau.Text = input;
                 setToCurrentTime(&kicau.Time);
+                Address Node = newNode(kicau);
+                NEXT(p)=Node;
+                p=NEXT(p);
                 opsi();
                 STARTCOMMAND();
                 input = currentWord;
@@ -189,14 +191,15 @@ void sambungUtas(ListUtas LU,int IDUtas, int index, User user){
                 if (p==NULL){
                     printf("Index terlalu tinggi!\n");
                 } else {
-                    p=NEXT(p);
-                    KICAU kicau = INFO(p);
+                    KICAU kicau;
                     printf("Masukkan kicauan: ");
                     STARTCOMMAND();
                     Word input = currentWord;
                     if (!isBlank(input)){
                         kicau.Text = input;
                         setToCurrentTime(&kicau.Time);
+                        NEXT(p) = newNode(kicau);
+                        p = NEXT(p);
                     }
                     else{
                         printf("Kicauan tidak boleh hanya berisi spasi!\n");
