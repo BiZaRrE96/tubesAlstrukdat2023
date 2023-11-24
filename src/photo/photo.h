@@ -71,14 +71,14 @@ void changePhoto(Photo *p)
     {
         for (int j = 0; j < MAX_PHOTO_SIZE; j++)
         {
-            if (currentChar != ' ')
+            if (currentChar != ' ' && currentChar != '\n')
             {
-                PhotoCharacter(*p, i, j) = currentChar;
+                PhotoColor(*p, i, j) = currentChar;
                 ADV();
                 IgnoreBlanks();
-                if (currentChar != ' ')
+                if (currentChar != ' ' && currentChar != '\n')
                 {
-                    PhotoColor(*p, i, j) = currentChar;
+                    PhotoCharacter(*p, i, j) = currentChar;
                 }
             }
             ADV();
