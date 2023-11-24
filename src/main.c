@@ -98,8 +98,6 @@ int main ()
     while (true) {
         inputCommand();
 
-        printf("%d\n", len(utasList));
-
         if (isCommandMasuk()) {
             if (isLogin) {
                 printf("Anda sudah login! Keluar terlebih dahulu untuk mengganti akun\n");
@@ -354,7 +352,7 @@ int main ()
             }   
 
             // Masukkan fungsi utas disini
-            // UTAS(idKicau, kicauan, currentUser, &utasList);
+            UTAS(&utasList, idKicau, kicauan, currentUser);
         } else
 
         if (isCommandSambungUtas()) {
@@ -369,7 +367,7 @@ int main ()
                 continue;
             }
 
-            // sambungUtas(&utasList, idUtas, index, currentUser);
+            SAMBUNG_UTAS(&utasList, idUtas, index, currentUser);
         } else
 
         if (isCommandHapusUtas()) {
@@ -387,7 +385,7 @@ int main ()
             printf("idUtas = %d, idx = %d\n", idUtas, index);
 
             // Masukkan fungsi hapus utas disini
-            // HapusUtas(&utasList, idUtas, index, currentUser);
+            HAPUS_UTAS(&utasList, idUtas, index, currentUser);
         } else
 
         if (isCommandCetakUtas()) {
@@ -404,7 +402,7 @@ int main ()
             } 
 
             // Masukkan fungsi cetak utas disini
-            // cetakUtas(utasList, idUtas, currentUser);
+            CETAK_UTAS(utasList, idUtas, currentUser);
         } else
 
         if (isCommandSimpan()) {
