@@ -10,6 +10,7 @@
 #include "../kicau/kicau.h"
 #include "../kicau/draf.h"
 #include "../kicau/utas.h"
+#include "../prioqueuechar/prioqueuechar.h"
 #include <sys/stat.h>
 
 extern UserList users;
@@ -378,7 +379,7 @@ void errorLog(int lenFoldername)
 boolean writeDataUsers(Word foldername) {
     Word directory = Direc(foldername, "pengguna.config", 15);
     FILE *f = fopen(wordToStr(directory), "w");
-    printf("directory: %s\n", wordToStr(directory));
+    // printf("directory: %s\n", wordToStr(directory));
 
     // Cek apakah file sudah ada, jika sudah ada maka ganti dengan yang baru
     if (f == NULL) {
@@ -386,10 +387,10 @@ boolean writeDataUsers(Word foldername) {
     }
 
     fprintf(f, "%d\n", (users).Neff);
-    printf("users.Neff: %d\n", (users).Neff);
+    // print("users.Neff: %d\n", (users).Neff);
 
     for (int i = 0; i < (users).Neff; i++) {
-        printf("User : %s\n", wordToStr(ElmtUsername(users, i)));
+        // print("User : %s\n", wordToStr(ElmtUsername(users, i)));
         fprintf(f, "%s\n", wordToStr(ElmtUsername(users, i)));
         fprintf(f, "%s\n", wordToStr(ElmtPassword(users, i)));
         fprintf(f, "%s\n", wordToStr(ElmtBio(users, i)));
@@ -403,7 +404,11 @@ boolean writeDataUsers(Word foldername) {
 
         for (int j = 0; j < 5; j++) {
             for (int k = 0; k < 5; k++) {
-                fprintf(f, "%c %c ", PhotoColor(ElmtPhoto(users, i), j, k), PhotoCharacter(ElmtPhoto(users, i), j, k));
+                if (k == 4) {
+                    fprintf(f, "%c %c", PhotoColor(ElmtPhoto(users, i), j, k), PhotoCharacter(ElmtPhoto(users, i), j, k));
+                } else {
+                    fprintf(f, "%c %c ", PhotoColor(ElmtPhoto(users, i), j, k), PhotoCharacter(ElmtPhoto(users, i), j, k));
+                }
             }
             fprintf(f, "\n");
         }
@@ -423,11 +428,11 @@ boolean writeDataUsers(Word foldername) {
         fprintf(f, "\n");
     }
 
-    printf("Pembacaan friendSHIP\n");
+    // print("Pembacaan friendSHIP\n");
     // Jelajahi masing-masing elemen FriendRequest pada user
     int n = 0;
-    Word sender[10000];
-    Word receiver[10000];
+    int sender[10000];
+    int receiver[10000];
     int numFriend[10000];
 
     for (int i = 0; i < (users).Neff; i++) {
@@ -435,29 +440,76 @@ boolean writeDataUsers(Word foldername) {
         while (!IsEmptyPrioQueue(temp)) {
             friend request;
             DequeuePrioQueue(&temp, &request);
-            sender[n] = ElmtUsername(users, i);
-            receiver[n] = ElmtUsername(users, request.IDrecieve);
+            sender[n] = request.IDrecieve;
+            receiver[n] = i;
             numFriend[n] = request.Friendcount;
 
-            printf("sender: %s\n", wordToStr(sender[n]));
-            printf("receiver: %s\n", wordToStr(receiver[n]));
-            printf("numFriend: %d\n", numFriend[n]);
             n++;
         }
     }
 
     fprintf(f, "%d\n", n);
     for (int i = 0; i < n; i++) {
-        fprintf(f, "%s %s %d\n", wordToStr(sender[i]), wordToStr(receiver[i]), numFriend[i]);
+        fprintf(f, "%d %d %d\n", sender[i], receiver[i], numFriend[i]);
     }
 
     fprintf(f, ";");
     fclose(f);
+    return true;
+}
+
+boolean writeDataKicauan(Word foldername) {
+    Word directory = Direc(foldername, "kicauan.config", 14);
+    FILE *f = fopen(wordToStr(directory), "w");
+    // print("directory: %s\n", wordToStr(directory));
+
+    // Cek apakah file sudah ada, jika sudah ada maka ganti dengan yang baru
+    if (f == NULL) {
+        return false;
+    }
+
+    fprintf(f, "%d\n", Count(kicauan));
+    // print("Count(kicauan): %d\n", Count(kicauan));
+
+    for (int i = 1; i <= Count(kicauan); i++) {
+        fprintf(f, "%d\n", i);
+        fprintf(f, "%s\n", wordToStr(GetText(kicauan, i)));
+        fprintf(f, "%d\n", GetLike(kicauan, i));
+        fprintf(f, "%s\n", wordToStr(GetAuthor(kicauan, i)));
+        fprintf(f, "%s\n", wordToStr(parseDatetimeToWord(GetTime(kicauan, i))));
+    }
+
+    fprintf(f, ";");
+    fclose(f);
+    return true;
+}
+
+boolean writeDataBalasan(Word foldername) {
+    // Word directory = Direc(foldername, "balasan.config", 14);
+    // FILE *f = fopen(wordToStr(directory), "w");
+    // // print("directory: %s\n", wordToStr(directory));
+
+    // // Cek apakah file sudah ada, jika sudah ada maka ganti dengan yang baru
+    // if (f == NULL) {
+    //     return false;
+    // }
+
+    // // Count balasan yang tidak kosong
+    // int N = 0;
+    // for (int i = 1; i <= Count(kicauan); i++) {
+    //     if (B) {
+    //         N++;
+    //     }
+    // }
+
+    // fprintf(f, ";");
+    // fclose(f);
+    // return true;
 }
 
 boolean saveConfig(Word foldername) {
     START_YELLOW;
-    for (int i = 0; i < (40 + foldername.Length); i++) {
+    for (int i = 0; i < (42 + foldername.Length); i++) {
         printf("-");
     }
 
@@ -484,10 +536,10 @@ boolean saveConfig(Word foldername) {
 
     // Memuat balasan.config
     printf("| Menyimpan file `config/%s/balasan.config  |\n", wordToStr(foldername));
-    // if (!writeDataBalasan(foldername)) {
-    //     errorLog(foldername.Length);
-    //     return false;
-    // }
+    if (!writeDataBalasan(foldername)) {
+        errorLog(foldername.Length);
+        return false;
+    }
 
     // Memuat draf.config
     printf("| Menyimpan file `config/%s/draf.config     |\n", wordToStr(foldername));
@@ -496,7 +548,7 @@ boolean saveConfig(Word foldername) {
     //     return false;
     // }
 
-    for (int i = 0; i < (40 + foldername.Length); i++) {
+    for (int i = 0; i < (42 + foldername.Length); i++) {
         printf("-");
     }
     printf("\n\n");

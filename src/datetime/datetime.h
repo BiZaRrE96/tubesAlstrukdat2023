@@ -254,5 +254,29 @@ boolean parseWordToDatetime(Word W, DATETIME* D) {
     return true;
 }
 
+Word parseDatetimeToWord(DATETIME D) {
+    Word W;
+    W.Length = 19;
+    W.TabWord[0] = (Day(D) / 10) + '0';
+    W.TabWord[1] = (Day(D) % 10) + '0';
+    W.TabWord[2] = '/';
+    W.TabWord[3] = (Month(D) / 10) + '0';
+    W.TabWord[4] = (Month(D) % 10) + '0';
+    W.TabWord[5] = '/';
+    W.TabWord[6] = (Year(D) / 1000) + '0';
+    W.TabWord[7] = ((Year(D) / 100) % 10) + '0';
+    W.TabWord[8] = ((Year(D) / 10) % 10) + '0';
+    W.TabWord[9] = (Year(D) % 10) + '0';
+    W.TabWord[10] = ' ';
+    W.TabWord[11] = (Hour(Time(D)) / 10) + '0';
+    W.TabWord[12] = (Hour(Time(D)) % 10) + '0';
+    W.TabWord[13] = ':';
+    W.TabWord[14] = (Minute(Time(D)) / 10) + '0';
+    W.TabWord[15] = (Minute(Time(D)) % 10) + '0';
+    W.TabWord[16] = ':';
+    W.TabWord[17] = (Second(Time(D)) / 10) + '0';
+    W.TabWord[18] = (Second(Time(D)) % 10) + '0';
+    return W;
+}
 
 #endif

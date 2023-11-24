@@ -339,6 +339,8 @@ void CETAK_UTAS(ListUtas listutas, int idxUtas, User user) {
         printf("\n");
         printf("    | %s\n", wordToStr(kicau.Text));
         p = NEXT(p);
+
+        i++;
     }
 }
 // boolean KicauUsed(int IDKicau, ListUtas LU){

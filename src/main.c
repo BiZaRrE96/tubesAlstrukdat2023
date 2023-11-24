@@ -130,7 +130,8 @@ int main ()
                 continue;
             }
             // Masukkan fungsi ganti profil disini
-            printf("Perintah Ganti Profil\n");      // Nanti hapus aja
+            GANTI_PROFIL(&currentUser);
+            Pengguna(users, indexOfUser(users, currentUser.username)) = currentUser;
         } else
 
         if (isCommandLihatProfil()) {
