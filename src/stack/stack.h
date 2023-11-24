@@ -1,0 +1,76 @@
+/* File : stack.h */
+/* deklarasi stack yang diimplementasi dengan tabel kontigu dan ukuran sama */
+/* TOP adalah alamat elemen puncak */
+/* Implementasi dalam bahasa C dengan alokasi statik */
+#ifndef stackt_H
+#define stackt_H
+
+#include "../boolean/boolean.h"
+
+#define Nil_Stack -1
+#define MaxEl_Stack 100
+/* Nil_Stack adalah stack dengan elemen kosong . */
+
+typedef int stackinfotype;
+typedef int stackaddress;   /* indeks tabel */
+
+/* Contoh deklarasi variabel bertype stack dengan ciri TOP : */
+/* Versi I : dengan menyimpan tabel dan alamat top secara eksplisit*/
+typedef struct { 
+  stackinfotype T[MaxEl_Stack]; /* tabel penyimpan elemen */
+  stackaddress TOP;  /* alamat TOP: elemen puncak */
+} Stack;
+/* Definisi stack S kosong : S.TOP = Nil_Stack */
+/* Elemen yang dipakai menyimpan nil_Stackai Stack T[0]..T[MaxEl_Stack-1] */
+/* Jika S adalah Stack maka akses elemen : */
+   /* S.T[(S.TOP)] untuk mengakses elemen TOP */
+   /* S.TOP adalah alamat elemen TOP */
+
+/* Definisi akses dengan Selektor : Set dan Get */
+#define Top(S) (S).TOP
+#define InfoTop(S) (S).T[(S).TOP]
+
+/* ************ Prototype ************ */
+/* *** Konstruktor/Kreator *** */
+void CreateEmptyStack(Stack *S)
+/* I.S. sembarang; */
+/* F.S. Membuat sebuah stack S yang kosong berkapasitas MaxEl */
+/* jadi indeksnya antara 0.. MaxEl */
+/* Ciri stack kosong : TOP bernilai Nil */
+{
+    Top(*S) = Nil_Stack;
+}
+
+/* ************ Predikat Untuk test keadaan KOLEKSI ************ */
+boolean IsEmptyStack(Stack S)
+/* Mengirim true jika Stack kosong: lihat definisi di atas */
+{
+    return (Top(S) == Nil_Stack);
+}
+
+boolean IsFullStack(Stack S)
+/* Mengirim true jika tabel penampung nilai elemen stack penuh */
+{
+    return (Top(S) == MaxEl_Stack - 1);
+}
+
+/* ************ Menambahkan sebuah elemen ke Stack ************ */
+void PushStack(Stack *S, stackinfotype X)
+/* Menambahkan X sebagai elemen Stack S. */
+/* I.S. S mungkin kosong, tabel penampung elemen stack TIDAK penuh */
+/* F.S. X menjadi TOP yang baru,TOP bertambah 1 */
+{
+    Top(*S)++;
+    InfoTop(*S) = X;
+}
+/* ************ Menghapus sebuah elemen Stack ************ */
+void PopStack(Stack *S, stackinfotype *X)
+/* Menghapus X dari Stack S. */
+/* I.S. S  tidak mungkin kosong */
+/* F.S. X adalah nilai elemen TOP yang lama, TOP berkurang 1 */
+{
+    *X = InfoTop(*S);
+    Top(*S)--;
+}
+
+#endif
