@@ -12,6 +12,7 @@
 #include "../datetime/datetime.h"
 #include "kicau.h"
 
+
 extern KicauList kicauan;
 
 typedef int AddressDraf;
@@ -77,12 +78,12 @@ void draf(DrafStack *DS, int idxUser, Word user){
 void hapus(DrafStack *DS){
     KICAU X;
     Pop(DS,&X);
-    printf("Draf telah berhasil dihapus!");
+    printf("Draf telah berhasil dihapus!\n\n");
 }
 
 void simpan(KICAU Draf, DrafStack *DS){
     Push(DS,Draf);
-    printf("Draf telah berhasil disimpan!");
+    printf("Draf telah berhasil disimpan!\n\n");
 }
 
 void terbit(DrafStack *DS, id x) {

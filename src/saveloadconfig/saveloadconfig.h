@@ -8,10 +8,12 @@
 // #include "../pcolor/pcolor.h"
 #include "../screen/screen.h"
 #include "../kicau/kicau.h"
+#include "../kicau/draf.h"
 
 extern UserList users;
 extern Friendship friendship;
 extern KicauList kicauan;
+extern DrafList drafList;
 
 Word Direc(Word foldername, char filename[], int lenFilename)
 /*
@@ -49,6 +51,7 @@ boolean readDataUsers(Word foldername)
     // setSizeFriendship(F, wordToInt(currentWord));
 
     for (int i = 0; i < (users).Neff; i++) {
+        CreateEmpty(&ElmtDrafList(drafList, i));
         // Username
         AdvSentence(); currentWord.Length--;
         // printf("ElmtUsername: %s\n", currentWord.TabWord);
@@ -220,6 +223,87 @@ boolean readDataBalasan(Word foldername) {
     return true;
 }
 
+boolean readDataDraf(Word foldername) {
+    Word directory = Direc(foldername, "draf.config", 11); 
+    if (fopen(wordToStr(directory), "r") == NULL) {
+        printf("File tidak ditemukan\n");
+        return false;
+    }
+
+    STARTWORDFILE(wordToStr(directory));
+
+
+    // if (!isWordInt(currentWord))
+    //     return false;
+
+    int N = wordToInt(currentWord);
+    printf("N: %d\n", N);
+
+    while (N--) {
+        AdvSentence(); currentWord.Length--;
+        // Ambil sebuah integer pada elemen paling kiri currentWord
+        Word M; M.Length = 0;
+        int itr = currentWord.Length - 1;
+        printf("currentWord: %s\n", wordToStr(currentWord));
+
+        while (currentWord.TabWord[itr] != ' ') {
+            M.TabWord[M.Length] = currentWord.TabWord[itr];
+            M.Length++;
+            itr--;
+            currentWord.Length--;
+        }
+
+        // Membalikkan M
+        for (int i = 0; i < M.Length/2; i++) {
+            char temp = M.TabWord[i];
+            M.TabWord[i] = M.TabWord[M.Length - i - 1];
+            M.TabWord[M.Length - i - 1] = temp;
+        }
+        
+
+        int nDraf = wordToInt(M);
+
+        currentWord.Length--;
+        Word username = currentWord;
+        int idxUser = indexOfUser(users, username);
+        printf("Username : %s\n", wordToStr(username));
+        printf("Length: %d\n", username.Length);
+        printf("idxUser: %d\n", idxUser);
+
+        KICAU k[nDraf];
+
+        for (int i = 0; i < nDraf; i++) {
+            AdvSentence(); currentWord.Length--;
+            Word text = currentWord;
+
+            AdvSentence(); currentWord.Length--;
+            DATETIME time;
+
+            if (!parseWordToDatetime(currentWord, &time)) {
+                return false;
+            }
+
+            k[i].Text = text;
+            k[i].Time = time;
+            k[i].Author = username;
+
+        }
+
+        for (int i = nDraf - 1; i >= 0; i--) {
+            Push(&ElmtDrafList(drafList, idxUser), k[i]);
+        }
+        // KICAU k;
+        // k.Text = text;
+        // k.Time = time;
+        // k.Author = username;
+
+        // Push(&ElmtDrafList(drafList, idxUser), k);
+    }
+
+    return true;
+
+}
+
 void errorLog(int lenFoldername)
 /* Menampilkan pesan kesalahan */
 {
@@ -275,10 +359,10 @@ boolean loadConfig(Word foldername)
 
     // Memuat draf.config
     printf("| Memuat file `config/%s/draf.config     |\n", wordToStr(foldername));
-    // if (!readDataDraft(users, foldername)) {
-    //     errorLog(foldername.Length);
-    //     return false;
-    // }
+    if (!readDataDraf(foldername)) {
+        errorLog(foldername.Length);
+        return false;
+    }
 
     for (int i = 0; i < (40 + foldername.Length); i++) {
         printf("-");
