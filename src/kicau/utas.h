@@ -324,8 +324,7 @@ void CETAK_UTAS(ListUtas listutas, int idxUtas, User user) {
     KICAU kicau = INFO(p);
     printf("| ID = %d\n", IDKicau(utas));
     printf("| %s \n", wordToStr(Author(utas)));
-    printf("| ");
-    TulisDATETIME(kicau.Time);
+    printf("| "); TulisDATETIME(kicau.Time);
     printf("\n");
     printf("| %s\n", wordToStr(kicau.Text));
     p = NEXT(p);

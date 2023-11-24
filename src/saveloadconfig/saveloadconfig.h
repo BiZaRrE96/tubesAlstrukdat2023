@@ -9,12 +9,14 @@
 #include "../screen/screen.h"
 #include "../kicau/kicau.h"
 #include "../kicau/draf.h"
+#include "../kicau/utas.h"
 #include <sys/stat.h>
 
 extern UserList users;
 extern Friendship friendship;
 extern KicauList kicauan;
 extern DrafList drafList;
+extern ListUtas utasList;
 
 Word Direc(Word foldername, char filename[], int lenFilename)
 /*
@@ -298,7 +300,60 @@ boolean readDataDraf(Word foldername) {
 
 }
 
+boolean readDataUtas(Word foldername) {
+    Word directory = Direc(foldername, "utas.config", 11); 
+    if (fopen(wordToStr(directory), "r") == NULL) {
+        printf("File tidak ditemukan\n");
+        return false;
+    }
 
+    STARTWORDFILE(wordToStr(directory));
+
+    int N = wordToInt(currentWord);
+    // printf("N = %d\n", N);
+    for (int i = 0; i < N; i++) {
+        ADVWORD(); currentWord.Length--;
+        int idKicau = wordToInt(currentWord);
+        // printf("idKicau: %d\n", idKicau);
+
+        ADVWORD(); currentWord.Length--;
+        int M = wordToInt(currentWord);
+        // printf("M: %d\n", M);
+
+        Utas utas;
+        utas.IDKicau = idKicau;
+        utas.IDUtas = i;
+        createEmptyUtas(&utas);
+
+        insertFirstUtas(&utas, GetKicauan(kicauan, idKicau));
+
+        for (int j = 0; j < M; j++) {
+            KICAU k;
+            AdvSentence(); currentWord.Length--;
+            // printf("currentWord: %s\n", wordToStr(currentWord));
+            k.Text = currentWord;
+
+            AdvSentence(); currentWord.Length--;
+            k.Author = currentWord;
+
+            AdvSentence(); currentWord.Length--;
+            DATETIME time;
+            if (!parseWordToDatetime(currentWord, &time)) {
+                return false;
+            }
+            k.Time = time;
+
+            insertLastUtas(&utas, k);
+        }
+
+        insertUtas(&utasList, utas);
+        // CETAK_UTAS(utasList, i+1, Pengguna(users, indexOfUser(users, utas.p->info.Author)));
+
+        
+    }
+
+    return true;
+}
 
 void errorLog(int lenFoldername)
 /* Menampilkan pesan kesalahan */
@@ -485,6 +540,13 @@ boolean loadConfig(Word foldername)
     // Memuat draf.config
     printf("| Memuat file `config/%s/draf.config     |\n", wordToStr(foldername));
     if (!readDataDraf(foldername)) {
+        errorLog(foldername.Length);
+        return false;
+    }
+
+    // Memuat utas.config
+    printf("| Memuat file `config/%s/utas.config     |\n", wordToStr(foldername));
+    if (!readDataUtas(foldername)) {
         errorLog(foldername.Length);
         return false;
     }

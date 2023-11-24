@@ -93,6 +93,7 @@ int main ()
 */
 {
     createKicauList(&kicauan, 100);
+    createListUtas(&utasList);
     startApp();
 
     while (true) {
