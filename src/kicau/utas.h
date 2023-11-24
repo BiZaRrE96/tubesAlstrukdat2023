@@ -7,6 +7,7 @@
 #include "../commandmachine/commandmachine.h"
 #include "../datetime/datetime.h"
 #include "kicau.h"
+
 // Utas dibuat dengan ADT LinkedList
 
 typedef struct node *AddressUtas;
@@ -27,7 +28,7 @@ typedef struct{
 typedef struct {
     Utas Utas[100];
     int length;
-}ListUtas;
+} ListUtas;
 
 #define GetUtas(LU,i) (LU).Utas[(i)]
 #define First(U) (U).p
@@ -41,7 +42,12 @@ void opsi(){
     printf("\n");
     printf("Apakah Anda ingin melanjutkan Utas ini? (YA/TIDAK)");
 }
-AddressUtas newNode(KICAU val){
+
+AddressUtas newNode(KICAU val) {
+/* Definisi Utas : */
+/* List kosong : FIRST(l) = NULL */
+/* Setiap elemen dengan Address p dapat diacu INFO(p), NEXT(p) */
+/* Elemen terakhir list: jika addressnya Last, maka NEXT(Last)=NULL */
     AddressUtas p = (AddressUtas) malloc(sizeof(Node));
     if (p!=NULL) {
         INFO(p) = val;
@@ -50,168 +56,189 @@ AddressUtas newNode(KICAU val){
     return p;
 }
 
-boolean KicauUsed(int IDKicau, ListUtas LU){
-    for (int i = 0; i < len(LU); i++){
-        if (IDKicau(GetUtas(LU,i)) == IDKicau){
-            return true;
-        }
-    }
-    return false;
+void createListUtas(ListUtas *LU){
+    len(*LU) = 0;
 }
 
-void UTAS(int IDKicau, KicauList KL, User user, ListUtas *LU) 
-{
-    if (!KicauUsed(IDKicau, *LU)){
-        if (isWordEqual(Username(user),GetAuthor(KL,IDKicau))){
-            Utas utas;
-            createUtas(&LU, KL, &utas, IDKicau);
-            AddressUtas p = First(utas);
-            opsi();
-            STARTCOMMAND();
-            Word input = currentWord;
-            printf("\n");
-            while (isWordStrEqual(input,"YA",2)){
-                KICAU kicau;
-                printf("Masukkan Kicauan:\n");
-                STARTCOMMAND();
-                input = currentWord;
-                kicau.Text = input;
-                setToCurrentTime(&kicau.Time);
-                AddressUtas Node = newNode(kicau);
-                NEXT(p)=Node;
-                p=NEXT(p);
-                opsi();
-                STARTCOMMAND();
-                input = currentWord;
-            }
-            printf("Utas selesai!\n");
-        } else {
-            printf("Utas ini bukan milik anda!\n");
-        }
-    } else {
-        printf("Kicauan ini telah digunakan sebagai Utas\n");
-    }
+void createEmptyUtas(Utas *U) {
+    First(*U) = NULL;
 }
 
-void createUtas(ListUtas *LU, KicauList KL, Utas *U, int IDKicau){
-    GetUtas(*LU,len(*LU)) =*U;
-    AddressUtas p = newNode(GetKicauan(KL,IDKicau));
-    First(*U) = p;
-    IDUtas(*U) = len(*LU);
-    printf("idUtas = %d\n",IDUtas(*U));
-    IDKicau(*U) = IDKicau;
-    len(*LU)++;
-}
-boolean UtasExist(int IDUtas, ListUtas LU){
-    if (IDUtas<len(LU)){
-        return true;
-    } else {
-        return false;
-    }
+boolean isEmptyListUtas(ListUtas LU){
+    return len(LU) == 0;
 }
 
-void cetakUtas(ListUtas LU,int IDUtas, User user){
-    if (UtasExist(IDUtas, LU)){
-        Utas utas=GetUtas(LU,IDUtas);
-        AddressUtas p = First(utas);
-        int i = 1;
-        if ((AcanSeeB(Username(user),Author(utas))) == true){
-            KICAU kicau = INFO(p);
-            printf("| ID = %d\n",IDKicau(utas));
-            printf("| %s \n",wordToStr(Author(utas)));
-            printf("| ");
-            TulisDATETIME(kicau.Time);
-            printf("\n");
-            printf("| %s\n",wordToStr(kicau.Text));
-            p = NEXT(p);
-            while (p != NULL){
-                KICAU kicau = INFO(p);
-                printf("\n");
-                printf("    | INDEX = %d\n",i);
-                printf("    | %s\n",wordToStr(Author(utas)));
-                printf("    ");
-                TulisDATETIME(kicau.Time);
-                printf("\n");
-                printf("    | %s\n",wordToStr(kicau.Text));
-                p = NEXT(p);
-            }
-        } else {
-            printf("Akun yang membuat utas ini adalah akun privat! Ikuti dahulu akun ini untuk melihat utasnya!\n");
-        }
-    } else {
-        printf("Utas tidak ditemukan!\n");
-    }
+boolean isEmptyUtas(Utas U){
+    return First(U) == NULL;
 }
 
-void Delete(Utas utas, int index){
-    AddressUtas temp,p = First(utas);
-    while(p != NULL){
-        temp = p;
-        p = NEXT(p);
-        index--;
-    NEXT(temp) = NEXT(p);
-    free(p);
-    }
+KICAU GetElmtFromUtas(List){
+
 }
 
-void HapusUtas(ListUtas *LU, int IDUtas, int index,  User user){
-    if (UtasExist(IDUtas, *LU)){  
-        if(index == 0){
-            printf("Anda tidak bisa menghapus kicauan utama!\n  ");
-        } else {
-            Utas utas = GetUtas(*LU, IDUtas);
-            int i = index;
-            AddressUtas p = First(utas);
-            if (isWordEqual(INFO(p).Author, Username(user))){
-                while(i != 0){
-                    p=NEXT(p);
-                    i--;
-                }
-                if (p==NULL){
-                    printf("Kicauan sambungan dengan index %d tidak ditemukan pada Utas!\n", index);
-                } else {
-                    Delete(utas, index);
-                }
-            } else {
-                printf("Anda tidak bisa menghapus kicauan dalam Utas ini!\n");
-            }
-        }
-    } else {
-        printf("Utas tidak ditemukan!\n");
-    }
-}
-void sambungUtas(ListUtas *LU,int IDUtas, int index, User user){
-    if (UtasExist(IDUtas, *LU)){
-        Utas utas = GetUtas(*LU, IDUtas);
-            int i = index-1;
-            AddressUtas p = First(utas);
-            if (isWordEqual(INFO(p).Author, Username(user))){
-                while(i != 0){
-                    p=NEXT(p);
-                    i--;
-                }
-                if (p==NULL){
-                    printf("Index terlalu tinggi!\n");
-                } else {
-                    KICAU kicau;
-                    printf("Masukkan kicauan: ");
-                    STARTCOMMAND();
-                    Word input = currentWord;
-                    if (!isBlank(input)){
-                        kicau.Text = input;
-                        setToCurrentTime(&kicau.Time);
-                        NEXT(p) = newNode(kicau);
-                        p = NEXT(p);
-                    }
-                    else{
-                        printf("Kicauan tidak boleh hanya berisi spasi!\n");
-                    }
-                }
-            } else {
-                printf("Anda tidak bisa menghapus kicauan dalam Utas ini!\n");
-            }
-    } else {
-        printf("Utas tidak ditemukan!\n");
-    }
-}
+
+// boolean KicauUsed(int IDKicau, ListUtas LU){
+//     for (int i = 0; i < len(LU); i++){
+//         if (IDKicau(GetUtas(LU,i)) == IDKicau){
+//             return true;
+//         }
+//     }
+//     return false;
+// }
+
+// void UTAS(int IDKicau, KicauList KL, User user, ListUtas *LU) 
+// {
+//     if (!KicauUsed(IDKicau, *LU)){
+//         if (isWordEqual(Username(user),GetAuthor(KL,IDKicau))){
+//             Utas utas;
+//             createUtas(&LU, KL, &utas, IDKicau);
+//             AddressUtas p = First(utas);
+//             opsi();
+//             STARTCOMMAND();
+//             Word input = currentWord;
+//             printf("\n");
+//             while (isWordStrEqual(input,"YA",2)){
+//                 KICAU kicau;
+//                 printf("Masukkan Kicauan:\n");
+//                 STARTCOMMAND();
+//                 input = currentWord;
+//                 kicau.Text = input;
+//                 setToCurrentTime(&kicau.Time);
+//                 AddressUtas Node = newNode(kicau);
+//                 NEXT(p)=Node;
+//                 p=NEXT(p);
+//                 opsi();
+//                 STARTCOMMAND();
+//                 input = currentWord;
+//             }
+//             printf("Utas selesai!\n");
+//         } else {
+//             printf("Utas ini bukan milik anda!\n");
+//         }
+//     } else {
+//         printf("Kicauan ini telah digunakan sebagai Utas\n");
+//     }
+// }
+
+// void createUtas(ListUtas *LU, KicauList KL, Utas *U, int IDKicau){
+//     GetUtas(*LU,len(*LU)) =*U;
+//     AddressUtas p = newNode(GetKicauan(KL,IDKicau));
+//     First(*U) = p;
+//     IDUtas(*U) = len(*LU);
+//     printf("idUtas = %d\n",IDUtas(*U));
+//     IDKicau(*U) = IDKicau;
+//     len(*LU)++;
+// }
+// boolean UtasExist(int IDUtas, ListUtas LU){
+//     if (IDUtas<len(LU)){
+//         return true;
+//     } else {
+//         return false;
+//     }
+// }
+
+// void cetakUtas(ListUtas LU,int IDUtas, User user){
+//     if (UtasExist(IDUtas, LU)){
+//         Utas utas=GetUtas(LU,IDUtas);
+//         AddressUtas p = First(utas);
+//         int i = 1;
+//         if ((AcanSeeB(Username(user),Author(utas))) == true){
+//             KICAU kicau = INFO(p);
+//             printf("| ID = %d\n",IDKicau(utas));
+//             printf("| %s \n",wordToStr(Author(utas)));
+//             printf("| ");
+//             TulisDATETIME(kicau.Time);
+//             printf("\n");
+//             printf("| %s\n",wordToStr(kicau.Text));
+//             p = NEXT(p);
+//             while (p != NULL){
+//                 KICAU kicau = INFO(p);
+//                 printf("\n");
+//                 printf("    | INDEX = %d\n",i);
+//                 printf("    | %s\n",wordToStr(Author(utas)));
+//                 printf("    ");
+//                 TulisDATETIME(kicau.Time);
+//                 printf("\n");
+//                 printf("    | %s\n",wordToStr(kicau.Text));
+//                 p = NEXT(p);
+//             }
+//         } else {
+//             printf("Akun yang membuat utas ini adalah akun privat! Ikuti dahulu akun ini untuk melihat utasnya!\n");
+//         }
+//     } else {
+//         printf("Utas tidak ditemukan!\n");
+//     }
+// }
+
+// void Delete(Utas utas, int index){
+//     AddressUtas temp,p = First(utas);
+//     while(p != NULL){
+//         temp = p;
+//         p = NEXT(p);
+//         index--;
+//     NEXT(temp) = NEXT(p);
+//     free(p);
+//     }
+// }
+
+// void HapusUtas(ListUtas *LU, int IDUtas, int index,  User user){
+//     if (UtasExist(IDUtas, *LU)){  
+//         if(index == 0){
+//             printf("Anda tidak bisa menghapus kicauan utama!\n  ");
+//         } else {
+//             Utas utas = GetUtas(*LU, IDUtas);
+//             int i = index;
+//             AddressUtas p = First(utas);
+//             if (isWordEqual(INFO(p).Author, Username(user))){
+//                 while(i != 0){
+//                     p=NEXT(p);
+//                     i--;
+//                 }
+//                 if (p==NULL){
+//                     printf("Kicauan sambungan dengan index %d tidak ditemukan pada Utas!\n", index);
+//                 } else {
+//                     Delete(utas, index);
+//                 }
+//             } else {
+//                 printf("Anda tidak bisa menghapus kicauan dalam Utas ini!\n");
+//             }
+//         }
+//     } else {
+//         printf("Utas tidak ditemukan!\n");
+//     }
+// }
+// void sambungUtas(ListUtas *LU,int IDUtas, int index, User user){
+//     if (UtasExist(IDUtas, *LU)){
+//         Utas utas = GetUtas(*LU, IDUtas);
+//             int i = index-1;
+//             AddressUtas p = First(utas);
+//             if (isWordEqual(INFO(p).Author, Username(user))){
+//                 while(i != 0){
+//                     p=NEXT(p);
+//                     i--;
+//                 }
+//                 if (p==NULL){
+//                     printf("Index terlalu tinggi!\n");
+//                 } else {
+//                     KICAU kicau;
+//                     printf("Masukkan kicauan: ");
+//                     STARTCOMMAND();
+//                     Word input = currentWord;
+//                     if (!isBlank(input)){
+//                         kicau.Text = input;
+//                         setToCurrentTime(&kicau.Time);
+//                         NEXT(p) = newNode(kicau);
+//                         p = NEXT(p);
+//                     }
+//                     else{
+//                         printf("Kicauan tidak boleh hanya berisi spasi!\n");
+//                     }
+//                 }
+//             } else {
+//                 printf("Anda tidak bisa menghapus kicauan dalam Utas ini!\n");
+//             }
+//     } else {
+//         printf("Utas tidak ditemukan!\n");
+//     }
+// }
 #endif 

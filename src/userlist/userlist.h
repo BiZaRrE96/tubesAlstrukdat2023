@@ -166,7 +166,7 @@ void LIHAT_PROFIL(UserList users, Word username, User currentUser, Friendship fr
     User user = Pengguna(users, idxUser);
     if ((Privacy(user) == PRIVATE) && FriendshipStatus(friendship, indexOfUser(users, currentUser.username), idxUser) == 0)
     {
-        printf("\nWah, akun %s diprivat nih. Ikuti dulu yuk untuk bisa melihat profil Tuan Prim!\n", wordToStr(username));
+        printf("\nWah, akun %s diprivat nih. Ikuti dulu yuk untuk bisa melihat profil %s\n", wordToStr(username), wordToStr(username));
         return;
     }
 
@@ -269,6 +269,10 @@ void DAFTAR(UserList *users, Friendship *friendship)
             FriendshipStatus(*friendship, idx, i) = 1;
         createPhoto(&Photo(Pengguna(*users, idx)));
     }
+
+    // Atur friendRequest
+    MakeEmptyPrioQueue(&Pengguna(*users, idx).friendRequest, 20);
+
 }
 
 void MASUK(UserList users, User *currentUser, boolean *isLogin)

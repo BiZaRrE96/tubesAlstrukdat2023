@@ -354,7 +354,7 @@ int main ()
             }   
 
             // Masukkan fungsi utas disini
-            UTAS(idKicau, kicauan, currentUser, &utasList);
+            // UTAS(idKicau, kicauan, currentUser, &utasList);
         } else
 
         if (isCommandSambungUtas()) {
@@ -369,7 +369,7 @@ int main ()
                 continue;
             }
 
-            sambungUtas(&utasList, idUtas, index, currentUser);
+            // sambungUtas(&utasList, idUtas, index, currentUser);
         } else
 
         if (isCommandHapusUtas()) {
@@ -387,7 +387,7 @@ int main ()
             printf("idUtas = %d, idx = %d\n", idUtas, index);
 
             // Masukkan fungsi hapus utas disini
-            HapusUtas(&utasList, idUtas, index, currentUser);
+            // HapusUtas(&utasList, idUtas, index, currentUser);
         } else
 
         if (isCommandCetakUtas()) {
@@ -401,10 +401,10 @@ int main ()
             if (!getParamInt(&idUtas)) {
                 errorCommand("Perintah CETAK_UTAS tidak valid", "CETAK_UTAS <id_utas>");
                 continue;
-            } else
+            } 
 
             // Masukkan fungsi cetak utas disini
-            cetakUtas(utasList, idUtas, currentUser);
+            // cetakUtas(utasList, idUtas, currentUser);
         } else
 
         if (isCommandSimpan()) {
