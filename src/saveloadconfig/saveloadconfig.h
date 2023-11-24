@@ -98,7 +98,6 @@ boolean readDataUsers(Word foldername)
             }
         }
 
-
         MakeEmptyPrioQueue(&ElmtFriendRequest(users, i), 20);
     }
   
@@ -135,7 +134,7 @@ boolean readDataUsers(Word foldername)
 }
 
 boolean readDataKicauan(Word foldername) {
-    Word directory = Direc(foldername, "kicauan.config", 15); 
+    Word directory = Direc(foldername, "kicauan.config", 14); 
     if (fopen(wordToStr(directory), "r") == NULL) {
         return false;
     }
@@ -146,6 +145,7 @@ boolean readDataKicauan(Word foldername) {
     Count(kicauan) = wordToInt(currentWord);
 
     for (int i = Count(kicauan); i > 0; i--) {
+        createBalasanList(&GetBalasan(kicauan, i));
         ADVWORD(); currentWord.Length--;
         int idKicau = wordToInt(currentWord);
 
@@ -162,8 +162,62 @@ boolean readDataKicauan(Word foldername) {
         if (!parseWordToDatetime(currentWord, &GetTime(kicauan, idKicau))) {
             return false;
         }
+
     }
 
+}
+
+boolean readDataBalasan(Word foldername) {
+    Word directory = Direc(foldername, "balasan.config", 14); 
+    if (fopen(wordToStr(directory), "r") == NULL) {
+        return false;
+    }
+
+    printf("Masuk\n");
+    STARTWORDFILE(wordToStr(directory));
+
+    int N = wordToInt(currentWord);
+
+    while (N--) {
+        ADVWORD(); currentWord.Length--;
+        int idKicau = wordToInt(currentWord);
+        // printf("idKicau: %d\n", idKicau);
+
+        ADVWORD(); currentWord.Length--;
+        int M = wordToInt(currentWord);
+        // printf("M: %d\n", M);
+
+        while (M--) {
+            // Proses pengambilan data
+            ADVWORD();
+            int parent = wordToInt(currentWord);
+            // printf("parent: %d\n", parent);
+            
+            ADVWORD(); currentWord.Length--;
+            int idBalasan = wordToInt(currentWord);
+            // printf("idBalasan: %d\n", idBalasan);
+
+            AdvSentence(); currentWord.Length--;
+            Word text = currentWord;
+            // printf("text: %s\n", wordToStr(text));
+
+            AdvSentence(); currentWord.Length--;
+            Word author = currentWord;
+            // printf("author: %s\n", wordToStr(author));
+
+            AdvSentence(); currentWord.Length--;
+            DATETIME time;
+            if (!parseWordToDatetime(currentWord, &time)) {
+                return false;
+            }
+            // printf("time: "); TulisDATETIME(time); printf("\n");
+
+            // BalasanList balasan = GetBalasan(kicauan, idKicau);
+            readBalasanFile(&GetBalasan(kicauan, idKicau), author, text, time, parent, idBalasan);
+            
+        }
+    }
+    return true;
 }
 
 void errorLog(int lenFoldername)
@@ -214,10 +268,10 @@ boolean loadConfig(Word foldername)
 
     // Memuat balasan.config
     printf("| Memuat file `config/%s/balasan.config  |\n", wordToStr(foldername));
-    // if (!readDataReply(users, foldername)) {
-    //     errorLog(foldername.Length);
-    //     return false;
-    // }
+    if (!readDataBalasan(foldername)) {
+        errorLog(foldername.Length);
+        return false;
+    }
 
     // Memuat draf.config
     printf("| Memuat file `config/%s/draf.config     |\n", wordToStr(foldername));

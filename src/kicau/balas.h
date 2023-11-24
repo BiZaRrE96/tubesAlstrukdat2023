@@ -79,7 +79,6 @@ void createBalasanList(BalasanList* BL){
 
 BALASAN* getBalasan(BalasanList Bl, id ID){
     BALASAN* p = Bl.First;
-    // printf("ID = %d\n",ID);
 
     if (p == NULL){
         return NULL;
@@ -195,6 +194,45 @@ void readBalasan(Word author,id parent, BalasanList *BL, Word kicauAuthor) {
     } 
 
     printf("\nWah, kicau tidak ditemukan!\n");
+
+};
+
+boolean readBalasanFile(BalasanList *BL, Word author, Word text, DATETIME time, id parent, id idBalas) {
+    if (parent == -1 || getBalasan(*BL, parent) != NULL) {
+        // Cek apakah author tidak berteman dengan user dan privat
+        if (parent == -1) {
+            if (balasAcanSeeB(author,author) == false) {
+                return false;
+            }
+        }
+        else 
+        if (balasAcanSeeB(author,getBalasan(*BL,parent)->Author) == false) {
+            return false;
+        }
+        
+
+        BL->countEvo++;
+        BL->realCount++;
+        BALASAN *b = (BALASAN*) malloc (sizeof(BALASAN));
+        b->Text = text;
+        b->Author = author;
+        b->Time = time;
+        if (parent == -1){
+            b->indexLevel = 0;
+        }
+        else{
+            b->indexLevel = (getBalasan(*BL,parent)->indexLevel)+1;
+        }
+        b->IdBalas = idBalas;
+        b->Prev = BL->Last;
+        b->Next = NULL;
+        b->parentID = parent;
+        insertBalasan(BL, b);   
+
+        return true;
+    } 
+
+    return false;
 
 };
 

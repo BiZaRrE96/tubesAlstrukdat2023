@@ -18,6 +18,7 @@ UserList users;             // Daftar pengguna dalam bentuk listStatik of User (
 Friendship friendship;      // Daftar pertemanan dalam bentuk adjacency matriks (friendship.h)
 User currentUser;           // User yang sedang login (user.h)
 KicauList kicauan;          // Daftar kicauan dalam bentuk listStatik of Kicau (kicau.h)
+DrafList drafList;          // Daftar draf dalam bentuk listStatik of DrafStack (draf.h)
 
 boolean isLogin = false;    // Apakah program sedang dalam keadaan login
 
@@ -318,23 +319,13 @@ int main ()
             }
             deleteBalasanId(&GetBalasan(kicauan, idKicau), idBalasan, idBalasan, currentUser.username);
         } else
-
         if (isCommandBuatDraf()) {
             if (!isLogin) {
                 printf("Anda belum login! Masuk terlebih dahulu untuk menikmati layanan BurBir\n");
                 continue;
             }
             // Masukkan fungsi buat draf disini
-            printf("Perintah Buat Draf\n"); // Nanti hapus aja
-        } else
-
-        if (isCommandBuatDraf()) {
-            if (!isLogin) {
-                printf("Anda belum login! Masuk terlebih dahulu untuk menikmati layanan BurBir\n");
-                continue;
-            }
-            // Masukkan fungsi buat draf disini
-            printf("Perintah Buat Draf\n"); // Nanti hapus aja
+            draf(&ELMT(drafList, indexOfUser(users, currentUser.username)), indexOfUser(users, currentUser.username), currentUser.username);
         } else
 
         if (isCommandLihatDraf()) {
@@ -343,7 +334,8 @@ int main ()
                 continue;
             }
             // Masukkan fungsi lihat draf disini
-            printf("Perintah Lihat Draf\n"); // Nanti hapus aja
+            // printf("Perintah Lihat Draf\n"); // Nanti hapus aja
+            viewDraf(&ELMT(drafList, indexOfUser(users, currentUser.username)), indexOfUser(users, currentUser.username), currentUser.username);
         } else
 
         if (isCommandUtas()) {

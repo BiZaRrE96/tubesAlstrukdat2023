@@ -12,21 +12,22 @@
 #include "../datetime/datetime.h"
 #include "kicau.h"
 
+extern KicauList kicauan;
 
 typedef int AddressDraf;
 
 typedef struct {
     KICAU Kicau[MaxEl]; // memori penyimpanan Draf
     AddressDraf TOP;
-    Word Author;
 } DrafStack;
 
 typedef struct {
     DrafStack buffer[20];
     int length;
-}DrafList;
+} DrafList;
 
 /* ***** SELEKTOR DRAF ***** */
+#define ElmtDrafList(DL,i) (DL).buffer[i]
 #define Top(DS) (DS).TOP
 #define InfoTop(DS) (DS).Kicau[(DS).TOP]
 #define Text(DS) (DS).Kicau[Top(DS)].Text
@@ -35,20 +36,12 @@ typedef struct {
 #define User(DL,i) (DL).buffer[i].Author
 #define ELMT(DL,i) (DL).buffer[i]
 
-
-
-void opsidraf(){
-    printf("Apakah anda ingin menghapus, menyimpan, atau menerbitkan draf ini?\n");
+void CreateEmpty(DrafStack *DS){
+    Top(*DS) = -1;
 }
-
-void CreateEmpty(DrafStack *DS, User user){
-    Top(*DS) = Nil;
-    Author(*DS) = Username(user);
-}
-
 
 boolean IsEmptyDraf(DrafStack DS){
-    return Top(DS) == Nil;
+    return Top(DS) == -1;
 }
 
 
@@ -63,7 +56,7 @@ void Pop(DrafStack *DS, KICAU *X){
     Top(*DS) -= 1;
 } 
 
-void draf(DrafStack *DS){
+void draf(DrafStack *DS, int idxUser, Word user){
     KICAU X;
     printf("Masukkan kicauan: ");
     STARTCOMMAND();
@@ -71,63 +64,78 @@ void draf(DrafStack *DS){
     if (!isBlank(input)){
         X.Text = input;
         setToCurrentTime(&X.Time);
+        X.Author = user;
         Push(DS,X);
+
+        opsidraf(DS, idxUser);
     }
     else{
         printf("Kicauan tidak boleh hanya berisi spasi!\n");
     }
 }
+
 void hapus(DrafStack *DS){
     KICAU X;
     Pop(DS,&X);
     printf("Draf telah berhasil dihapus!");
 }
+
 void simpan(KICAU Draf, DrafStack *DS){
     Push(DS,Draf);
     printf("Draf telah berhasil disimpan!");
 }
 
-void terbit(KicauList *KL, DrafStack DS, id x, User user){
-    Count(*KL)++;
-        int i = Count(*KL);
-        GetText(*KL,i) = Text(DS);
-        GetLike(*KL,i) = 0;
-        GetAuthor(*KL,i) = Username(user);
-        setToCurrentTime(&GetTime(*KL,i));
-        
-        printf("Selamat! kicauan telah diterbitkan!\nDetil kicauan:\n");
-        printKicauXasA(*KL, (i), Username(user));
-        printf("\n");
+void terbit(DrafStack *DS, id x) {
+    KICAU draft;
+    Pop(DS,&draft);
+    Count(kicauan)++;
+    int i = Count(kicauan);
+    GetText(kicauan,i) = draft.Text;
+    GetLike(kicauan,i) = 0;
+    GetAuthor(kicauan,i) = draft.Author;
+    GetTime(kicauan,i) = draft.Time;
+    
+    printf("Selamat! kicauan telah diterbitkan!\nDetil kicauan:\n");
+    printKicauXasA(kicauan, (i), draft.Author);
+    printf("\n");
 }
 
-void ubah(DrafStack *DS){
-    printf("Masukkan kicauan: ");
+void viewDraf(DrafStack *DS, int idxUser, Word user){
+    if (IsEmptyDraf(*DS)){
+        printf("\nYah, anda belum memiliki draf apapun! Buat dulu ya :D\n");
+        return 0;
+    }
+
+    printf("\nIni draf terakhir anda:\n");
+    printf("| "); TulisDATETIME(Time(*DS)); 
+    printf("\n| %s\n\n", wordToStr(Text(*DS)));
+
+    printf("Apakah anda ingin menghapus, mengubah, atau menerbitkan draf ini? (UBAH/HAPUS/TERBIT)\n");
     STARTCOMMAND();
-    Word input = currentWord;
-    if (!isBlank(input)){
-        Text(*DS) = input;
-        setToCurrentTime( &Time(*DS) );
-    }else{
-        printf("Kicauan tidak boleh hanya berisi spasi!\n");
+    if (isWordStrEqual(currentWord,"UBAH", 4)){
+        draf(DS, idxUser, user);
+    } else if (isWordStrEqual(currentWord,"HAPUS", 5)){
+        hapus(DS);
+    } else if (isWordStrEqual(currentWord,"TERBIT", 6)){
+        terbit(DS, idxUser);
+    } else {
+        printf("Perintah tidak dikenali!\n");
     }
+    
 }
-DrafStack searchDraf(DrafList DL, User user){
-    int i =0;
-    while (!isWordEqual(User(DL,i) , Username(user))){
-        i++;
-    }
-    return ELMT(DL,i);
-}
-void viewDraf(DrafList DL, User user){
-    DrafStack DS = searchDraf(DL, user);
 
-    if(IsEmptyDraf(DS)){
-        printf("Yah, anda belum memiliki draf apapun! Buat dulu ya :D");
-    } else{
-        printf("Ini draf terakhir anda:\n");
-        printf("| %s\n",wordToStr(Text(DS)));
-        printf("| ");
-        TulisDATETIME(Time(DS));
-        printf("\n");}
+void opsidraf(DrafStack *DS, int idxUser) {
+    printf("Apakah anda ingin menghapus, menyimpan, atau menerbitkan draf ini? (SIMPAN/HAPUS/TERBIT)\n");
+    STARTCOMMAND();
+    if (isWordStrEqual(currentWord,"SIMPAN", 6)){
+        return;
+    } else if (isWordStrEqual(currentWord,"HAPUS", 5)){
+        hapus(DS);
+    } else if (isWordStrEqual(currentWord,"TERBIT", 6)){
+        terbit(DS, idxUser);
+    } else {
+        printf("Perintah tidak dikenali!\n");
+        opsidraf(DS, idxUser);
+    }
 }
 #endif
