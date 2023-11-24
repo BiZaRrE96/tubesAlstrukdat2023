@@ -28,7 +28,8 @@ typedef struct
 #define ElmtFriendRequest(U, i) (U).TabUser[(i)].friendRequest
 /* ********** KONSTRUKTOR ********** */
 /* Konstruktor : create List kosong  */
-void CreateUserList(UserList *U){
+void CreateUserList(UserList *U)
+{
     Neff(*U) = 0;
 };
 /* I.S. U sembarang */
@@ -36,12 +37,35 @@ void CreateUserList(UserList *U){
 
 /* ********** SELEKTOR (TAMBAHAN) ********** */
 /* *** Banyaknya elemen *** */
-int listLengthUserlist(UserList U){
+int listLengthUserlist(UserList U)
+{
     return Neff(U);
 };
 /* Mengirimkan banyaknya elemen efektif list */
 /* Mengirimkan nol jika list l kosong */
 
+/* ********** SEARCHING ********** */
+/* ***  Perhatian : List boleh kosong!! *** */
+/* Search apakah ada elemen List l yang bernilai val */
+/* Jika ada, menghasilkan indeks i terkecil, dengan ELMT(l,i) = val */
+/* Jika tidak ada atau jika l kosong, mengirimkan IDX_UNDEF */
+/* Skema Searching yang digunakan bebas */
+int indexOfUser(UserList U, Word nama)
+{
+    int i = 0;
+    while (i < U.Neff && !isWordEqual(ElmtUsername(U, i), nama))
+    {
+        i++;
+    }
+    if (i == U.Neff)
+    {
+        return -1;
+    }
+    else
+    {
+        return i;
+    }
+}
 
 // void displayFriendship(Friendship friendship, int count) {
 //     int i, j;
@@ -59,35 +83,39 @@ int listLengthUserlist(UserList U){
 //     printf("\n");
 // }
 
-
-void daftarTeman(User currentUser, UserList userList, Friendship friendship) {
+void daftarTeman(User currentUser, UserList userList, Friendship friendship)
+{
     int UserId = indexOfUser(userList, currentUser.username);
     printf("\n\n");
-    
+
     int count = 0;
-    for (int i = 0; i < userList.Neff; i++) {
-        if (FriendshipStatus(friendship, UserId, i) == 1 && i != UserId) {
-            if (count == 0) {
+    for (int i = 0; i < userList.Neff; i++)
+    {
+        if (FriendshipStatus(friendship, UserId, i) == 1 && i != UserId)
+        {
+            if (count == 0)
+            {
                 printf("Daftar teman %s:\n", wordToStr(currentUser.username));
             }
             count++;
 
-
             printf("%d. %s\n", count, wordToStr(ElmtUsername(userList, i)));
-            
         }
     }
 
-    if (count == 0) {
+    if (count == 0)
+    {
         printf("%s belum mempunyai teman\n", wordToStr(currentUser.username));
     }
 
     printf("\n\n");
 }
 
-void hapusTeman(User currentUser, UserList usersList, Friendship *friendship) {
+void hapusTeman(User currentUser, UserList usersList, Friendship *friendship)
+{
     int currentUserIdx = indexOfUser(usersList, currentUser.username);
-    if (isEmptyFriend(*friendship, currentUserIdx)) {
+    if (isEmptyFriend(*friendship, currentUserIdx))
+    {
         printf("\n\nAnda belum mempunyai teman\n\n");
         return;
     }
@@ -95,24 +123,27 @@ void hapusTeman(User currentUser, UserList usersList, Friendship *friendship) {
     printf("\n\n");
     printf("Masukkan nama pengguna: \n");
     STARTCOMMAND();
-    
+
     // Cek apakah ada user dengan nama tersebut
     int idxUser = indexOfUser(usersList, currentWord);
-    if (idxUser == -1) {
+    if (idxUser == -1)
+    {
         printf("\nTidak dapat menemukan pengguna bernama %s.\n", wordToStr(currentWord));
         return;
     }
 
     // Cek apakah user tersebut berteman dengan currentUser
-    if (FriendshipStatus(*friendship, currentUserIdx, idxUser) == 0) {
+    if (FriendshipStatus(*friendship, currentUserIdx, idxUser) == 0)
+    {
         printf("\nAnda tidak berteman dengan %s.\n", wordToStr(currentWord));
         return;
     }
-    
+
     printf("\nApakah Anda yakin ingin menghapus %s dari daftar teman Anda? (YA/TIDAK) ", wordToStr(currentWord));
     Word userDelete = currentWord;
     STARTCOMMAND();
-    if (!isWordStrEqual(currentWord, "YA", 2)) {
+    if (!isWordStrEqual(currentWord, "YA", 2))
+    {
         printf("\n\nPenghapusan teman dibatalkan.\n\n");
         return;
     }
@@ -121,19 +152,20 @@ void hapusTeman(User currentUser, UserList usersList, Friendship *friendship) {
     FriendshipStatus(*friendship, currentUserIdx, idxUser) = 0;
     FriendshipStatus(*friendship, idxUser, currentUserIdx) = 0;
     printf("%s berhasil dihapus dari daftar teman Anda.\n\n", wordToStr(userDelete));
-
 }
 
 void LIHAT_PROFIL(UserList users, Word username, User currentUser, Friendship friendship)
 {
     int idxUser = indexOfUser(users, username);
-    if (idxUser == -1) {
+    if (idxUser == -1)
+    {
         printf("\nTidak dapat menemukan pengguna bernama %s.\n", wordToStr(username));
         return;
-    } 
-    
+    }
+
     User user = Pengguna(users, idxUser);
-    if ((Privacy(user) == PRIVATE) && FriendshipStatus(friendship, indexOfUser(users, currentUser.username), idxUser) == 0) {
+    if ((Privacy(user) == PRIVATE) && FriendshipStatus(friendship, indexOfUser(users, currentUser.username), idxUser) == 0)
+    {
         printf("\nWah, akun %s diprivat nih. Ikuti dulu yuk untuk bisa melihat profil Tuan Prim!\n", wordToStr(username));
         return;
     }
@@ -145,47 +177,27 @@ void LIHAT_PROFIL(UserList users, Word username, User currentUser, Friendship fr
 
     printf("| Foto: \n");
     displayPhoto(Photo(user));
-
-
 }
-
-
-/* ********** SEARCHING ********** */
-/* ***  Perhatian : List boleh kosong!! *** */
-int indexOfUser(UserList U, Word nama) {
-    int i = 0;
-    while (i < U.Neff && !isWordEqual(ElmtUsername(U, i), nama)) {
-        i++;
-    }
-    if (i == U.Neff) {
-        return -1;
-    } else {
-        return i;
-    }
-}
-/* Search apakah ada elemen List l yang bernilai val */
-/* Jika ada, menghasilkan indeks i terkecil, dengan ELMT(l,i) = val */
-/* Jika tidak ada atau jika l kosong, mengirimkan IDX_UNDEF */
-/* Skema Searching yang digunakan bebas */
 
 /* ********** MENAMBAH ELEMEN ********** */
 /* *** Menambahkan elemen terakhir *** */
-void insertLastUser(UserList *U, User user){
+void insertLastUser(UserList *U, User user)
+{
     Neff(*U)++;
 
-    Pengguna(*U, listLengthUserlist(*U)-1) = user;
-
+    Pengguna(*U, listLengthUserlist(*U) - 1) = user;
 }
 /* Proses: Menambahkan val sebagai elemen terakhir List */
 /* I.S. List l boleh kosong, tetapi tidak penuh */
 /* F.S. val adalah elemen terakhir l yang baru */
 
-void printListUser(UserList U) {
-    for (int i = 0; i < U.Neff; i++) {
+void printListUser(UserList U)
+{
+    for (int i = 0; i < U.Neff; i++)
+    {
         printf("%s\n", wordToStr(ElmtUsername(U, i)));
     }
 }
-
 
 /* ********** ADT USERLIST ********** */
 void DAFTAR(UserList *users, Friendship *friendship)
@@ -241,7 +253,7 @@ void DAFTAR(UserList *users, Friendship *friendship)
         }
     }
     User NewUser = {name, pass};
-    
+
     printf("\nPengguna telah berhasil terdaftar. Masuk untuk menikmati fitur-fitur BurBir.\n");
     insertLastUser(users, NewUser);
     int idx = indexOfUser(*users, name);
@@ -251,66 +263,63 @@ void DAFTAR(UserList *users, Friendship *friendship)
     {
         FriendshipStatus(*friendship, idx, i) = 0;
         FriendshipStatus(*friendship, i, idx) = 0;
-        if (i == idx) FriendshipStatus(*friendship, idx, i) = 1;
+        if (i == idx)
+            FriendshipStatus(*friendship, idx, i) = 1;
         createPhoto(&Photo(Pengguna(*users, idx)));
     }
-
-
 }
 
 void MASUK(UserList users, User *currentUser, boolean *isLogin)
 {
-        printf("\n\nMasukkan Nama:\n");
+    printf("\n\nMasukkan Nama:\n");
+    STARTCOMMAND();
+
+    Word nama = currentWord;
+    int IndexUser = indexOfUser(users, nama);
+
+    if (IndexUser == -1)
+    {
+        printf("Wah, nama yang Anda cari tidak ada. Masukkan nama lain!");
+        MASUK(users, currentUser, isLogin);
+        return;
+    }
+
+    User terdaftar = Pengguna(users, IndexUser);
+    Word CorrectPass = terdaftar.password;
+    boolean PassCheck = false;
+
+    while (!PassCheck)
+    {
+        printf("\n\nMasukkan kata sandi:\n");
         STARTCOMMAND();
 
-        Word nama = currentWord;
-        int IndexUser = indexOfUser(users, nama);
-
-        if (IndexUser == -1)
+        Word Inputpass = currentWord;
+        if (compareWord(CorrectPass, Inputpass))
         {
-            printf("Wah, nama yang Anda cari tidak ada. Masukkan nama lain!");
-            MASUK(users, currentUser, isLogin);
-            return;
+            PassCheck = true;
         }
-
-        User terdaftar = Pengguna(users, IndexUser);
-        Word CorrectPass = terdaftar.password;
-        boolean PassCheck = false;
-
-        while (!PassCheck)
+        else
         {
-            printf("\n\nMasukkan kata sandi:\n");
-            STARTCOMMAND();
-
-            Word Inputpass = currentWord;
-            if (compareWord(CorrectPass, Inputpass))
-            {
-                PassCheck = true;
-            }
-            else
-            {
-                PassCheck = false;
-                printf("Wah, kata sandi yang Anda masukkan belum tepat. Periksa kembali kata sandi Anda!");
-            }
+            PassCheck = false;
+            printf("Wah, kata sandi yang Anda masukkan belum tepat. Periksa kembali kata sandi Anda!");
         }
-        printf("Anda telah berhasil masuk dengan nama pengguna ");
-        PrintWord(terdaftar.username);
-        printf(". Mari menjelajahi BurBir bersama Ande-Ande Lumut!\n");
-        *currentUser = terdaftar;
-        *isLogin = true;
-        
-
+    }
+    printf("Anda telah berhasil masuk dengan nama pengguna ");
+    PrintWord(terdaftar.username);
+    printf(". Mari menjelajahi BurBir bersama Ande-Ande Lumut!\n");
+    *currentUser = terdaftar;
+    *isLogin = true;
 }
 
 void KELUAR(boolean *isLogin)
 {
     *isLogin = false;
-    
+
     printf("\nAnda berhasil logout. Sampai jumpa di pertemuan berikutnya!\n");
 }
 
-
-void tambahteman (User akunlogin, UserList* listakun, Friendship friendship) {
+void tambahteman(User akunlogin, UserList *listakun, Friendship friendship)
+{
     prioqueue Q = akunlogin.friendRequest;
 
     if (!IsEmptyPrioQueue(Q))
@@ -351,14 +360,14 @@ void tambahteman (User akunlogin, UserList* listakun, Friendship friendship) {
         return;
     }
 
-
     // Kirim permintaan pertemanan
     friend sender = {idxUser, countFriend(friendship, idxUser)};
     EnqueuePrioQueue(&listakun->TabUser[idxReceived].friendRequest, sender);
-    printf("Permintaan pertemanan kepada %s telah dikirim. Tunggu beberapa saat hingga permintaan Anda disetujui.\n\n\n", wordToStr(ElmtUsername(*listakun, idxReceived)));    
+    printf("Permintaan pertemanan kepada %s telah dikirim. Tunggu beberapa saat hingga permintaan Anda disetujui.\n\n\n", wordToStr(ElmtUsername(*listakun, idxReceived)));
 }
 
-void daftarpermintaanteman (User akunlogin, UserList listakun) {
+void daftarpermintaanteman(User akunlogin, UserList listakun)
+{
     prioqueue Q = akunlogin.friendRequest;
     if (IsEmptyPrioQueue(Q))
     {
@@ -375,11 +384,10 @@ void daftarpermintaanteman (User akunlogin, UserList listakun) {
         printf("| %s\n", wordToStr(ElmtUsername(listakun, sender.IDrecieve)));
         printf("| Jumlah teman: %d\n\n", sender.Friendcount);
     }
-    
-    
 }
 
-void setujuipermintaanteman (User *akunlogin, UserList *listakun, Friendship *friendship) {
+void setujuipermintaanteman(User *akunlogin, UserList *listakun, Friendship *friendship)
+{
     prioqueue Q = FriendRequest(*akunlogin);
     if (IsEmptyPrioQueue(Q))
     {
@@ -417,6 +425,6 @@ void setujuipermintaanteman (User *akunlogin, UserList *listakun, Friendship *fr
     {
         printf("Perintah tidak sesuai.\n\n");
     }
-} 
+}
 
 #endif
