@@ -15,7 +15,7 @@ int main()
     TulisDATETIME(T2);
     printf("\n");
 
-    // TEQ
+    // DEQ
     printf("DEQ\n");
     if (DEQ(T1, T2))
     {
@@ -26,7 +26,7 @@ int main()
         printf("T1 != T2\n");
     }
 
-    // TNEQ
+    // DNEQ
     printf("DNEQ\n");
     if (DNEQ(T1, T2))
     {
@@ -37,7 +37,7 @@ int main()
         printf("T1 = T2\n");
     }
 
-    // TLT
+    // DLT
     printf("DLT\n");
     if (DLT(T1, T2))
     {
@@ -48,7 +48,7 @@ int main()
         printf("T1 > T2\n");
     }
 
-    // TGT
+    // DGT
     printf("DGT\n");
     if (DGT(T1, T2))
     {
