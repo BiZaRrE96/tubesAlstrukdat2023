@@ -1,6 +1,6 @@
 // NAMA PEMBUAT : Christian Justin Hendrawan
 // NIM : 13522135
-// TOPIK : ADT LISTSTATIK
+// TOPIK : ADT LIST STATIK
 
 /* MODUL LIST INTEGER STATIK DENGAN ELEMEN POSITIF */
 /* Berisi definisi dan semua primitif pemrosesan list integer statik dengan elemen positif */
