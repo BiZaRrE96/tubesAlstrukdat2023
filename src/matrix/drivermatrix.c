@@ -16,4 +16,11 @@ int main()
     {
         printf("Matrix beda\n");
     }
+    printf("\n");
+    printf ("Matriks M1: \n ");
+    displayMatrix(m1);
+    printf("\n");
+    printf ("Matriks M2: \n ");
+    displayMatrix(m2);
+    printf("\n");
 }

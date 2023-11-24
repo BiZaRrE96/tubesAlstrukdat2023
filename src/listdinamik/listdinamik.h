@@ -175,34 +175,6 @@ void printListDin(ListDin l)
     printf("]");
 }
 
-/* ********** OPERATOR ARITMATIKA ********** */
-/* *** Aritmatika list : Penjumlahan, pengurangan, perkalian, ... *** */
-ListDin plusMinusListDin(ListDin l1, ListDin l2, boolean plus)
-/* Prekondisi : l1 dan l2 memiliki Neff_DINAMIS sama dan tidak kosong */
-/* Jika plus = true, mengirimkan  l1+l2, yaitu setiap elemen l1 dan l2 pada indeks yang sama dijumlahkan */
-/* Jika plus = false, mengirimkan l1-l2, yaitu setiap elemen l1 dikurangi elemen l2 pada indeks yang sama */
-{
-    int i;
-    ListDin Hasil;
-    CreateListDin(&Hasil, LISTDIN_CAPACITY(l1));
-    NEFF_DINAMIS(Hasil) = NEFF_DINAMIS(l1);
-    if (plus == true)
-    {
-        for (i = 0; i <= NEFF_DINAMIS(l1) - 1; i++)
-        {
-            ELMT_LIST_DINAMIS(Hasil, i) = ELMT_LIST_DINAMIS(l1, i) + ELMT_LIST_DINAMIS(l2, i);
-        }
-    }
-    else
-    {
-        for (i = 0; i <= NEFF_DINAMIS(l1) - 1; i++)
-        {
-            ELMT_LIST_DINAMIS(Hasil, i) = ELMT_LIST_DINAMIS(l1, i) - ELMT_LIST_DINAMIS(l2, i);
-        }
-    }
-    return Hasil;
-}
-
 /* ********** OPERATOR RELASIONAL ********** */
 /* *** Operasi pembandingan list : < =, > *** */
 boolean isListEqualDin(ListDin l1, ListDin l2)
