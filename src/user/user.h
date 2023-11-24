@@ -40,6 +40,12 @@ typedef struct
 // // extern UserList users;
 // extern Friendship friendship;
 
+void PRINT_FOTO(User currentUser)
+{
+    Photo M = currentUser.photo;
+    displayPhoto(M);
+}
+
 void GANTI_PROFIL(User *currentUser)
 {
     printf("| Nama: ");
@@ -55,7 +61,7 @@ void GANTI_PROFIL(User *currentUser)
     PrintWord(currentUser->weton);
     printf("\n");
 
-    Word EmptyWord = {';', 1};
+    Word EmptyWord = {{';', 1}};
     Word bio;
     boolean BioCheck = false;
 
@@ -152,9 +158,7 @@ void GANTI_PROFIL(User *currentUser)
     currentUser->weton = currentWord;
     printf("Profil anda sudah berhasil diperbarui!\n");
     printf("\n");
-
 }
-
 
 void ATUR_JENIS_AKUN(User *currentUser)
 {
@@ -200,7 +204,6 @@ void ATUR_JENIS_AKUN(User *currentUser)
             printf("\n");
         }
     }
-
 }
 
 void UBAH_FOTO_PROFIL(User *currentUser)
@@ -216,7 +219,6 @@ void UBAH_FOTO_PROFIL(User *currentUser)
     printf("\n");
     printf("Foto profil anda sudah berhasil diganti!\n\n");
     PRINT_FOTO(*currentUser);
-    
 }
 
 void PRINT_PROFIL(User currentUser)
@@ -238,12 +240,6 @@ void PRINT_PROFIL(User currentUser)
     printf("\n");
     PRINT_FOTO(currentUser);
     printf("\n");
-}
-
-void PRINT_FOTO(User currentUser)
-{
-    Photo M = currentUser.photo;
-    displayPhoto(M);
 }
 
 #endif
