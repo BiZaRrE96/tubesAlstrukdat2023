@@ -485,26 +485,124 @@ boolean writeDataKicauan(Word foldername) {
 }
 
 boolean writeDataBalasan(Word foldername) {
-    // Word directory = Direc(foldername, "balasan.config", 14);
-    // FILE *f = fopen(wordToStr(directory), "w");
-    // // print("directory: %s\n", wordToStr(directory));
+    Word directory = Direc(foldername, "balasan.config", 14);
+    FILE *f = fopen(wordToStr(directory), "w");
+    // print("directory: %s\n", wordToStr(directory));
 
-    // // Cek apakah file sudah ada, jika sudah ada maka ganti dengan yang baru
-    // if (f == NULL) {
-    //     return false;
-    // }
+    // Cek apakah file sudah ada, jika sudah ada maka ganti dengan yang baru
+    if (f == NULL) {
+        return false;
+    }
 
-    // // Count balasan yang tidak kosong
-    // int N = 0;
-    // for (int i = 1; i <= Count(kicauan); i++) {
-    //     if (B) {
-    //         N++;
-    //     }
-    // }
+    // Count balasan yang tidak kosong
+    int N = 0;
+    for (int i = 1; i <= Count(kicauan); i++) {
+        if (GetBalasan(kicauan, i).countEvo > 0) 
+            N++;
+    }
 
-    // fprintf(f, ";");
-    // fclose(f);
-    // return true;
+    fprintf(f, "%d\n", N);
+
+    for (int i = 1; i <= Count(kicauan); i++) {
+        if (GetBalasan(kicauan, i).countEvo > 0) {
+            fprintf(f, "%d\n", i);
+            fprintf(f, "%d\n", GetBalasan(kicauan, i).countEvo);
+
+            for (int j = 1; j <= GetBalasan(kicauan, i).countEvo; j++) {
+                BALASAN *b = getBalasan(GetBalasan(kicauan, i), j);
+                fprintf(f, "%d %d\n", b->parentID, b->IdBalas);
+                fprintf(f, "%s\n", wordToStr(b->Text));
+                fprintf(f, "%s\n", wordToStr(b->Author));
+                fprintf(f, "%s\n", wordToStr(parseDatetimeToWord(b->Time)));
+            }
+        }
+    }
+
+    fprintf(f, ";");
+    fclose(f);
+    return true;
+}
+
+boolean writeDataUtas(Word foldername) {
+    Word directory = Direc(foldername, "utas.config", 11);
+
+    FILE *f = fopen(wordToStr(directory), "w");
+
+    if (f == NULL) {
+        return false;
+    }
+
+    fprintf(f, "%d\n", len(utasList));
+
+    for (int i = 0; i < len(utasList); i++) {
+        Utas utas = GetUtas(utasList, i);
+        fprintf(f, "%d\n", utas.IDKicau);
+        
+        fprintf(f, "%d\n", lengthUtas(utas)-1);
+        AddressUtas p = utas.p->next;
+        for (int j = 1; j < lengthUtas(utas); j++) {
+            fprintf(f, "%s\n", wordToStr(p->info.Text));
+            fprintf(f, "%s\n", wordToStr(p->info.Author));
+            fprintf(f, "%s\n", wordToStr(parseDatetimeToWord(p->info.Time)));
+            
+        }
+    }
+
+    fprintf(f, ";");
+    fclose(f);
+
+    return true;
+
+}
+
+boolean writeDataDraf(Word foldername) {
+    Word directory = Direc(foldername, "draf.config", 11);
+
+    FILE *f = fopen(wordToStr(directory), "w");
+
+    if (f == NULL) {
+        return false;
+    }
+
+    int N;
+    for (int i = 0; i < (users).Neff; i++) {
+        if (!IsEmptyDraf(ElmtDrafList(drafList, i))) {
+            N++;
+        }
+    }
+
+    fprintf(f, "%d\n", N);
+
+    for (int i = 0; i < (users).Neff; i++) {
+        if (!IsEmptyDraf(ElmtDrafList(drafList, i))) {
+            fprintf(f, "%s", wordToStr(ElmtUsername(users, i)));
+            
+            int len = 0;
+
+            DrafStack temp = ElmtDrafList(drafList, i);
+            while (!IsEmptyDraf(temp)) {
+                len++;
+                KICAU k;
+                Pop(&temp, &k);
+            }
+
+            fprintf(f, " %d\n", len);
+
+            temp = ElmtDrafList(drafList, i);
+            while (!IsEmptyDraf(temp)) {
+                KICAU k;
+                Pop(&temp, &k);
+                fprintf(f, "%s\n", wordToStr(k.Text));
+                fprintf(f, "%s\n", wordToStr(parseDatetimeToWord(k.Time)));
+            }
+        }
+    }
+
+    fprintf(f, ";");
+    fclose(f);
+
+    return true;
+
 }
 
 boolean saveConfig(Word foldername) {
@@ -529,10 +627,10 @@ boolean saveConfig(Word foldername) {
 
     // Memuat kicauan.config
     printf("| Menyimpan file `config/%s/kicauan.config  |\n", wordToStr(foldername));
-    // if (!writeDataKicauan(foldername)) {
-    //     errorLog(foldername.Length);
-    //     return false;
-    // }
+    if (!writeDataKicauan(foldername)) {
+        errorLog(foldername.Length);
+        return false;
+    }
 
     // Memuat balasan.config
     printf("| Menyimpan file `config/%s/balasan.config  |\n", wordToStr(foldername));
@@ -543,10 +641,17 @@ boolean saveConfig(Word foldername) {
 
     // Memuat draf.config
     printf("| Menyimpan file `config/%s/draf.config     |\n", wordToStr(foldername));
-    // if (!writeDataDraf(foldername)) {
-    //     errorLog(foldername.Length);
-    //     return false;
-    // }
+    if (!writeDataDraf(foldername)) {
+        errorLog(foldername.Length);
+        return false;
+    }
+
+    // Memuat utas.config
+    printf("| Menyimpan file `config/%s/utas.config     |\n", wordToStr(foldername));
+    if (!writeDataUtas(foldername)) {
+        errorLog(foldername.Length);
+        return false;
+    }
 
     for (int i = 0; i < (42 + foldername.Length); i++) {
         printf("-");
