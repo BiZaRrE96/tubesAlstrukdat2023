@@ -59,8 +59,9 @@ boolean KicauUsed(int IDKicau, ListUtas LU){
     return false;
 }
 
-void UTAS(int IDKicau, KicauList KL, User user, ListUtas LU){
-    if (!KicauUsed(IDKicau, LU)){
+void UTAS(int IDKicau, KicauList KL, User user, ListUtas *LU) 
+{
+    if (!KicauUsed(IDKicau, *LU)){
         if (isWordEqual(Username(user),GetAuthor(KL,IDKicau))){
             Utas utas;
             createUtas(&LU, KL, &utas, IDKicau);
@@ -97,6 +98,7 @@ void createUtas(ListUtas *LU, KicauList KL, Utas *U, int IDKicau){
     AddressUtas p = newNode(GetKicauan(KL,IDKicau));
     First(*U) = p;
     IDUtas(*U) = len(*LU);
+    printf("idUtas = %d\n",IDUtas(*U));
     IDKicau(*U) = IDKicau;
     len(*LU)++;
 }
@@ -152,12 +154,12 @@ void Delete(Utas utas, int index){
     }
 }
 
-void HapusUtas(ListUtas LU, int IDUtas, int index,  User user){
-    if (UtasExist(IDUtas, LU)){  
+void HapusUtas(ListUtas *LU, int IDUtas, int index,  User user){
+    if (UtasExist(IDUtas, *LU)){  
         if(index == 0){
             printf("Anda tidak bisa menghapus kicauan utama!\n  ");
         } else {
-            Utas utas = GetUtas(LU, IDUtas);
+            Utas utas = GetUtas(*LU, IDUtas);
             int i = index;
             AddressUtas p = First(utas);
             if (isWordEqual(INFO(p).Author, Username(user))){
@@ -178,9 +180,9 @@ void HapusUtas(ListUtas LU, int IDUtas, int index,  User user){
         printf("Utas tidak ditemukan!\n");
     }
 }
-void sambungUtas(ListUtas LU,int IDUtas, int index, User user){
-    if (UtasExist(IDUtas, LU)){
-        Utas utas = GetUtas(LU, IDUtas);
+void sambungUtas(ListUtas *LU,int IDUtas, int index, User user){
+    if (UtasExist(IDUtas, *LU)){
+        Utas utas = GetUtas(*LU, IDUtas);
             int i = index-1;
             AddressUtas p = First(utas);
             if (isWordEqual(INFO(p).Author, Username(user))){

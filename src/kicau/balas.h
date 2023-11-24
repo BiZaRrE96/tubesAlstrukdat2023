@@ -238,8 +238,8 @@ boolean readBalasanFile(BalasanList *BL, Word author, Word text, DATETIME time, 
 
 
 void printBalasan(BalasanList BL, id x, Word user) {
-    if (getBalasan(BL,x) == NULL){
-        printf("\nBalasan tidak ada bro!\n\n");
+    if (getBalasan(BL,x) == NULL && x != -1) {
+        printf("\nBalasan tidak ada bro!!\n\n");
         return;
     }
 

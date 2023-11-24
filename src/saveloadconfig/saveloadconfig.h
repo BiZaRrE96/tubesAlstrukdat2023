@@ -9,6 +9,7 @@
 #include "../screen/screen.h"
 #include "../kicau/kicau.h"
 #include "../kicau/draf.h"
+#include <sys/stat.h>
 
 extern UserList users;
 extern Friendship friendship;
@@ -132,8 +133,6 @@ boolean readDataUsers(Word foldername)
 
 
     return true;
-    // Permintaan Pertemanan
-    // Cooming soon
 }
 
 boolean readDataKicauan(Word foldername) {
@@ -176,7 +175,6 @@ boolean readDataBalasan(Word foldername) {
         return false;
     }
 
-    printf("Masuk\n");
     STARTWORDFILE(wordToStr(directory));
 
     int N = wordToInt(currentWord);
@@ -237,14 +235,13 @@ boolean readDataDraf(Word foldername) {
     //     return false;
 
     int N = wordToInt(currentWord);
-    printf("N: %d\n", N);
 
     while (N--) {
         AdvSentence(); currentWord.Length--;
         // Ambil sebuah integer pada elemen paling kiri currentWord
         Word M; M.Length = 0;
         int itr = currentWord.Length - 1;
-        printf("currentWord: %s\n", wordToStr(currentWord));
+        // printf("currentWord: %s\n", wordToStr(currentWord));
 
         while (currentWord.TabWord[itr] != ' ') {
             M.TabWord[M.Length] = currentWord.TabWord[itr];
@@ -266,9 +263,6 @@ boolean readDataDraf(Word foldername) {
         currentWord.Length--;
         Word username = currentWord;
         int idxUser = indexOfUser(users, username);
-        printf("Username : %s\n", wordToStr(username));
-        printf("Length: %d\n", username.Length);
-        printf("idxUser: %d\n", idxUser);
 
         KICAU k[nDraf];
 
@@ -304,6 +298,8 @@ boolean readDataDraf(Word foldername) {
 
 }
 
+
+
 void errorLog(int lenFoldername)
 /* Menampilkan pesan kesalahan */
 {
@@ -322,6 +318,135 @@ void errorLog(int lenFoldername)
     }
     printf("\n");
     STOP_COLOR;
+}
+
+boolean writeDataUsers(Word foldername) {
+    Word directory = Direc(foldername, "pengguna.config", 15);
+    FILE *f = fopen(wordToStr(directory), "w");
+    printf("directory: %s\n", wordToStr(directory));
+
+    // Cek apakah file sudah ada, jika sudah ada maka ganti dengan yang baru
+    if (f == NULL) {
+        return false;
+    }
+
+    fprintf(f, "%d\n", (users).Neff);
+    printf("users.Neff: %d\n", (users).Neff);
+
+    for (int i = 0; i < (users).Neff; i++) {
+        printf("User : %s\n", wordToStr(ElmtUsername(users, i)));
+        fprintf(f, "%s\n", wordToStr(ElmtUsername(users, i)));
+        fprintf(f, "%s\n", wordToStr(ElmtPassword(users, i)));
+        fprintf(f, "%s\n", wordToStr(ElmtBio(users, i)));
+        fprintf(f, "%s\n", wordToStr(ElmtPhoneNumber(users, i)));
+        fprintf(f, "%s\n", wordToStr(ElmtWeton(users, i)));
+        if (ElmtPrivacy(users, i) == PRIVATE) {
+            fprintf(f, "Privat\n");
+        } else {
+            fprintf(f, "Publik\n");
+        }
+
+        for (int j = 0; j < 5; j++) {
+            for (int k = 0; k < 5; k++) {
+                fprintf(f, "%c %c ", PhotoColor(ElmtPhoto(users, i), j, k), PhotoCharacter(ElmtPhoto(users, i), j, k));
+            }
+            fprintf(f, "\n");
+        }
+
+        
+    }
+
+    // Friendship Matrix
+    for (int j = 0; j < (users).Neff; j++) {
+        for (int k = 0; k < (users).Neff; k++) {
+            if (k == (users).Neff - 1) {
+                fprintf(f, "%d", FriendshipStatus(friendship, j, k));
+            } else {
+                fprintf(f, "%d ", FriendshipStatus(friendship, j, k));
+            }
+        }
+        fprintf(f, "\n");
+    }
+
+    printf("Pembacaan friendSHIP\n");
+    // Jelajahi masing-masing elemen FriendRequest pada user
+    int n = 0;
+    Word sender[10000];
+    Word receiver[10000];
+    int numFriend[10000];
+
+    for (int i = 0; i < (users).Neff; i++) {
+        prioqueue temp = ElmtFriendRequest(users, i);
+        while (!IsEmptyPrioQueue(temp)) {
+            friend request;
+            DequeuePrioQueue(&temp, &request);
+            sender[n] = ElmtUsername(users, i);
+            receiver[n] = ElmtUsername(users, request.IDrecieve);
+            numFriend[n] = request.Friendcount;
+
+            printf("sender: %s\n", wordToStr(sender[n]));
+            printf("receiver: %s\n", wordToStr(receiver[n]));
+            printf("numFriend: %d\n", numFriend[n]);
+            n++;
+        }
+    }
+
+    fprintf(f, "%d\n", n);
+    for (int i = 0; i < n; i++) {
+        fprintf(f, "%s %s %d\n", wordToStr(sender[i]), wordToStr(receiver[i]), numFriend[i]);
+    }
+
+    fprintf(f, ";");
+    fclose(f);
+}
+
+boolean saveConfig(Word foldername) {
+    START_YELLOW;
+    for (int i = 0; i < (40 + foldername.Length); i++) {
+        printf("-");
+    }
+
+    // Jika folder belum ada, maka buat folder
+    Word folderdirectory = Direc(foldername, "", 0);
+    if (fopen(wordToStr(folderdirectory), "r") == NULL) {
+        mkdir(wordToStr(folderdirectory), 0777);
+    }
+
+    // Jika sudah ada folder, maka replace file dengan data yang baru
+    // Memuat pengguna.config
+    printf("\n| Menyimpan file `config/%s/pengguna.config |\n", wordToStr(foldername));
+    if (!writeDataUsers(foldername)) {
+        errorLog(foldername.Length);
+        return false;
+    }
+
+    // Memuat kicauan.config
+    printf("| Menyimpan file `config/%s/kicauan.config  |\n", wordToStr(foldername));
+    // if (!writeDataKicauan(foldername)) {
+    //     errorLog(foldername.Length);
+    //     return false;
+    // }
+
+    // Memuat balasan.config
+    printf("| Menyimpan file `config/%s/balasan.config  |\n", wordToStr(foldername));
+    // if (!writeDataBalasan(foldername)) {
+    //     errorLog(foldername.Length);
+    //     return false;
+    // }
+
+    // Memuat draf.config
+    printf("| Menyimpan file `config/%s/draf.config     |\n", wordToStr(foldername));
+    // if (!writeDataDraf(foldername)) {
+    //     errorLog(foldername.Length);
+    //     return false;
+    // }
+
+    for (int i = 0; i < (40 + foldername.Length); i++) {
+        printf("-");
+    }
+    printf("\n\n");
+    return true;
+
 }
 
 boolean loadConfig(Word foldername)
@@ -373,6 +498,22 @@ boolean loadConfig(Word foldername)
     return true;
 }
 
+
+void Simpan() {
+    Word foldername;
+    printf("Masukkan nama folder yang hendak disimpan: ");
+    STARTCOMMAND();
+    foldername = currentWord;
+    printf("\n");
+    if (!saveConfig(foldername)) {
+        printf("Gagal meyimpan\n");
+    } else {
+        printf("Penyimpanan selesai!\n");
+    }
+    printf("\n\n");
+    // saveConfig(foldername, users, friendship, kicauan);
+
+}
 
 void Muat() {
     Word foldername;

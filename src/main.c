@@ -19,6 +19,7 @@ Friendship friendship;      // Daftar pertemanan dalam bentuk adjacency matriks 
 User currentUser;           // User yang sedang login (user.h)
 KicauList kicauan;          // Daftar kicauan dalam bentuk listStatik of Kicau (kicau.h)
 DrafList drafList;          // Daftar draf dalam bentuk listStatik of DrafStack (draf.h)
+ListUtas utasList;          // Daftar utas dalam bentuk linked list of Utas (utas.h)
 
 boolean isLogin = false;    // Apakah program sedang dalam keadaan login
 
@@ -96,6 +97,8 @@ int main ()
 
     while (true) {
         inputCommand();
+
+        printf("%d\n", len(utasList));
 
         if (isCommandMasuk()) {
             if (isLogin) {
@@ -303,7 +306,7 @@ int main ()
                 continue;
             }
             
-            printBalasan(GetBalasan(kicauan, idKicau), idKicau, currentUser.username);
+            printBalasan(GetBalasan(kicauan, idKicau), 1, currentUser.username);
         } else
 
         if (isCommandHapusBalasan()) {
@@ -348,10 +351,10 @@ int main ()
             if (!getParamInt(&idKicau)) {
                 errorCommand("Perintah UTAS tidak valid", "UTAS <id_kicau>");
                 continue;
-            }
+            }   
 
             // Masukkan fungsi utas disini
-            printf("Perintah Utas\n"); // Nanti hapus aja
+            UTAS(idKicau, kicauan, currentUser, &utasList);
         } else
 
         if (isCommandSambungUtas()) {
@@ -366,8 +369,7 @@ int main ()
                 continue;
             }
 
-            // Masukkan fungsi sambung utas disini
-            printf("Perintah Sambung Utas\n"); // Nanti hapus aja
+            sambungUtas(&utasList, idUtas, index, currentUser);
         } else
 
         if (isCommandHapusUtas()) {
@@ -385,7 +387,7 @@ int main ()
             printf("idUtas = %d, idx = %d\n", idUtas, index);
 
             // Masukkan fungsi hapus utas disini
-            printf("Perintah Hapus Utas\n"); // Nanti hapus aja
+            HapusUtas(&utasList, idUtas, index, currentUser);
         } else
 
         if (isCommandCetakUtas()) {
@@ -402,11 +404,11 @@ int main ()
             } else
 
             // Masukkan fungsi cetak utas disini
-            printf("Perintah Cetak Utas\n"); // Nanti hapus aja
+            cetakUtas(utasList, idUtas, currentUser);
         } else
 
         if (isCommandSimpan()) {
-
+            Simpan();
         } else
 
         if (isCommandMuat()) {
@@ -430,3 +432,4 @@ int main ()
     printf("\nAnda telah keluar dari program BurBir.\nSampai jumpa di penjelajahan berikutnya.\n\n");
     return 0;
 }
+

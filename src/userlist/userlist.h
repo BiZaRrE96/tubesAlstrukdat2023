@@ -247,6 +247,8 @@ void DAFTAR(UserList *users, Friendship *friendship)
     int idx = indexOfUser(*users, name);
     friendship->friends.rowEff++;
     friendship->friends.colEff++;
+
+    
     for (int i = 0; i < MAX_USERS; i++)
     {
         FriendshipStatus(*friendship, idx, i) = 0;
